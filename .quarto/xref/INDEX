@@ -1,0 +1,14 @@
+{
+  "index.qmd": {
+    "index.html": "d31b8a84",
+    "index.tex": "958ed200"
+  },
+  "log.qmd": {
+    "log.embed.ipynb": "6eb26348",
+    "log.out.ipynb": "8fbe1125",
+    "log-preview.html": "4afa38e8"
+  },
+  ".quarto/embed/log.embed.ipynb": {
+    "log.embed-preview.html": "19c4a89c"
+  }
+}
