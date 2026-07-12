@@ -1,0 +1,2909 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod,
+  oneside]{scrartcl}
+\usepackage{xcolor}
+\usepackage[left=1in,marginparwidth=2.0666666666667in,textwidth=4.1333333333333in,marginparsep=0.3in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
+\definecolor{quarto-callout-color}{HTML}{909090}
+\definecolor{quarto-callout-note-color}{HTML}{0758E5}
+\definecolor{quarto-callout-important-color}{HTML}{CC1914}
+\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
+\definecolor{quarto-callout-tip-color}{HTML}{00A047}
+\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
+\definecolor{quarto-callout-color-frame}{HTML}{acacac}
+\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
+\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
+\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
+\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
+\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{sidenotes}{}{\usepackage{sidenotes}}
+\@ifpackageloaded{marginnote}{}{\usepackage{marginnote}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{State-of-the-Art Orbit Uncertainty Propagation Methods used in
+Space Situational Awareness (SDA)}
+\author{Srihari S}
+\date{}
+\begin{document}
+\maketitle
+
+
+\section{Introduction}\label{introduction}
+
+In the contemporary landscape of Space Domain Awareness (SDA) and Space
+Situational Awareness (SSA), the precise characterization of orbital
+state uncertainty is not merely a mathematical exercise but a
+requirement for the preservation of the orbital environment. As the
+population of resident space objects (RSOs) grows exponentially, the
+risk of catastrophic collisions---such as the 2009 Iridium-Cosmos
+event---escalates, potentially precipitating the ``Kessler Syndrome'',
+according to which, as the density of objects in orbit increases, the
+likelihood of collisions grows, leading to a cascading chain reaction
+where each collision generates new debris. This self-perpetuating
+process could eventually render certain orbits unusable for satellites
+and spacecraft, posing a severe threat to both current and future space
+operations.
+
+Uncertainty Propagation (UP) serves as the mathematical engine for
+several mission-critical tasks:
+
+\begin{itemize}
+\item
+  \textbf{Conjunction Assessment (CA):} Predicting the probability of
+  collision (\(P_C\)) between two objects by propagating their state
+  uncertainties to the time of closest approach (TCA).
+\item
+  \textbf{Object Custody:} Establishing and maintaining the identity and
+  tracking of newly detected objects through Bayesian filtering.
+\item
+  \textbf{Sensor Tasking:} Optimizing the use of limited ground-based
+  radars and optical sensors by predicting where an object's probability
+  mass will be at future epochs.
+\item
+  \textbf{Maneuver Planning:} Assessing the necessity and efficacy of
+  collision avoidance maneuvers (CAMs) under non-Gaussian uncertainty
+  regimes.
+\end{itemize}
+
+\subsection{Problem Formulation of Uncertainty
+Propagation}\label{problem-formulation-of-uncertainty-propagation}
+
+The stochastic uncertainty propagation problem is defined on a
+probability space \((\mathcal{S}, \Sigma, \mathcal{P})\) where
+\(\mathcal{S}\) is the sample space, \(\Sigma\) is the σ-algebra, and
+\(\mathcal{P}\) is the probability measure.
+
+\marginnote{\begin{footnotesize}
+
+\begin{itemize}
+\item
+  \textbf{Sample Space (\(\mathcal{S}\))}: The set of all possible
+  outcomes of a random experiment.\\
+  \emph{Example}: For a coin toss,
+  \(\mathcal{S} = \{\text{Heads}, \text{Tails}\}\).
+\item
+  \textbf{σ-Algebra (\(\Sigma\) )}: A collection of subsets of the
+  sample space that includes \(\mathcal{S}\) and is closed under
+  complements and countable unions. These subsets are the ``events'' we
+  can assign probabilities to.\\
+  \emph{Example}: For a die roll, \(\Sigma\) might include sets like
+  \(\{1,2,3\}\), \(\{4,5,6\}\), \(\mathcal{S}\), and \(\emptyset\).
+\item
+  \textbf{Probability Measure (\(\mathcal{P}\))}: A function that
+  assigns a number between 0 and 1 to each event in the σ-algebra,
+  satisfying:
+
+  \begin{itemize}
+  \item
+    \(\mathcal{P}(\mathcal{S}) = 1\)
+  \item
+    If events are disjoint,
+    \(\mathcal{P}(\bigcup_i A_i) = \sum_i \mathcal{P}(A_i)\).
+    \emph{Example}: For a fair die,
+    \(\mathcal{P}(\{2\}) = \tfrac{1}{6}\).
+  \end{itemize}
+\end{itemize}
+
+\end{footnotesize}}
+
+The random input vector \(\mathbf{\xi} \in \mathbb{R}^d\) is defined on
+\((\mathcal{S}, \Sigma, \mathcal{P})\) and consists of \(d\) independent
+random inputs that characterize the stochastic system. These inputs are
+drawn from a probability distribution defined over the space
+\(\Gamma^d \subset \mathbb{R}^d\), which is the support of the random
+variables. The support space \(\Gamma^d\) depends on the problem; for
+example, \(\Gamma^d = [0,1]^d\) for \(d\)-dimensional uniform random
+variables in the range \([0,1]\).
+
+The uncertainty propagation problem seeks to generate a solution to a
+stochastic ordinary differential equation:
+
+\begin{equation}\protect\phantomsection\label{eq-stochastic-ode}{
+\mathcal{A}(t, \mathbf{\xi}; \mathbf{x}) = 0, 
+\quad (t, \mathbf{\xi}) \in [0, t_f] \times \Gamma^d, 
+\quad \mathcal{P}\text{-a.s. in } \mathcal{S}
+}\end{equation}
+
+where \(t \in [0, t_f]\) is the time variable,
+\(\mathbf{x} \in \mathbb{R}^n\) is a vector of Quantities of Interest
+(QoIs), and \(\mathcal{A}\) is the stochastic ODE operator that defines
+the flow of \(\mathbf{x}\) to \(t\) as a function of \(\mathbf{\xi}\). A
+solution to the uncertainty propagation problem quantifies the effects
+of random inputs \(\mathbf{\xi}\) on the random QoIs \(\mathbf{x}\) as a
+function of time \(t\) and the random inputs \(\boldsymbol{\xi}\).
+
+The random inputs \(\boldsymbol{\xi}\) may include initial state
+uncertainties, force-modeling errors, and environmental perturbations.
+
+\subsection{Taxonomy of Orbital
+Uncertainties}\label{taxonomy-of-orbital-uncertainties}
+
+The literature categorize the non-deterministic inputs into two distinct
+mathematical and physical frameworks:
+
+\begin{itemize}
+\item
+  \textbf{Aleatory Uncertainty (Random):}
+
+  \begin{itemize}
+  \item
+    \textbf{Definition:} Characterizes the inherent, irreducible
+    randomness within the physical system.
+  \item
+    \textbf{Examples:} Sensor measurement noise from ground-based radars
+    or optical telescopes, and fluctuations in atmospheric density that
+    affect drag in a stochastic manner.
+  \item
+    \textbf{Modeling:} Almost universally represented using precise
+    probability distributions (PDFs).
+  \end{itemize}
+\item
+  \textbf{Epistemic Uncertainty (Systematic):}
+
+  \begin{itemize}
+  \item
+    \textbf{Definition:} Arises from a lack of knowledge or limited
+    information about the system's physics or model parameters.
+  \item
+    \textbf{Examples:} Modeling inadequacies such as truncated gravity
+    field harmonics (e.g., using a 2x2 vs.~70x70 model), unknown
+    area-to-mass ratios for solar radiation pressure, and errors
+    introduced by using fast surrogate models (metamodels) instead of
+    high-fidelity propagators.
+  \item
+    \textbf{Modeling:} While often forced into a PDF-based
+    representation, recent research suggests using Outer Probability
+    Measures (OPMs) and credibilistic filtering to bound these errors
+    without over-characterizing them (Jones et al. 2019).
+  \end{itemize}
+\end{itemize}
+
+\subsection{The Fokker-Planck
+Equation}\label{the-fokker-planck-equation}
+
+The \textbf{Fokker-Planck Equation} (FPE) is the fundamental partial
+differential equation (PDE) governing the time evolution of the PDF of a
+dynamical system subject to both deterministic forces and stochastic
+process noise.
+
+\begin{itemize}
+\item
+  \textbf{Role in UP:} It describes how a probability cloud ``flows''
+  and ``spreads'' through state space. The equation consists of a
+  \textbf{drift term} (representing deterministic motion like Keplerian
+  flow) and a \textbf{diffusion term} (representing the broadening of
+  the PDF due to stochastic forcing).
+\item
+  \textbf{Mathematical Expression:} For a state vector \(\mathbf{x}\),
+  the FPE is given by:
+  \begin{equation}\protect\phantomsection\label{eq-fokker-planck}{
+  \frac{\partial p(\mathbf{x}, t)}{\partial t} = -\nabla \cdot (\mathbf{f} p) + \frac{1}{2} \text{Tr}(\mathbf{\Sigma} \nabla^2 p)
+  }\end{equation}
+
+  where \(\mathbf{f}\) is the deterministic flow vector,
+  \(\mathbf{\Sigma}\) is the diffusion tensor, and \(p(\mathbf{x}, t)\)
+  is the PDF at time \(t\).
+\item
+  \textbf{The Computational Challenge in astrodynamics:} Direct
+  numerical solutions to the FPE are generally intractable in
+  astrodynamics due to the \textbf{``curse of dimensionality''}; a 6D
+  orbital state requires spatial grids that grow exponentially,
+  necessitating the use of the state-of-the-art approximation methods
+  discussed in this report.
+\end{itemize}
+
+\subsection{Foundational Assumptions in Orbital Uncertainty
+Propagation}\label{foundational-assumptions-in-orbital-uncertainty-propagation}
+
+To make the complex dynamics of orbital motion computationally
+tractable, researchers generally operate under a standardized set of
+mathematical and physical assumptions:
+
+\begin{itemize}
+\item
+  \textbf{Point Mass Dynamics:} For most conjunction scenarios, space
+  objects are approximated as point masses, although this assumption may
+  be relaxed for large structures like the International Space Station
+  (ISS).
+\item
+  \textbf{State Representation:} In orbital mechanics, the QoIs is
+  typically represented by the orbital state vector
+  \(\mathbf{x} = [\mathbf{r}, \mathbf{v}]^T \in \mathbb{R}^6\),
+  representing position and velocity in an inertial frame (e.g., ECI) or
+  a specialized coordinate set like Modified Equinoctial Orbital
+  Elements (MEqOE).
+\item
+  \textbf{Initial State Quantification:} It is assumed that an initial
+  state \(\mathbf{x}_0\) is known at epoch \(t_0\), accompanied by a
+  multivariate Probability Density Function (PDF), often initially
+  modeled as Gaussian \(N(\boldsymbol{\mu}_0, \mathbf{P}_0)\). The
+  random inputs \(\boldsymbol{\xi}\) may include initial state
+  uncertainties, force-modeling errors, and environmental perturbations.
+\item
+  \textbf{Deterministic Flow:} The trajectory follows non-linear
+  Ordinary Differential Equations (ODEs) influenced by both central-body
+  gravity and various perturbative accelerations. Hence we do not
+  consider epistemic uncertainty in the dynamics model itself, but
+  rather focus on the propagation of the initial state uncertainty
+  through these deterministic equations.
+\end{itemize}
+
+\subsection{Classification and Methodology of Uncertainty Propagation
+Techniques}\label{classification-and-methodology-of-uncertainty-propagation-techniques}
+
+Managing the \emph{curse of dimensionality} and the inherent
+non‑linearity of orbital mechanics requires a robust taxonomy of
+methods. These techniques are generally classified by how they represent
+the PDF: through point‑based samples, linearized mathematical
+transformations, mixture models, polynomial expansions, or hybrid
+multi‑fidelity approaches. Each method is assessed based on its ability
+to preserve the integrity of the PDF over time, its computational
+efficiency, and its suitability for real‑time operational use. The
+following sections provide a detailed overview of these methods,
+highlighting their theoretical foundations, practical implementations,
+and performance characteristics.
+
+\section{The Sampling Baseline: Monte Carlo
+(MC)}\label{the-sampling-baseline-monte-carlo-mc}
+
+The Monte~Carlo method serves as the ``ground truth'' and absolute
+benchmark for all other techniques. The process involves generating a
+large set of random samples (\(N_{\text{samples}}\)) from an initial
+Gaussian distribution using the square‑right matrix (\(S\)) of the
+covariance matrix.
+
+\begin{equation}\protect\phantomsection\label{eq-covariance-matrix}{
+P = SS^{T}
+}\end{equation}
+
+\marginnote{\begin{footnotesize}
+
+The covariance matrix \(P\) captures the uncertainty in the state
+estimate which we get from orbit determination. The square‑right matrix
+\(S\) is obtained through Cholesky decomposition or Singular Value
+Decomposition (SVD) of \(P\). This allows us to generate samples that
+are consistent with the initial uncertainty.
+
+\end{footnotesize}}
+
+\subsection{Mechanics of the Sampling-Based
+Approach}\label{mechanics-of-the-sampling-based-approach}
+
+MC simulation functions by drawing a large ensemble of random samples
+from an initial distribution, which can be Gaussian or any other known
+PDF.
+
+\begin{itemize}
+\item
+  \textbf{Independent Propagation:} Each sample represents a potential
+  realization of the system state and is propagated independently
+  through numerical integration of the dynamics.
+\item
+  \textbf{Non-Intrusive Nature:} Because each sample is treated
+  separately, MC is intrinsically non-intrusive, meaning it treats the
+  dynamics model as a ``black box'' and requires no modifications to
+  existing dynamics code.
+\item
+  \textbf{Statistical Reconstruction:} After propagation, the ensemble
+  of final states provides a discrete representation of the final PDF.
+  Statistical properties, such as the mean and covariance, are estimated
+  directly by computing the average and sample-covariance of the
+  propagated points.
+\end{itemize}
+
+\subsection{Role as the ``Ground Truth''
+Baseline}\label{role-as-the-ground-truth-baseline}
+
+The sources {[}Bos (2025){]}(Soman 2025) identify MC simulation as the
+\textbf{definitive benchmark} for evaluating the accuracy of all other
+UP methods.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Reliability:} MC results approach the ``true'' probability
+  distribution as the number of samples goes to infinity.
+\item
+  \textbf{Accuracy Metric:} In comparative studies, researchers
+  typically use a large-scale MC run (such as \(10^5\) samples) as the
+  reference truth to calculate accuracy metrics like the \textbf{N L2
+  distance} for alternative methods.
+\end{itemize}
+
+\subsection{The Computational
+Trade-off}\label{the-computational-trade-off}
+
+While highly accurate, the primary limitation of MC is its
+\textbf{extreme computational intensity}.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Convergence Rate:} The rate of statistical convergence is
+  proportional to the inverse square root of the ensemble size
+  (\(\text{Monte Carlo Standard error}\propto 1/\sqrt{N}\), where \(N\)
+  is the number of samples), meaning achieving high accuracy requires a
+  massive number of samples.
+\end{itemize}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Monte-Carlo Standard Error}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+The statistical convergence rate describes how quickly the Monte Carlo
+estimate approaches the true value as the number of samples increases.
+
+For this, we assume that the samples are independent and identically
+distributed (i.i.d.) random variables drawn from the underlying
+probability distribution. Let these samples be denoted as
+\(X_1, X_2, \ldots, X_N\), where \(N\) is the total number of samples.
+
+Now we assume \(Y=f(\mathbf{X})\) to be a random variable with
+
+\[
+E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
+\]
+
+Which gives us \(Y_1, Y_2, \ldots, Y_N\) as i.i.d. random variables
+which form the output underlying uncertainty distribution. The Monte
+Carlo estimator for the expected value of \(Y\) is given by,
+
+\[
+\hat{\mu}=\frac{1}{N}\sum_{i=1}^{N}Y_i.
+\]
+
+Since the samples are independent,
+
+\[
+\begin{aligned}
+\operatorname{Var}(\hat{\mu})&= \operatorname{Var}\left(\frac{1}{N}\sum_{i=1}^{N}Y_i\right)\\&=\frac{1}{N^2}\sum_{i=1}^{N}\operatorname{Var}(Y_i)\frac{\sigma^2}{N}
+\end{aligned}
+\]
+
+Hence, the standard error of the Monte Carlo estimator is
+
+\[
+\boxed{
+\operatorname{SE}(\hat{\mu})=\sqrt{\operatorname{Var}(\hat{\mu})}\frac{\sigma}{\sqrt{N}}.
+}
+\]
+
+Therefore, the statistical error of Monte Carlo decreases as
+
+\[
+\boxed{
+\operatorname{SE}(\hat{\mu})=O(N^{-1/2}),
+}
+\]
+
+implying that reducing the error by a factor of (k) requires
+approximately (k\^{}2) times more samples.
+
+\end{tcolorbox}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Collision Assessment Barriers:} For rare-event quantification,
+  such as conjunction assessment where collision probabilities (\(P_C\))
+  may be \(10^{-4}\) or lower, the number of required samples can reach
+  \textbf{\(10^7\) or more} to achieve low statistical error.
+\item
+  \textbf{Practical Infeasibility:} Due to these requirements, the
+  sources note that standard MC simulations are often infeasible for
+  practical, real-time application to the vast population of resident
+  space objects (RSOs).
+\end{itemize}
+
+\subsection{MC in the Landscape of Sampling
+Methods}\label{mc-in-the-landscape-of-sampling-methods}
+
+Current literature place MC within a broader hierarchy of sampling and
+sample-reliant methods designed to mitigate its costs:
+
+\begin{itemize}
+\item
+  \textbf{Deterministic Sampling (Unscented Transform):} Unlike MC's
+  random sampling, the \textbf{Unscented Transform (UT)} uses a small,
+  deterministically chosen set of weighted \textbf{sigma points} to
+  represent the first two moments of a distribution.
+\item
+  \textbf{Multi-Fidelity (MF) Architectures:} This ``promising''
+  alternative leverages sampling concepts by propagating a large set of
+  samples through fast, \textbf{low-fidelity dynamics} and then using a
+  tiny subset of ``important samples'' propagated through high-fidelity
+  dynamics to correct the results. MF can achieve speed-ups of up to
+  \textbf{4 orders of magnitude} over standard MC while maintaining a
+  high level of agreement.
+\item
+  \textbf{Enhanced Sampling Techniques:} To improve efficiency,
+  researchers utilize variance reduction techniques like
+  \textbf{importance sampling} or \textbf{stratified sampling}, as well
+  as \textbf{Quasi-Monte Carlo} methods which use special sequences for
+  more uniform coverage of the uncertainty space.
+\item
+  \textbf{Parallelization:} Leveraging multicore CPUs or GPU
+  acceleration is highlighted as a primary way to reduce the run times
+  of large-scale Monte Carlo campaigns.
+\end{itemize}
+
+\section{Linearized Covariance
+(LinCov)}\label{linearized-covariance-lincov}
+
+In the taxonomy of uncertainty propagation (UP) methods,
+\textbf{Linearised Covariance (LinCov)} represents the foundational
+entry in the category of \textbf{Linear Approximation Methods}. It is
+characterized by its reliance on first-order Taylor-series expansions to
+map statistical moments through nonlinear dynamical systems. While
+computationally superior in terms of execution time, its mathematical
+architecture introduces significant epistemic risks when the system's
+nonlinearity induces non-Gaussianity.
+
+\subsection{Mathematical Framework and
+Mechanics}\label{mathematical-framework-and-mechanics}
+
+LinCov operates on the fundamental assumption that if a reference
+trajectory \(x^*(t)\) is sufficiently close to the true trajectory
+\(x(t)\), the deviation \(\Delta x(t)\) can be modeled as a linear
+system.
+
+\begin{itemize}
+\item
+  \textbf{First-Order Truncation:} The method defines the system
+  dynamics \(\dot{x}(t) = F(x, t)\) and expands them into a Taylor
+  series about the reference trajectory. By neglecting higher-order
+  terms (second-order and above), the dynamics are simplified to
+  \(\Delta\dot{x}(t) \approx J^*(t)\Delta x(t)\), where \(J^*\) is the
+  Jacobian matrix evaluated along the reference path.
+\item
+  \textbf{The State Transition Matrix (STM):} The solution to this
+  linear system is facilitated by the STM, \(\Phi(t, t_0)\), which maps
+  the initial deviation to a future epoch.
+\end{itemize}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{State Transition Matrix (STM)}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+The STM is formally defined as the solution to the matrix differential
+equation \(\dot{\Phi}(t, t_0) = \mathbf{J}^*(t)\Phi(t, t_0)\), with the
+initial condition \(\Phi(t_0, t_0) = \mathbf{I}\) (the identity matrix).
+
+\end{tcolorbox}
+
+\begin{itemize}
+\item
+  \textbf{Moment Propagation:} The mean state vector and covariance
+  matrix are defined as the expected value of the state, and the
+  expected squared deviation from the mean state, respectively: \[
+  \begin{aligned}
+  \bar{\mathbf{x}} &= \int_{\infty} \xi p(\xi)\,d\xi \\
+  \mathbf{P} &= \int_{\infty} (\xi - \bar{x})(\xi - \bar{x})^T p(\xi,t)\,d\xi
+  \end{aligned}
+  \]
+
+  Assuming that the differences between the true and reference
+  trajectories are small, the mean and covariance can be propagated
+  through the STM as follows:
+  \begin{equation}\protect\phantomsection\label{eq-lincov-propagation}{
+  \begin{aligned}
+  \bar{\mathbf{x}}(t) &= \Phi(t, t_0)\bar{\mathbf{x}}(t_0) \\
+  \mathbf{P}(t) &= \Phi(t, t_0)\mathbf{P}(t_0)\Phi^T(t, t_0) + G(t)Q(t)G^T(t)
+  \end{aligned}
+  }\end{equation}
+
+  Where \(G(t)\) is the process noise input matrix and \(Q(t)\) is the
+  process noise covariance, which are used to account for force-model
+  mismodelling perturbation errors. Bos (2025) does not include process
+  noise in his LinCov implementation.
+\item
+  \textbf{Gaussian Assumption:} A defining characteristic of LinCov is
+  the preservation of the distribution's functional form; it assumes
+  that an initially Gaussian PDF remains Gaussian throughout the
+  propagation horizon.
+\end{itemize}
+
+\subsubsection{Algorithmic Implementation of
+LinCov}\label{algorithmic-implementation-of-lincov}
+
+The following flowchart delineates the procedural logic for propagating
+orbital uncertainty using the LinCov framework:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial Mean x0 and Covariance P0] {-}{-}\textgreater{} B[Define Reference Trajectory x*]}
+\NormalTok{    B {-}{-}\textgreater{} C[Integrate Nonlinear Dynamics for x*]}
+\NormalTok{    C {-}{-}\textgreater{} D[Compute Time{-}Varying Jacobian J*]}
+\NormalTok{    D {-}{-}\textgreater{} E[Solve Variational Equations for STM: ¤Φ = J*Φ]}
+\NormalTok{    E {-}{-}\textgreater{} F[Map Final Mean: x\_tf = Φ x0]}
+\NormalTok{    F {-}{-}\textgreater{} G[Map Final Covariance: P\_tf = Φ P0 ΦT]}
+\NormalTok{    G {-}{-}\textgreater{} H[Output Analytic Gaussian PDF]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Performance Analysis: The Efficiency-Accuracy
+Trade-off}\label{performance-analysis-the-efficiency-accuracy-trade-off}
+
+LinCov's role in Space Domain Awareness (SDA) is defined by its extreme
+computational efficiency, often being several orders of magnitude faster
+than sampling-based methods.
+
+\begin{itemize}
+\item
+  \textbf{Computational Primacy:} LinCov is the fastest implemented
+  method in modern comparative studies because it requires the
+  integration of only one nominal state vector to solve the variational
+  equations.
+\item
+  \textbf{Failure in Nonlinear Regimes:} The accuracy of LinCov
+  inversely correlates with propagation time and dynamical nonlinearity
+  (e.g., highly elliptical orbits). As the true PDF warps into
+  ``banana'' or ``kidney'' shapes, the linear mapping fails to capture
+  the curvature, leading to a significant increase in the \(NL_2\)
+  distance metric relative to the Monte Carlo truth.
+\item
+  \textbf{Structural Limitations:} While LinCov captures the location
+  (mean) and the general spread (scale) of the uncertainty, it
+  systematically ignores the higher-order moments (skewness and
+  kurtosis) that define the ``tails'' of a non-Gaussian distribution.
+\end{itemize}
+
+\subsection{Contextual Nuance: Surprising Utility in Conjunction
+Assessment}\label{contextual-nuance-surprising-utility-in-conjunction-assessment}
+
+A critical insight provided by Bos (2025) is that LinCov's failure to
+approximate the \emph{shape} of a PDF does not necessarily preclude its
+utility in specific \textbf{Conjunction Assessment (CA)} tasks.
+
+\begin{itemize}
+\item
+  \textbf{Preservation of Decision Metrics:} In simulations involving
+  Low Earth Orbit (LEO) conjunctions with long propagation times (e.g.,
+  96 hours), LinCov produced collision probabilities (\(P_C\)) nearly
+  identical to baseline Monte Carlo runs, despite the underlying
+  distributions being highly non-Gaussian.
+\item
+  \textbf{Geometric Explanation:} This ``surprising'' performance
+  suggests that for certain conjunction geometries, capturing the
+  ``length'' and ``width'' of the uncertainty spread is more critical
+  for \(P_C\) calculation than accurately modeling the time of closest
+  approach (TCA) uncertainty distribution.
+\item
+  \textbf{Caveats:} This robust performance may be an artifact of
+  specific scenario settings, such as identical orbital regimes for both
+  objects or symmetrical initial uncertainties.
+\end{itemize}
+
+\subsection{Taxonomy and Comparison}\label{taxonomy-and-comparison}
+
+LinCov sits alongside several related techniques that utilize varying
+forms of linearization:
+
+\begin{itemize}
+\item
+  \textbf{Statistical Linearization (CADET):} Unlike LinCov, the
+  \textbf{Covariance Analysis Describing function Technique (CADET)}
+  approximates system functions in an ``average'' way to minimize mean
+  square error and does not strictly rely on the differentiability of
+  the dynamics.
+\item
+  \textbf{State Transition Tensors (STT):} This framework extends LinCov
+  into higher-order statistics; a first-order STT solution corresponds
+  exactly to the STM used in standard LinCov, while higher-order tensors
+  allow for the propagation of uncertainties through stronger
+  nonlinearities without random sampling. See Section~\ref{sec-stt} for
+  a detailed discussion.
+\item
+  \textbf{Coordinate Frame Synergy:} The accuracy of linear methods is
+  significantly enhanced when operating in \textbf{Generalized
+  Equinoctial Orbital Elements (GEqOE)} or \textbf{Modified Equinoctial
+  Elements (MEE)}, which render the dynamics more nearly linear than
+  Cartesian coordinates.
+\end{itemize}
+
+\section{Gaussian Mixture Models (GMM)
+Framework}\label{gaussian-mixture-models-gmm-framework}
+
+In the larger landscape of \textbf{Uncertainty Propagation (UP)},
+\textbf{Gaussian Mixture Models (GMM)} serve as a versatile ``mixture
+model'' framework that bridges the gap between computationally efficient
+linear methods and the complex, non-Gaussian realities of orbital
+mechanics. The foundational principle of the GMM framework is the
+``universal approximator'' property, which asserts that any arbitrary
+probability density function (PDF) can be represented with sufficient
+accuracy as a weighted sum of multiple Gaussian kernels. This property
+allows GMMs to capture the intricate shapes of non-Gaussian
+distributions, such as the ``banana'' or ``kidney'' forms that emerge in
+long-term propagation through the highly nonlinear dynamics of orbital
+mechanics.
+
+\subsection{Mathematical Architecture of the GMM
+Framework}\label{mathematical-architecture-of-the-gmm-framework}
+
+The GMM framework represents a complex, non-Gaussian state
+\(\mathbf{x}\) as a linear combination of \(N_g\) multivariate Gaussian
+components.
+
+\subsubsection{The Joint GMM PDF}\label{the-joint-gmm-pdf}
+
+The non-Gaussian PDF of a state vector \(\mathbf{x}\) is defined as: \[
+p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x}}_i, \mathbf{P}_i)
+\]
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(p(\mathbf{x})\): The total non-Gaussian probability density function
+  of the state.
+\item
+  \(L\): The total number of Gaussian mixture elements (GMEs).
+\item
+  \(\alpha_i\): The scalar weight of the \(i\)-th component, where
+  \(0 \le \alpha_i \le 1\) and \(\sum_{i=1}^{L} \alpha_i = 1\).
+\item
+  \(\mathbfcal{N}(\cdot)\): The \(i\)-th multivariate Gaussian kernel,
+  defined as: \[
+  \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x}}_i, \mathbf{P}_i) = \frac{1}{\sqrt{(2\pi)^n |\mathbf{P}_i|}} \exp \left( -\frac{1}{2} (\mathbf{x} - \hat{\mathbf{x}}_i)^T \mathbf{P}_i^{-1} (\mathbf{x} - \hat{\mathbf{x}}_i) \right)
+  \]
+
+  Where,
+
+  \begin{itemize}
+  \item
+    \(\hat{\mathbf{x}}_i\): The mean state vector of the \(i\)-th
+    Gaussian component.
+  \item
+    \(\mathbf{P}_i\): The covariance matrix of the \(i\)-th Gaussian
+    component.
+  \end{itemize}
+\end{itemize}
+
+\subsection{General Methodology for GMM
+Propagation}\label{general-methodology-for-gmm-propagation}
+
+The propagation of uncertainty via GMMs typically follows a three-stage
+``split-propagate-recombine'' paradigm.
+
+\begin{itemize}
+\item
+  \textbf{Initial Splitting:} An initial Gaussian distribution (often
+  from Orbit Determination) is replaced by \(L\) components. The
+  effectiveness of this stage is highly dependent on the choice of
+  splitting directions and the number of components, which are
+  influenced by the algorithms used to initialize and manage the mixture
+  components:
+
+  \begin{itemize}
+  \item
+    \textbf{Fixed vs.~Adaptive Splitting:}
+
+    \begin{itemize}
+    \item
+      \textbf{Static Splitting:} The number of components is fixed at
+      the initial epoch. This is common in the \textbf{Multidirectional
+      GMM (MGMM)} approach, where a regular grid is formed by
+      recursively applying the splitting library along multiple
+      nonlinear directions.
+    \item
+      \textbf{Adaptive Splitting (AEGIS/AGM):} Splits are triggered
+      online when a nonlinearity threshold is reached. The
+      \textbf{Adaptive Entropy-based GMM (AEGIS)} monitors the deviation
+      between linear and nonlinear differential entropy estimates to
+      trigger splits.
+    \end{itemize}
+  \item
+    \textbf{The Horwood Suboptimal Algorithm:} This specific technique
+    refines a multivariate Gaussian along a single direction, which is
+    computationally faster than multi-directional splitting without
+    significantly compromising accuracy.
+  \item
+    \textbf{Variance-Preserving (Homoscedastic) Splitting:} While
+    homoscedastic libraries often discard skewness, variance-preserving
+    libraries are optimized under the constraint of matching the first
+    two moments of the original distribution exactly. This ensures that
+    the global mean and covariance of the mixture are identical to the
+    original Gaussian before any nonlinear propagation occurs.
+  \item
+    \textbf{Multidirectional GMM (MGMM):} This approach recursively
+    applies the splitting library along multiple nonlinear directions,
+    forming a regular grid of components. While this can capture complex
+    non-Gaussian features, it is computationally expensive and may lead
+    to an exponential increase in the number of components.
+  \end{itemize}
+\item
+  \textbf{Coordinate Selection:} Splitting in Cartesian space is often
+  inefficient because nonlinearity acts in all six dimensions. Instead,
+  curvilinear coordinates (e.g., Equinoctial or Delaunay elements) are
+  used, as nonlinearity is primarily restricted to the mean longitude
+  direction, allowing for a 1D split that avoids the ``curse of
+  dimensionality''.
+\item
+  \textbf{Component-wise Propagation:} Each component
+  \((\hat{\mathbf{x}}_i, \mathbf{P}_i)\) is evolved independently
+  through the nonlinear dynamics using a chosen propagation method.
+\item
+  \textbf{Recombination:} At the target epoch, the weighted sum of
+  components provides the final non-Gaussian PDF for tasks like
+  Conjunction Assessment (CA).
+\end{itemize}
+
+\subsection{Algorithmic Methodology of Gaussian Mixture Modelling of
+uncertainty}\label{algorithmic-methodology-of-gaussian-mixture-modelling-of-uncertainty}
+
+The following flowchart illustrates the procedural logic for propagating
+orbital uncertainty using the GMM framework. Here we use the
+nonlinearity metric to pre-determine the splitting direction and the
+number of components to generate.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial Gaussian State \& Covariance] {-}{-}\textgreater{} B\{Select Coordinate System\}}
+\NormalTok{    B {-}{-} Cartesian {-}{-}\textgreater{} C[Calculate Nonlinearity Metric Stirling Interpolation]}
+\NormalTok{    B {-}{-} Equinoctial/MEqOE {-}{-}\textgreater{} D[Select Dominant Direction Mean Longitude]}
+\NormalTok{    C {-}{-}\textgreater{} E[Apply Splitting Library Rule 1/Homoscedastic]}
+\NormalTok{    D {-}{-}\textgreater{} E}
+\NormalTok{    E {-}{-}\textgreater{} F[Generate L Initial Gaussian Components]}
+\NormalTok{    F {-}{-}\textgreater{} G[Propagate Each Component independently]}
+\NormalTok{    G {-}{-} Using UT/STT/DA/PCE/MF {-}{-}\textgreater{} H[Sum Propagated Components via Weights]}
+\NormalTok{    H {-}{-}\textgreater{} I[Final Non{-}Gaussian Posterior PDF]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Variations and Hybrid
+Architectures}\label{variations-and-hybrid-architectures}
+
+The GMM framework is frequently combined with other UP methods to
+optimize the speed-accuracy Pareto front.
+
+\subsubsection{GMM-UT (Unscented
+Transform)}\label{gmm-ut-unscented-transform}
+
+The most common implementation, where each kernel's statistics are
+propagated via \(2n+1\) sigma points.
+
+\begin{itemize}
+\item
+  \textbf{Advantage:} Captures higher-order nonlinear effects for each
+  mixand, significantly outperforming single-run linearization.
+\item
+  \textbf{Limitation:} Computationally expensive for large mixtures, as
+  total evaluations scale as \(N_g \times (2n+1)\).
+\end{itemize}
+
+\subsubsection{GMM-MF (Multi-Fidelity)}\label{gmm-mf-multi-fidelity}
+
+A high-efficiency hybrid where the Multi-Fidelity method propagates the
+sigma points of the GMM kernels.
+
+\begin{itemize}
+\item
+  \textbf{Methodology:} Uses low-fidelity dynamics (e.g., J2-only) to
+  propagate many samples, corrected by a tiny subset of high-fidelity
+  evaluations.
+\item
+  \textbf{Performance:} Achieves accuracy similar to GMM-UT but with an
+  \textbf{80\% reduction in computation time}.
+\end{itemize}
+
+\subsubsection{GMM-STT (State Transition
+Tensor)}\label{gmm-stt-state-transition-tensor}
+
+Pairs the GMM with semi-analytical STT propagation.
+
+\begin{itemize}
+\item
+  \textbf{Methodology:} Kernels are evolved using high-order Taylor
+  expansions of the flow.
+\item
+  GMM-STT Effectively mitigates the divergence of STTs in
+  high-uncertainty regions by keeping the individual kernel covariances
+  ``small'' and within the radius of convergence.
+\end{itemize}
+
+\subsubsection{GMM-DA (Differential
+Algebra)}\label{gmm-da-differential-algebra}
+
+Integrates GMMs with high-order Taylor polynomials generated
+automatically via DA.
+
+\begin{itemize}
+\item
+  \textbf{Advantage:} Self-adaptive to any regular nonlinear system
+  without requiring manual derivation of derivatives.
+\item
+  \textbf{Variant (DA-LOADS):} Uses a \textbf{Nonlinearity Index (NLI)}
+  to trigger adaptive splitting only when the Taylor expansion's
+  truncation error exceeds a threshold.
+\end{itemize}
+
+\subsubsection{GMM-PCE (Polynomial Chaos
+Expansion)}\label{gmm-pce-polynomial-chaos-expansion}
+
+This approach is analogous to \textbf{hp-refinement} in Finite Element
+Methods.
+
+\begin{itemize}
+\item
+  \textbf{Methodology:} Splitting (h-refinement) reduces the domain of
+  approximation for each component, allowing for lower-order polynomials
+  (p-refinement) to be used effectively.
+\item
+  \textbf{Benefit:} It reduces the factorial growth of PCE terms in
+  high-dimensional states while maintaining the ability to capture full
+  shapes of non-Gaussian distributions.
+\end{itemize}
+
+\subsection{Advanced Variations on the GMM
+Method}\label{advanced-variations-on-the-gmm-method}
+
+\subsubsection{Adaptive GMMs (AEGIS and
+MDAES)}\label{adaptive-gmms-aegis-and-mdaes}
+
+The \textbf{Adaptive Entropy-based Gaussian-mixture Information
+Synthesis (AEGIS)} method does not rely on a fixed number of components.
+
+\begin{itemize}
+\item
+  \textbf{Mechanism:} It monitors component nonlinearity by comparing
+  the linear evolution of its differential entropy against a nonlinear
+  estimate (e.g., via UKF).
+\item
+  \textbf{Directional Splitting:} To combat the ``curse of
+  dimensionality,'' GMM splitting is often restricted to the eigenvector
+  corresponding to the maximum eigenvalue (\(V_{max}\)) or directions
+  maximizing a nonlinearity metric.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Trigger:} If the entropy deviation exceeds a threshold, the
+    component is split online to maintain linearity.
+  \end{itemize}
+\item
+  \textbf{Coordinate Frame Synergy:} Pairing GMMs with \textbf{Modified
+  Equinoctial Elements (MEqOE)} is highly efficient, as uncertainty in
+  MEqOE is dominated by a single dimension (true longitude), requiring
+  fewer kernels than Cartesian space.
+\item
+  \textbf{Variation:} \textbf{MDAES} combines initial multi-directional
+  splitting with AEGIS to prevent correlation buildup in highly deformed
+  distributions.
+\end{itemize}
+
+Despite its robustness, the sources highlight critical drawbacks:
+
+\begin{itemize}
+\item
+  \textbf{The ``Centred Collection'' Effect:} In Cartesian frames,
+  individual GMM components can end up clumping toward the center of the
+  distribution at terminal time, failing to capture the thin ``tails''
+  of the true non-Gaussian distribution.
+\item
+  \textbf{Combinatoric Growth:} The number of components in a batch GMM
+  can scale factorially with the number of measurements
+  (\(N_{\nu,0} \times \dots \times N_{\nu,L}\)), necessitating
+  aggressive pruning and merging techniques.
+\item
+  \textbf{Tail Sensitivity:} While GMMs improve upon single Gaussians,
+  they may still require an intractable number of kernels to accurately
+  resolve the \(10^{-5}\) or \(10^{-6}\) tail probabilities required for
+  actionable conjunction screening.
+\end{itemize}
+
+\subsubsection{Multidirectional GMM
+(MGMM)}\label{multidirectional-gmm-mgmm}
+
+Standard GMMs often split along a single axis. \textbf{MGMMs}
+recursively apply splitting libraries along multiple directions to form
+a regular grid in probability space.
+
+\begin{itemize}
+\item
+  \textbf{Nonlinearity Metric:} Directions are ranked using a
+  second-order divided difference (Stirling's interpolation) to identify
+  where splits provide the most accuracy gain. \[
+  \phi = \frac{f(\mathbf{m} + h\sigma \mathbf{a}) + f(\mathbf{m} - h\sigma \mathbf{a}) - 2f(\mathbf{m})}{2h^2}
+  \]
+\item
+  \textbf{Term Definitions:} \(\mathbf{a}\) is the splitting unit vector
+  and \(h = \sqrt{3}\) is the recommended step size.
+\end{itemize}
+
+\subsubsection{Gaussian Mixture Batch Processor
+(GMBP)}\label{gaussian-mixture-batch-processor-gmbp}
+
+Applied to \textbf{Initial Orbit Determination (IOD)}, the GMBP
+translates a batch of noisy measurements into a GMM-based PDF using
+Bayes' rule.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Methodology:} It disperses linearization errors across an
+  ensemble of Gaussian components, allowing for accurate reconstruction
+  of ``crescent-shaped'' posteriors common in cislunar tracking.
+\end{itemize}
+
+\subsubsection{Role in Conjunction Assessment
+(CA)}\label{role-in-conjunction-assessment-ca}
+
+In the field of collision analysis, GMMs enable \textbf{all-on-all
+analysis}. Rather than evaluating millions of individual sample pairs as
+in Monte Carlo simulation, every Gaussian component of a primary object
+is evaluated against every component of a secondary object. This allows
+for the use of more advanced analytical or numerical collision
+probability (\(P_c\)) computation methods on each individual component
+pair.
+
+\subsection{Adaptive splitting in the Context of Gaussian Mixture Models
+(GMM)}\label{adaptive-splitting-in-the-context-of-gaussian-mixture-models-gmm}
+
+Bos's thesis (Bos 2025) defines Adaptive Entropy-based Gaussian-mixture
+Information Synthesis (AEGIS) as an advanced framework that utilizes
+automatic domain splitting to maintain an accurate representation of a
+probability density function (PDF) as its non-Gaussianity increases
+during propagation.
+
+While standard GMMs often approximate a non-Gaussian PDF by splitting an
+initial distribution into a fixed number of weighted components at the
+start of propagation (\(t_0\)), \textbf{AEGIS performs this splitting
+online}. The method treats the uncertainty as a sum of Gaussian
+``kernels'' that can be individually propagated using efficient
+techniques like the \textbf{Unscented Transform} or \textbf{Linearised
+Covariance}.
+
+The core philosophy of AEGIS is that by repeatedly splitting a Gaussian
+component into smaller sub-components when nonlinear effects become too
+high, the method reduces the local impact of those nonlinearities,
+allowing individual components to remain near-Gaussian for a longer
+duration.
+
+\subsubsection{Mechanics of Adaptive
+Splitting}\label{mechanics-of-adaptive-splitting}
+
+AEGIS triggers a split based on a comparison between \textbf{linear and
+nonlinear differential entropy}:
+
+\begin{itemize}
+\item
+  \textbf{Linear Entropy:} This is calculated by integrating the time
+  derivative of the differential entropy, which is a function of the
+  system's \textbf{Jacobian matrix} (the basis of the Linearized
+  Covariance method).
+\item
+  \textbf{Nonlinear Entropy:} This is calculated directly from the
+  covariance matrix after propagating the component using a nonlinear
+  technique, typically the \textbf{Unscented Transform}.
+\item
+  \textbf{The Splitting Threshold:} When the normalized difference
+  between these two entropy calculations exceeds a user-defined
+  threshold (\(\epsilon_{ent}\)), the propagation is paused, the
+  component is split into smaller Gaussians, and the entropies are
+  recalculated before propagation continues.
+\end{itemize}
+
+\subsubsection{Performance and Computational
+Challenges}\label{performance-and-computational-challenges}
+
+Despite its theoretical potential, the study highlight significant
+practical drawbacks to the AEGIS method in orbital scenarios:
+
+\begin{itemize}
+\item
+  \textbf{Extreme Computational Intensity:} AEGIS was found to be the
+  most computationally expensive method tested. Because it requires
+  propagating the State Transition Matrix (STM) and calculating
+  differential entropy at every time step, it is slower than a standard
+  UT even when \textbf{no splitting occurs}.
+\item
+  \textbf{Exponential Component Growth:} For long propagation horizons,
+  the number of components can increase exponentially as splits occur at
+  increasingly frequent intervals. This leads to \textbf{unreachable
+  computation times} or out-of-memory errors, making the method
+  impractical for scenarios spanning many orbital revolutions.
+\item
+  \textbf{Accuracy Decay:} While AEGIS approximates distributions well
+  for short durations (e.g., 2 revolutions), its accuracy decays sharply
+  in long-term Low Earth Orbit (LEO) cases. In these scenarios, it is
+  generally outperformed by the \textbf{Multi-Fidelity (MF)} and
+  \textbf{Polynomial Chaos Expansion (PCE)} methods.
+\end{itemize}
+
+\subsubsection{Impact of Coordinate
+Frames}\label{impact-of-coordinate-frames}
+
+The study notes that the poor performance of AEGIS was partly due to
+operating in \textbf{Cartesian coordinates}, where nonlinearity affects
+all dimensions. The sources suggest that combining AEGIS with
+\textbf{Modified Equinoctial Elements (MEqOE)} would be more effective;
+in MEqOE, the uncertainty primarily distributes along a single direction
+(true longitude), which would likely require far fewer splits and
+components to achieve high accuracy.
+
+\section{Moment Method}\label{moment-method}
+
+The \textbf{Moment Method} (or Method of Moments) is a statistical
+technique utilized in uncertainty propagation to estimate the evolution
+of a probability density function (PDF) by focusing on its statistical
+moments---primarily the mean and covariance. Within the hierarchy of
+uncertainty propagation methods, it serves as a computationally
+efficient bridge between low-fidelity linear approximations and
+high-fidelity, but expensive, sampling-based techniques like Monte Carlo
+(MC).
+
+\subsection{Mathematical Framework and
+Methodology}\label{mathematical-framework-and-methodology}
+
+The method relies on the assumption that if an input variable (or
+vector) is characterized by a Gaussian distribution, its first two
+moments are necessary and sufficient to describe its state (Soman 2025).
+
+\begin{itemize}
+\item
+  \textbf{Taylor Series Expansion:} The core mechanism involves
+  expanding the nonlinear system function \(y = f(x)\) or the numerical
+  flow map \(\phi(t; x_0)\) into a Taylor series about the mean value of
+  the inputs.
+\item
+  \textbf{Explicit vs.~Implicit Formulations:}
+
+  \begin{itemize}
+  \item
+    \textbf{Explicit Moment Method:} Applied when a direct functional
+    relationship \(y = f(x)\) exists between input and output.
+  \item
+    \textbf{Implicit Moment Method:} Utilized in astrodynamics when only
+    the governing differential equations \(\dot{x} = f(x, t)\) are
+    known. It requires a numerical integrator (e.g., RKF78) to define
+    the solution flow \(\phi\), which is then expanded.
+  \end{itemize}
+\item
+  \textbf{Multivariate Extension (\(R^n\)):} In a 6-dimensional orbital
+  state, the method propagates the mean vector \(\mu\) and the
+  covariance matrix \(\Sigma\). For a first-order approximation, the
+  covariance propagates as \(\Sigma_{y} = J \Sigma_{x} J^T\), where
+  \(J\) is the Jacobian matrix.
+\end{itemize}
+
+\subsection{Comparative Orders of
+Approximation}\label{comparative-orders-of-approximation}
+
+The accuracy of the Moment Method is strictly tied to the order of the
+Taylor expansion used:
+
+\begin{itemize}
+\item
+  \textbf{First-Order (M1):}
+
+  \begin{itemize}
+  \item
+    Assumes the system is locally linear.
+  \item
+    Propagates the mean as the function of the mean:
+    \(\mu_y = f(\mu_x)\).
+  \item
+    While fast, it fails to capture the ``mean shift'' caused by
+    nonlinearities and performs poorly when the PDF becomes highly
+    non-Gaussian.
+  \end{itemize}
+\item
+  \textbf{Second-Order (M2):}
+
+  \begin{itemize}
+  \item
+    Incorporates the \textbf{Hessian matrix} (\(H\)) of the system
+    dynamics.
+  \item
+    The mean is corrected by a term involving the trace of the Hessian
+    and the covariance:
+    \(\mu_{y,i} \approx f_i(\mu_x) + \frac{1}{2} \text{tr}(H_i \Sigma_x)\).
+  \item
+    The covariance propagation includes additional terms to account for
+    the ``spreading'' effect of curvature:
+    \(\Sigma_y \approx J \Sigma_x J^T + \frac{1}{2} \text{tr}(H_i \Sigma_x H_p \Sigma_x)\).
+  \item
+    Empirical results show that M2 consistently maintains lower error
+    norms (\(L_2\) and \(L_\infty\)) than M1, especially in nonlinear
+    regimes like Highly Elliptical Orbits (HEO).
+  \end{itemize}
+\end{itemize}
+
+\subsection{Integration with Gaussian Mixture Models
+(GMM)}\label{integration-with-gaussian-mixture-models-gmm}
+
+To handle the ``loss of Gaussianity'' typical in long-term orbital
+propagation, the Moment Method is often integrated into a \textbf{GMM
+framework}.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Decomposition:} The initial Gaussian uncertainty is split into
+  \(N\) smaller Gaussian components (kernels) using algorithms like the
+  Horwood suboptimal algorithm.
+\item
+  \textbf{Local Propagation:} Each individual component has a
+  sufficiently small covariance to remain ``locally Gaussian,'' allowing
+  the Moment Method to propagate its first two moments accurately over
+  longer durations.
+\item
+  \textbf{Reconstruction:} The final non-Gaussian PDF is reconstructed
+  by recombining the weighted sum of these propagated components.
+\end{enumerate}
+
+\subsection{Algorithm for Multivariate Implicit GMM-Moment
+Propagation}\label{algorithm-for-multivariate-implicit-gmm-moment-propagation}
+
+The following flowchart outlines the computational algorithm for a
+multivariate system (e.g., orbital mechanics in \(R^6\)) using the
+implicit second-order moment method:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial State: Mean μ₀, Covariance Σ₀] {-}{-}\textgreater{} B[Horwood Splitting Algorithm]}
+\NormalTok{    B {-}{-}\textgreater{} C\{For each component i=1 to N\}}
+\NormalTok{    C {-}{-}\textgreater{} D[Numerical Integration: RK8/RKF78]}
+\NormalTok{    D {-}{-}\textgreater{} E[Automatic Differentiation: TAPENADE]}
+\NormalTok{    E {-}{-}\textgreater{} F[Extract Jacobian J and Hessian H]}
+\NormalTok{    F {-}{-}\textgreater{} G[Implicit Moment Method Update]}
+\NormalTok{    G {-}{-}\textgreater{} H[Propagated Component: μ\_fi, Σ\_fi]}
+\NormalTok{    H {-}{-}\textgreater{} I[Recombine Components with Weights w\_i]}
+\NormalTok{    I {-}{-}\textgreater{} J[Final Reconstructed PDF]}
+\NormalTok{    J {-}{-}\textgreater{} K[Compute Overall Mean μ\_f and Covariance Σ\_f]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Critical Strengths and
+Limitations}\label{critical-strengths-and-limitations}
+
+\begin{itemize}
+\item
+  \textbf{Computational Efficiency:} The GMM-Moment method is
+  significantly faster than Monte Carlo simulations. For a 3-day LEO
+  propagation, it completed in seconds/minutes compared to the hours
+  required for a \(10^7\)-sample MC run.
+\item
+  \textbf{Derivative Sensitivity:} Unlike the Unscented Transform (UT),
+  which is sample-based, the Moment Method requires explicit derivative
+  information (Jacobians and Hessians).
+\item
+  \textbf{Automatic Differentiation (AD):} To avoid the errors of finite
+  differences, modern implementations use AD (e.g., TAPENADE) to obtain
+  exact derivatives by applying the chain rule to the source code of the
+  propagator.
+\item
+  \textbf{Differentiability Requirement:} The method assumes that the
+  governing equations are continuous and differentiable, which may pose
+  challenges in the presence of discrete events like shadow entries (SRP
+  discontinuities).
+\end{itemize}
+
+\section{Unscented Transform (UT)}\label{unscented-transform-ut}
+
+In the rigorous taxonomy of orbital uncertainty quantification, the
+\textbf{Unscented Transform (UT)} represents a pivotal
+\textbf{deterministic sampling method} that bridges the gap between
+computationally cheap linear approximations and prohibitively expensive
+brute-force stochastic simulations. Unlike the Monte Carlo (MC) method,
+which relies on random realizations, the UT operates on the foundational
+intuition that it is mathematically easier to approximate a probability
+distribution than it is to approximate an arbitrary nonlinear function
+or transformation.
+
+\subsection{Theoretical Context: Deterministic vs.~Random
+Sampling}\label{theoretical-context-deterministic-vs.-random-sampling}
+
+Within the landscape of sampling-based methodologies, the UT occupies a
+unique niche defined by ``moderate fidelity'' and high efficiency.
+
+\begin{itemize}
+\item
+  \textbf{Sigma Point Paradigm:} While MC requires \(10^5\) to \(10^7\)
+  random samples to achieve statistical convergence, the UT utilizes a
+  minimal, carefully selected set of weighted \textbf{sigma points} that
+  precisely capture the initial mean and covariance of a distribution.
+\item
+  \textbf{Black-Box Dynamics:} Like MC, the UT is non-intrusive; it
+  treats the system dynamics as a ``black box,'' passing the discrete
+  sigma points through the actual nonlinear equations of motion without
+  requiring the derivation of Jacobians or Hessians.
+\item
+  \textbf{Gaussian Constraint:} A critical limitation noted in the
+  sources is that the standard UT is primarily constrained by
+  \textbf{Gaussian assumptions}. It nonlinearly propagates the first and
+  second moments but may fail to naturally represent the
+  ``banana-shaped'' non-Gaussian warpings that emerge during long-term
+  orbital propagation.
+\end{itemize}
+
+\subsection{Mathematical Architecture of the
+UT}\label{mathematical-architecture-of-the-ut}
+
+The UT approximates an \(n\)-dimensional random variable \(\mathbf{x}\)
+using \(2n+1\) sigma points. The mathematical selection and weight
+assignment are governed by the following formulations:
+
+\subsubsection{\texorpdfstring{\textbf{Sigma Point
+Selection}}{Sigma Point Selection}}\label{sigma-point-selection}
+
+\[\chi_0 = \bar{\mathbf{x}}\]
+\begin{equation}\protect\phantomsection\label{eq-sigma-points-i}{
+\chi_i = \bar{\mathbf{x}} + \left( \sqrt{(n + \kappa) \mathbf{P}} \right)_i, \quad i = 1, \dots, n
+}\end{equation}
+\begin{equation}\protect\phantomsection\label{eq-sigma-points-in}{
+\chi_{i+n} = \bar{\mathbf{x}} - \left( \sqrt{(n + \kappa) \mathbf{P}} \right)_i, \quad i = 1, \dots, n
+}\end{equation}
+
+\subsubsection{\texorpdfstring{\textbf{Weight
+Allocation}}{Weight Allocation}}\label{weight-allocation}
+
+\[W_0 = \frac{\kappa}{n + \kappa}\]
+\[W_i = \frac{1}{2(n + \kappa)}, \quad i = 1, \dots, 2n\]
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(\bar{\mathbf{x}}\): The mean state vector.
+\item
+  \(\mathbf{P}\): The state covariance matrix.
+\item
+  \(\left( \sqrt{\cdot} \right)_i\): The \(i\)-th column of the matrix
+  square root (typically calculated via \textbf{Cholesky
+  decomposition}).
+\end{itemize}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Cholesky Decomposition}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+The Cholesky decomposition of a positive definite matrix \(\mathbf{P}\)
+is a lower triangular matrix \(\mathbf{L}\) such that
+\(\mathbf{P} = \mathbf{L}\mathbf{L}^T\).
+
+\end{tcolorbox}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\kappa\): A scaling/tuning parameter, often set such that
+  \(n + \kappa = 3\) for Gaussian distributions to minimize higher-order
+  errors.
+\end{itemize}
+
+\subsubsection{\texorpdfstring{\textbf{Statistical
+Reconstruction}}{Statistical Reconstruction}}\label{statistical-reconstruction}
+
+After passing each \(\chi_i\) through the nonlinear dynamics
+\(\mathbf{f}(\cdot)\), \[
+\mathbfcal{Y}_i = \mathbf{f}(\chi_i)
+\]
+
+the terminal mean (\(\hat{\mathbf{y}}\)) and covariance
+(\(\hat{\mathbf{P}}\)) are reconstructed:
+\[\hat{\mathbf{y}} = \sum_{i=0}^{2n} W_i \mathbfcal{Y}_i\]
+\[\hat{\mathbf{P}} = \sum_{i=0}^{2n} W_i (\mathbfcal{Y}_i - \hat{\mathbf{y}})(\mathbfcal{Y}_i - \hat{\mathbf{y}})^T\]
+
+\subsection{Algorithm: The Unscented Filter (UKF)
+Logic}\label{algorithm-the-unscented-filter-ukf-logic}
+
+The following flowchart delineates the procedural execution of the UT
+within a predictive filtering framework, such as the Unscented Kalman
+Filter:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial Mean μ and Covariance P] {-}{-}\textgreater{} B[Compute Matrix Square Root of P]}
+\NormalTok{    B {-}{-}\textgreater{} C[Generate 2n+1 Sigma Points χ\_i]}
+\NormalTok{    C {-}{-}\textgreater{} D[Propagate points through Nonlinear Dynamics: χ\_new = f χ\_i]}
+\NormalTok{    D {-}{-}\textgreater{} E[Reconstruct Predicted Mean: μ\_pred = Σ W\_i χ\_new]}
+\NormalTok{    E {-}{-}\textgreater{} F[Reconstruct Predicted Covariance: P\_pred = Σ W\_i diff\^{}2]}
+\NormalTok{    F {-}{-}\textgreater{} G\{Sensor Measurement Available?\}}
+\NormalTok{    G {-}{-} Yes {-}{-}\textgreater{} H[Transform Points through Observation Model: Z\_i = h χ\_new]}
+\NormalTok{    H {-}{-}\textgreater{} I[Compute Innovation Covariance and Cross{-}Correlation]}
+\NormalTok{    I {-}{-}\textgreater{} J[Update μ and P via Kalman Gain]}
+\NormalTok{    G {-}{-} No {-}{-}\textgreater{} K[Output Propagated Analytic Gaussian PDF]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Comparative Performance and Hybrid
+Integration}\label{sec-ut-performance}
+
+The sources highlight the UT's performance relative to other
+``State-of-the-Art'' methods:
+
+\begin{itemize}
+\item
+  \textbf{UT vs.~Linearised Covariance (LinCov):} The UT is consistently
+  more accurate than LinCov because it captures more of the
+  distribution's tails and accounts for higher-order nonlinear effects
+  that first-order Taylor expansions ignore.
+\item
+  \textbf{UT vs.~Monte Carlo:} The UT is significantly faster than MC,
+  requiring only 13 points for a standard 6D orbital state compared to
+  the millions needed for MC to reach similar statistical convergence.
+\item
+  \textbf{Gaussian Mixture Model (GMM) Integration:} To overcome the
+  Gaussian limitation, the UT is frequently used to propagate the
+  individual kernels of a \textbf{GMM (GMM\_UT)}. The GMM-UT method
+  operates on the intuition that while the global distribution may be
+  highly non-Gaussian (e.g., a ``banana'' shape), the local regions of
+  the probability mass remain nearly Gaussian for a longer duration
+  under nonlinear flow.
+
+  \begin{itemize}
+  \item
+    \textbf{Sigma Point Propagation:} For each of the \(N_g\)
+    components, a set of \(2n+1\) deterministic sigma points is
+    generated using the component's mean \(\mathbf{x}_i\) and covariance
+    \(\mathbf{P}_i\).
+  \item
+    \textbf{Independent Nonlinear Mapping:} These sigma points are
+    passed through the high-fidelity nonlinear dynamics
+    \(\mathbf{f}(\cdot)\).
+  \item
+    \textbf{Moment Reconstruction:} The transformed mean and covariance
+    for \emph{each} kernel are reconstructed using standard UT weighting
+    rules, preserving second-order accuracy.
+  \item
+    \textbf{Re-Synthesis:} The final non-Gaussian PDF is the re-weighted
+    sum of these nonlinearly propagated Gaussian kernels with their
+    corresponding weights \(\alpha_i\).
+  \end{itemize}
+\item
+  \textbf{AEGIS Framework:} In the \textbf{Adaptive Entropy-based
+  Gaussian-mixture Information Synthesis (AEGIS)} method, the UT is
+  employed to calculate ``nonlinear entropy''. By comparing this to the
+  linear entropy from LinCov, the system can detect when the dynamics
+  have become too nonlinear and trigger a component split.
+\item
+  \textbf{Multi-Fidelity (MF) Advantage:} While the UT is an efficient
+  ``middle-ground,'' the sources characterize Multi-Fidelity (MF) as
+  superior for high-consequence non-Gaussian cases, as MF uses
+  large-scale low-fidelity sampling corrected by high-fidelity samples
+  to capture complex shapes that the UT's single-Gaussian assumption
+  cannot.
+\end{itemize}
+
+\section{Polynomial Chaos Expansions
+(PCE)}\label{polynomial-chaos-expansions-pce}
+
+In the rigorous hierarchy of uncertainty propagation (UP) methodologies,
+\textbf{Polynomial Chaos Expansions (PCE)} represent a powerful class of
+\textbf{non-intrusive spectral techniques}. Situated within the broader
+category of \textbf{Expansion and Surrogate Methods}, PCE bridges the
+gap between local Taylor-series-based approximations (like Linearized
+Covariance or State Transition Tensors) and brute-force stochastic
+simulations (Monte Carlo) by constructing a global functional
+representation of a system's stochastic response.
+
+\subsection{Theoretical Classification and
+Role}\label{theoretical-classification-and-role}
+
+Within the methodological landscape, PCE is distinguished by its ability
+to map input uncertainties to output responses using a ``black-box''
+approach that does not require alterations to existing high-fidelity
+solvers.
+
+\begin{itemize}
+\item
+  \textbf{Beyond Linearization:} Unlike Linearized Covariance (LinCov),
+  which relies on first-order Taylor expansions and assumes Gaussian
+  distributions, PCE represents inputs and outputs using a series of
+  approximations that capture \textbf{higher moments} of the probability
+  density function (PDF), allowing it to represent non-Gaussian shapes.
+\item
+  \textbf{Surrogate Modeling Paradigm:} PCE functions as a data-driven
+  mathematical emulator, replacing expensive physical orbital
+  propagators with a computationally cheap polynomial surrogate.
+\item
+  \textbf{Spectral Accuracy:} For systems where the output depends
+  smoothly on the input parameters, PCE can achieve \textbf{exponential
+  convergence} rates, far exceeding the \(\mathcal{O}(1/\sqrt{N})\)
+  convergence of standard Monte Carlo (MC).
+\end{itemize}
+
+\subsection{Mathematical Foundations of
+PCE}\label{mathematical-foundations-of-pce}
+
+The PCE models a square-measurable stochastic output vector
+\(\mathbf{X}\) as a linear combination of multivariate polynomials that
+are orthogonal with respect to the joint PDF of the input uncertainties
+\(\xi\).
+
+\marginnote{\begin{footnotesize}
+
+Here, a random variable or a stochastic solution is called
+\textbf{square-measurable} if its second moment is finite:
+\[\mathbb{E}[\mathbf{X}^2] < \infty\]
+
+This condition ensures that the PCE framework can represent the random
+solution as a series of orthogonal polynomials and that statistical
+moments (like mean and variance) can be computed analytically from the
+expansion coefficients.
+
+\end{footnotesize}}
+
+\subsubsection{\texorpdfstring{\textbf{The PCE Surrogate
+Formula}}{The PCE Surrogate Formula}}\label{the-pce-surrogate-formula}
+
+The stochastic output at a future time \(t\) is approximated by the
+finite series expansion:
+\[\hat{\mathbf{X}}(t, \xi) \approx \sum_{j=0}^{P} c_j(t) \Psi_j(\xi)\]
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(\hat{\mathbf{X}}(t, \xi)\): The approximated Quantity of Interest
+  (QoI) vector (e.g., the terminal orbital state).
+\item
+  \(\xi\): A vector of independent standard random variables
+  representing input uncertainties.
+\item
+  \(\Psi_j(\xi)\): Multivariate orthonormal basis functions, typically
+  formed as the product of univariate polynomials.
+\item
+  \(c_j(t)\): Deterministic spectral coefficients (weights) determined
+  at the epoch of interest.
+\item
+  \(P\): The number of terms in the expansion, determined by the
+  polynomial order \(p\) and input dimension \(d\).
+\end{itemize}
+
+\subsubsection{\texorpdfstring{\textbf{Expansion Order and the Curse of
+Dimensionality}}{Expansion Order and the Curse of Dimensionality}}\label{expansion-order-and-the-curse-of-dimensionality}
+
+The total number of coefficients \(P\) required for a given order \(p\)
+and dimension \(d\) is calculated as: \[P+1 = \frac{(p+d)!}{p!d!}\]
+
+This factorial growth highlights the primary limitation of classical
+PCE: the \textbf{curse of dimensionality}, where high-dimensional
+problems (e.g., \(d > 10\)) become computationally demanding due to the
+rapid growth of expansion terms.
+
+\subsubsection{\texorpdfstring{\textbf{Orthonormality and Moment
+Matching}}{Orthonormality and Moment Matching}}\label{orthonormality-and-moment-matching}
+
+The basis functions are chosen to satisfy the orthogonality condition
+relative to the input PDF, \(\rho(\xi)\):
+\[\langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\xi) \Psi_\beta(\xi) \rho(\xi) d\xi = \delta_{\alpha\beta}\]
+where \(\delta_{\alpha\beta}\) is the Kronecker delta. This property
+allows for the \textbf{analytical evaluation of statistical moments}
+directly from the spectral coefficients without additional sampling:
+
+\begin{itemize}
+\item
+  \textbf{Mean:} \(\mu = c_0\).
+\item
+  \textbf{Variance:} \(\sigma^2 = \sum_{j=1}^P c_j^2 \|\Psi_j\|^2\).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Procedural Logic: Non-Intrusive PCE
+Workflow}\label{procedural-logic-non-intrusive-pce-workflow}
+
+In astrodynamics, the non-intrusive approach is favored because it
+treats the high-fidelity orbit propagator as a ``black box''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial PDF: p\_xi] {-}{-}\textgreater{} B[Generate Inputs: xi realization via Rosenblatt or Cholesky]}
+\NormalTok{    B {-}{-}\textgreater{} C[Select Collocation Nodes via Quadrature or Sampling]}
+\NormalTok{    C {-}{-}\textgreater{} D[Propagate each Node through High{-}Fidelity ODEs]}
+\NormalTok{    D {-}{-}\textgreater{} E[Obtain Propagated Realizations: X\_ti]}
+\NormalTok{    E {-}{-}\textgreater{} F[Solve for Spectral Coefficients: c\_j]}
+\NormalTok{    F {-}{-}\textgreater{} G[Regression: Least{-}Squares Solution]}
+\NormalTok{    F {-}{-}\textgreater{} H[Spectral Projection: Numerical Integration]}
+\NormalTok{    G {-}{-}\textgreater{} I[Final PCE Surrogate: Analytic Response Surface]}
+\NormalTok{    H {-}{-}\textgreater{} I}
+\NormalTok{    I {-}{-}\textgreater{} J[Derive Moments / Sobol Indices Analytically]}
+\NormalTok{    I {-}{-}\textgreater{} K[Pc Calculation: Rapid Sampling of Surrogate]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Variations of Expansion and Surrogate
+Methods}\label{variations-of-expansion-and-surrogate-methods}
+
+To address specific limitations---such as non-standard distributions,
+discontinuities, or high dimensionality---the sources identify several
+key variations of the PCE method.
+
+\begin{itemize}
+\item
+  \textbf{Generalized Polynomial Chaos (gPC):} Built upon the
+  \textbf{Wiener-Askey scheme}, gPC matches specific polynomial families
+  to standard input distributions to ensure optimal convergence. For
+  example, \textbf{Hermite polynomials} are optimal for Gaussian inputs,
+  while \textbf{Legendre polynomials} are used for uniform inputs.
+\item
+  \textbf{Arbitrary Polynomial Chaos (APC):} A \textbf{data-driven
+  approach} that circumvents the need for a presumed parametric
+  distribution. APC constructs an orthogonal basis using only a finite
+  number of moments calculated directly from raw sampling data (e.g.,
+  from an admissible region in orbit determination).
+\item
+  \textbf{Sparse PCE and Compressive Sensing:} To combat the curse of
+  dimensionality, modern frameworks exploit the
+  \textbf{sparsity-of-effects principle}---the idea that systems are
+  dominated by low-order interactions. Solvers such as
+  \textbf{Orthogonal Matching Pursuit (OMP)}, \textbf{Least Angle
+  Regression (LARS)}, or \(l_1\)-regularized \textbf{Compressive
+  Sensing} identify only the most significant coefficients, allowing for
+  accurate surrogates using significantly fewer function evaluations
+  than terms in the full basis.
+\item
+  \textbf{Multi-Element PCE (ME-PCE):} For systems with sharp gradients,
+  discontinuities, or long-term integration errors, global polynomials
+  often fail. ME-PCE utilizes \textbf{domain decomposition}, splitting
+  the random input space into smaller sub-regions (elements) and fitting
+  local PCE surrogates to each.
+\item
+  \textbf{Hybrid Meta-Modeling (PC-Kriging):} \textbf{Polynomial
+  Chaos-Kriging (PCK)} combines the global trend capture of PCE with the
+  localized interpolation accuracy of \textbf{Kriging} (Gaussian Process
+  Regression). In this architecture, a sparse PCE represents the global
+  system behavior while Kriging interpolates the localized
+  high-frequency residuals.
+\item
+  \textbf{Multi-Fidelity (MF) Extensions:} Multi-Fidelity PCE
+  incorporates information from a hierarchy of models. It uses a
+  low-fidelity model (e.g., 2-body dynamics) as a foundation and a
+  lower-order PCE to resolve the \textbf{model discrepancy} (additive or
+  multiplicative) from a limited set of high-fidelity evaluations.
+\end{itemize}
+
+\subsection{Summary of Strengths and
+Limitations}\label{summary-of-strengths-and-limitations}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Feature
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+PCE Strength
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Methodological Limitation
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Statistical Analysis} & Moments and \textbf{Sobol Indices}
+(sensitivity) are computed analytically. & Requires
+square-measurable/finite variance stochastic solutions. \\
+\textbf{Computational Efficiency} & Massive speed-up relative to MC; can
+resolve collision risk with \textless300 evaluations vs.~\(10^5\) MC
+trials. & Significantly slower than linear approximations or the
+Multi-Fidelity method. \\
+\textbf{Modeling Flexibility} & Non-intrusive; treats complex dynamics
+as a black box. & Standard global versions struggle with discontinuities
+or steep local variations. \\
+\end{longtable}
+}
+
+\section{Differential Algebra (DA)}\label{differential-algebra-da}
+
+In the larger context of \textbf{Polynomial and Expansion Methods}, the
+sources define \textbf{Differential Algebra (DA)} as a computational
+technique that facilitates the nonlinear propagation of uncertainties by
+substituting classical real algebra with \textbf{Taylor series
+expansions}. While related to other expansion techniques like Polynomial
+Chaos Expansions (PCE) and State Transition Tensors (STT), DA is
+distinguished by its ability to calculate higher-order derivatives
+automatically.
+
+\subsection{Mathematical Foundations of
+DA}\label{mathematical-foundations-of-da}
+
+The fundamental principle of DA is to represent any \(k\)-differentiable
+function as its Taylor expansion up to a specified order. This is
+formalized through the definition of the \textbf{\(nDv\) algebra}, often
+denoted as \(kDn\) in literature.
+
+\begin{itemize}
+\item
+  \textbf{The Algebra \(kDn\):} This algebra consists of equivalence
+  classes of functions that share the same Taylor polynomial up to order
+  \(k\) in \(n\) variables centered at \(x_0\).
+\item
+  \textbf{Coefficient Cardinality:} The maximum number of coefficients
+  \(N_{coeff}\) required to represent a polynomial of order \(k\) in
+  \(n\) variables is given by: \[
+  N_{coeff} = \frac{(n + k)!}{n!k!}
+  \]
+
+  For instance, a 10th-order expansion in 6 dimensions (10D6) requires
+  8,008 coefficients.
+\item
+  \textbf{The Taylor Map:} The output of a DA-based numerical
+  integration is a high-order multidimensional Taylor map,
+  \(\mathcal{T}_{x_0}^{(k)}\), which relates initial perturbations
+  \(\delta x_0\) to the future state \(x(t)\):
+  \[x(t) = \mathcal{T}_{x_0}^{(k)}(\delta x_0) = \sum_{|\alpha| \le k} c_{\alpha}(t) \delta x_0^{\alpha}\]
+
+  \textbf{Terms Defined:}
+
+  \begin{itemize}
+  \item
+    \(x(t)\): The state vector at time \(t\).
+  \item
+    \(k\): The expansion order.
+  \item
+    \(\alpha\): A multi-index \((\alpha_1, \dots, \alpha_n)\) where
+    \(\alpha_i \in \mathbb{N} \cup \{0\}\).
+  \item
+    \(c_{\alpha}(t)\): Time-varying polynomial coefficients representing
+    partial derivatives.
+  \item
+    \(\delta x_0\): The initial state deviation vector.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Operational Methodology: High-Order Flow
+Expansion}\label{operational-methodology-high-order-flow-expansion}
+
+The DA methodology facilitates nonlinear UP by propagating a
+``neighborhood'' of states rather than a single point.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{DA Initialization:} The initial state \(x_0\) is initialized
+  as a DA variable \([x_0] = \bar{x}_0 + \delta x_0\), where
+  \(\bar{x}_0\) is the nominal mean and \(\delta x_0\) represents
+  first-order variations.
+\item
+  \textbf{Polymorphic Integration:} The governing ordinary differential
+  equations (ODEs), \(\dot{x} = f(x, t)\), are integrated using standard
+  schemes (e.g., Runge-Kutta) where every real-number operation is
+  replaced by its adjoint operation in the space of Taylor polynomials.
+\item
+  \textbf{Map Extraction:} The result is the \(k\)-th order Taylor
+  expansion of the flow \(\phi(t; x_0, \alpha)\). This map is analytic
+  and can be used for near-instantaneous evaluations of displaced
+  initial conditions.
+\item
+  \textbf{Statistical Mapping:} Terminal moments are computed by
+  applying the expectation operator \(\mathbb{E}[\cdot]\) to the
+  resulting Taylor map.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Terminal Mean:}
+    \(\mu_i(t) = \sum_{|\alpha| \le k} c_{\alpha}(t) \mathbb{E}[\delta x_0^{\alpha}]\).
+  \item
+    \textbf{Terminal Covariance:}
+    \(P_{ij}(t) = \mathbb{E}[x_i(t)x_j(t)] - \mu_i(t)\mu_j(t)\), which
+    involves algebraic operations on the coefficients and initial
+    moments.
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Variations and Algorithmic
+Enhancements}\label{variations-and-algorithmic-enhancements}
+
+To overcome the limitations of local expansions and computational
+growth, several advanced variants of the DA framework exist.
+
+\begin{itemize}
+\item
+  \textbf{Automatic Domain Splitting (ADS/LOADS):} In highly nonlinear
+  regimes, a single Taylor expansion may fail to maintain accuracy over
+  the entire uncertainty volume. ADS monitors the truncation error
+  (e.g., the magnitude of terms of order \(k+1\)) and adaptively
+  subdivides the uncertainty domain into smaller sub-regions when error
+  thresholds are exceeded.
+\item
+  \textbf{DA-based Monte Carlo (DAMC):} Instead of thousands of
+  expensive numerical integrations, DAMC samples from the initial PDF
+  and evaluates the samples using the DA-derived Taylor map. This
+  typically achieves a 10-fold reduction in computation time for order
+  \(k=3\).
+\item
+  \textbf{Hybrid GMM-DA:} The initial uncertainty is split into a
+  \textbf{Gaussian Mixture Model (GMM)}, and each kernel is nonlinearly
+  propagated via a high-order DA map. This approach is self-adaptive and
+  avoids manual derivation of high-order derivatives.
+\item
+  \textbf{DA-LOADS Pruning:} Utilizes polynomial bounding techniques to
+  discard regions of the state manifold that do not intersect with
+  observations during initial orbit determination (IOD).
+\end{itemize}
+
+\subsection{Algorithmic Implementation
+Flowcharts}\label{algorithmic-implementation-flowcharts}
+
+\subsubsection{Standard DA Uncertainty
+Propagation}\label{standard-da-uncertainty-propagation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial PDF: Mean μ0, Covariance P0] {-}{-}\textgreater{} B[Initialize DA State: x\_0 = μ0 + δx0]}
+\NormalTok{    B {-}{-}\textgreater{} C[Select Integration Scheme: e.g., RK45]}
+\NormalTok{    C {-}{-}\textgreater{} D[Propagate via DA Arithmetic: Substitute real ops with polynomial ops]}
+\NormalTok{    D {-}{-}\textgreater{} E[Obtain Terminal Taylor Map: T\_tf]}
+\NormalTok{    E {-}{-}\textgreater{} F\{Analysis Type?\}}
+\NormalTok{    F {-}{-} Analytic Moments {-}{-}\textgreater{} G[Evaluate E[T\_tf] and Covariance via Moment Mapping]}
+\NormalTok{    F {-}{-} Monte Carlo {-}{-}\textgreater{} H[Sample δx0 and Evaluate T\_tf point{-}wise]}
+\NormalTok{    G {-}{-}\textgreater{} I[Output Post{-}Propagation Statistics]}
+\NormalTok{    H {-}{-}\textgreater{} I}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{DA with Automatic Domain Splitting
+(ADS)}\label{da-with-automatic-domain-splitting-ads}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Uncertainty Volume: Ω] {-}{-}\textgreater{} B[Propagate Taylor Map]}
+\NormalTok{    B {-}{-}\textgreater{} C[Estimate Truncation Error: Order k+1 terms]}
+\NormalTok{    C {-}{-}\textgreater{} D\{Error \textgreater{} Threshold?\}}
+\NormalTok{    D {-}{-} Yes {-}{-}\textgreater{} E[Split Domain: Divide Ω into Ω\_left, Ω\_right]}
+\NormalTok{    E {-}{-}\textgreater{} F[Propagate Patch of Local Maps]}
+\NormalTok{    D {-}{-} No {-}{-}\textgreater{} G[Continue Integration]}
+\NormalTok{    F {-}{-}\textgreater{} H[Reconstruct Patched Global Manifold]}
+\NormalTok{    G {-}{-}\textgreater{} H}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Differential Algebra in the Expansion
+Taxonomy}\label{differential-algebra-in-the-expansion-taxonomy}
+
+Within the broader context of Expansion and Surrogate methods, DA is
+distinguished by its \textbf{intrusive nature} and \textbf{problem
+independence}.
+
+\begin{itemize}
+\item
+  \textbf{DA vs.~State Transition Tensors (STT):} STTs require the
+  manual derivation and integration of complex high-order variational
+  equations, which becomes prohibitively complex for high-fidelity
+  models. DA automates this process by overloading the integrator's
+  basic operations, making it essentially ODE-independent.
+\item
+  \textbf{DA vs.~Polynomial Chaos (PCE):} PCE is a
+  \textbf{non-intrusive} ``black-box'' spectral technique that
+  characterizes uncertainty using a sum of orthogonal polynomials of
+  random variables. In contrast, DA focuses on the Taylor expansion of
+  the state and requires the system dynamics to be continuous and
+  differentiable (\(C^{k+1}\)).
+\item
+  \textbf{Coordinate Frame Dependency:} Unlike methods restricted to
+  specific coordinates to minimize nonlinearity, DA-based methods are
+  largely unaffected by coordinate selection (e.g., Cartesian
+  vs.~Element space) because they can adjust expansion orders to
+  maintain accuracy.
+\item
+  \textbf{The Curse of Dimensionality:} Like all expansion methods, DA
+  suffers from factorial growth in terms (\(N_{coeff}\)) as order \(k\)
+  increases. Modern extensions like \textbf{Distribution Transport (DT)}
+  attempt to mitigate this by organizing coefficients into vectors for
+  parallel computation.
+\end{itemize}
+
+\subsection{Applications and
+Integration}\label{applications-and-integration}
+
+DA is often used to enhance or complement other uncertainty
+quantification frameworks:
+
+\begin{itemize}
+\item
+  \textbf{Enhancing Monte Carlo (MC):} DA can significantly speed up
+  Monte Carlo simulations by replacing expensive numerical integrations
+  with simple \textbf{evaluations of the Taylor-expanded dynamics},
+  maintaining accuracy while reducing computation time.
+\item
+  \textbf{Multi-Fidelity (MF) Integration:} Researchers have developed
+  methods combining \textbf{MF with DA and Gaussian Mixture Models
+  (GMMs)}; in these frameworks, the nonlinearity index for the
+  low-fidelity step is determined using Taylor expansions computed via
+  DA.
+\end{itemize}
+
+\subsection{Requirements and
+Limitations}\label{requirements-and-limitations}
+
+Despite its efficiency, DA has strict mathematical requirements that
+limit its general applicability:
+
+\begin{itemize}
+\item
+  \textbf{Differentiability Requirement:} The governing physical
+  equations must be both \textbf{continuous and differentiable}.
+\item
+  \textbf{Discontinuity Barriers:} This requirement makes DA unsuitable
+  for scenarios involving discontinuities, such as the step changes in
+  solar radiation pressure that occur when a satellite enters or exits
+  the Earth's shadow.
+\end{itemize}
+
+\section{State Transition Tensors (STT)}\label{sec-stt}
+
+In the rigorous taxonomy of orbital uncertainty quantification (UQ),
+\textbf{State Transition Tensors (STT)} represent a high-fidelity
+\textbf{semi-analytic expansion method}. Situated between first-order
+linear approximations like LinCov and non-intrusive surrogate models
+like PCE, STTs facilitate the nonlinear propagation of uncertainties by
+applying higher-order Taylor series expansions to the deviation of a
+system's state from a nominal trajectory.
+
+\subsection{Core Mechanics and Relationship to Linear
+Approximation}\label{core-mechanics-and-relationship-to-linear-approximation}
+
+STT based methods function by analytically mapping initial uncertainties
+using expansions that describe nonlinear behavior within a limited
+region of the state space.
+
+\begin{itemize}
+\item
+  \textbf{Extension of the STM:} The sources note that a first-order
+  Taylor expansion in this framework corresponds exactly to solving for
+  the \textbf{State Transition Matrix (STM)} used in the
+  \textbf{Linearised Covariance (LinCov)} method.
+\item
+  \textbf{Handling Nonlinearity:} By solving for higher-order tensors,
+  the method can provide significantly better results than standard
+  linearisation for cases involving \textbf{strong nonlinearity}.
+\item
+  \textbf{Algebraic Propagation:} Once the tensors are obtained by
+  numerically integrating along a nominal trajectory, they provide a
+  means to compute the nonlinear propagation of the first two
+  statistical moments (mean and covariance) through relatively simple
+  \textbf{algebraic operations}.
+\end{itemize}
+
+\subsection{Mathematical Architecture of
+STTs}\label{mathematical-architecture-of-stts}
+
+The STT framework models the flow of a nonlinear dynamical system
+\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)\) by expanding the
+solution in terms of initial state deviations.
+
+\subsubsection{The High-Order Taylor
+Map}\label{the-high-order-taylor-map}
+
+The state deviation \(\delta x_i\) at a future time \(t\) is
+approximated as: \[
+\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p}(t, t_0) \delta x_{0, k_1} \dots \delta x_{0, k_p}
+\]
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(\delta x_i(t)\): The \(i\)-th component of the state deviation at
+  the final time.
+\item
+  \(\delta x_{0, k_p}\): The \(k_p\)-th component of the initial state
+  deviation.
+\item
+  \(P\): The highest order of the Taylor expansion (typically \(P=2\) or
+  \(P=3\)).
+\item
+  \(\phi_{i, k_1 \dots k_p}\): The \(p\)-th order \textbf{State
+  Transition Tensor}, representing the \(p\)-th partial derivative of
+  the flow with respect to initial conditions.
+\end{itemize}
+
+\subsubsection{Differential Equations for Tensor
+Propagation}\label{differential-equations-for-tensor-propagation}
+
+The STTs themselves are time-varying and are obtained by numerically
+integrating their corresponding ordinary differential equations (ODEs)
+alongside the nominal trajectory:
+\[\dot{\phi}_{i, a} = A_{i, \alpha} \phi_{\alpha, a}\]
+\[\dot{\phi}_{i, ab} = A_{i, \alpha} \phi_{\alpha, ab} + A_{i, \alpha \beta} \phi_{\alpha, a} \phi_{\beta, b}\]
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(\dot{\phi}_{i, a}\): The time derivative of the first-order tensor
+  (the State Transition Matrix, STM).
+\item
+  \(A_{i, k_1 \dots k_p}\): The \(p\)-th partial derivative of the
+  dynamics vector field \(\mathbf{f}\) evaluated along the reference
+  trajectory:
+  \(A_{i, k_1 \dots k_p} = \frac{\partial^p f_i}{\partial x_{k_1} \dots \partial x_{k_p}}\).
+\end{itemize}
+
+\subsection{Methodology: Moment Propagation via Algebraic
+Mapping}\label{methodology-moment-propagation-via-algebraic-mapping}
+
+Unlike sampling methods that propagate individual points, STT-based UQ
+maps the initial statistical moments directly to the terminal state
+through simple algebraic operations.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Reference Integration:} Solve the ODEs for the nominal state
+  \(\mathbf{x}(t)\) and the tensors \(\phi\) up to order \(P\).
+\item
+  \textbf{Initial Moment Characterization:} Compute the raw moments of
+  the initial PDF (e.g., using the moment-generating function for a
+  Gaussian or uniform distribution).
+\item
+  \textbf{Statistical Mapping:} Use the Taylor expansion and the
+  linearity of the expectation operator to compute the terminal mean
+  (\(\hat{\mu}\)) and covariance (\(\hat{\mathbf{P}}\)):
+  \[\delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]\]
+\item
+  \textbf{Gaussian Moment Property:} If the initial distribution is
+  Gaussian, higher-order moments are analytically linked to the
+  covariance via \textbf{Isserlis' Theorem} (or Wick's formula),
+  allowing for precise reconstruction of non-Gaussian terminal shapes
+  using only the initial mean and covariance.
+\end{enumerate}
+
+\subsection{Variations and Algorithmic
+Enhancements}\label{variations-and-algorithmic-enhancements-1}
+
+To overcome the ``curse of dimensionality'' and the high computational
+cost of calculating factorial-order partial derivatives, several
+advanced STT variants have been developed.
+
+\begin{itemize}
+\item
+  \textbf{Directional State Transition Tensors (DSTT):} Reduces
+  complexity by aligning the STT terms only with the most sensitive
+  directions (eigenvectors of the Cauchy-Green tensor) while ignoring
+  stable directions. This can reduce the number of integrated variables
+  from \(n^3\) to approximately \(n + n^2 + nm^2\).
+\item
+  \textbf{Time-varying Directional STT (TDSTT):} Improves upon the DSTT
+  by integrating the eigenvalue-eigenvector pairs over time, allowing
+  uncertainty analysis at any historical point rather than just a
+  predefined final epoch.
+\item
+  \textbf{Distribution Transport (DT):} Organizes polynomial
+  coefficients into a vector form to facilitate parallel calculation
+  using linear algebra libraries and integral correction methods,
+  achieving speed-ups of up to 60 times over conventional STT
+  implementations.
+\item
+  \textbf{Reduced STT (RSTT):} Assumes two-body dynamics dominate and
+  retains only the secular terms to decrease the integration burden for
+  high-order approximations.
+\end{itemize}
+
+\subsection{Algorithm: The STT Uncertainty
+Pipeline}\label{algorithm-the-stt-uncertainty-pipeline}
+
+The following flowchart delineates the procedural execution of an
+STT-based uncertainty propagation campaign.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial PDF: μ0, P0] {-}{-}\textgreater{} B[Generate Initial Moments: E δx0\^{}p via Isserlis]}
+\NormalTok{    B {-}{-}\textgreater{} C[Set Expansion Order: P]}
+\NormalTok{    C {-}{-}\textgreater{} D[Numerically Integrate: Nominal State + STM + Higher{-}Order STTs]}
+\NormalTok{    D {-}{-}\textgreater{} E[Obtain Terminal Tensors at tf]}
+\NormalTok{    E {-}{-}\textgreater{} F[Reconstruct Terminal Mean: μ\_tf = Σ Tensors * Initial Moments]}
+\NormalTok{    F {-}{-}\textgreater{} G[Reconstruct Terminal Covariance: P\_tf = Σ f Tensors, P0]}
+\NormalTok{    G {-}{-}\textgreater{} H\{Capture Non{-}Gaussianity?\}}
+\NormalTok{    H {-}{-} Yes {-}{-}\textgreater{} I[Reconstruct Higher Moments: Skewness \& Kurtosis]}
+\NormalTok{    H {-}{-} No {-}{-}\textgreater{} J[Output Gaussian Approximation]}
+\NormalTok{    I {-}{-}\textgreater{} K[Pc Calculation for Conjunction Assessment]}
+\NormalTok{    J {-}{-}\textgreater{} K}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{STT in the Spectrum of Surrogate
+Methods}\label{stt-in-the-spectrum-of-surrogate-methods}
+
+Within the broader category of surrogate methods, STTs are defined by
+distinct trade-offs regarding differentiability and dimensionality.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Feature
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+State Transition Tensors (STT)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Differential Algebra (DA)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Polynomial Chaos (PCE)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Expansion Type} & Semi-Analytic Taylor Series & Automated Taylor
+Polynomials & Non-Intrusive Spectral Basis \\
+\textbf{Dynamics Requirement} & Continuous \& Differentiable &
+Continuous \& Differentiable & Black-Box (Non-Differentiable) \\
+\textbf{Input Dependence} & Distribution Agnostic & Distribution
+Agnostic & Distribution Matched (Wiener-Askey) \\
+\textbf{Complexity Growth} & Exponential/Factorial with Order &
+Controlled via Automated Eval & Factorial (Curse of Dimensionality) \\
+\textbf{Main Advantage} & Analytic moment propagation & Automated
+derivative extraction & Exponential convergence for smooth systems \\
+\end{longtable}
+}
+
+The primary takeaway is that STTs provide a \textbf{local higher-order
+approximation} of the flow manifold. While they accurately capture the
+``banana-shaped'' warping caused by \(1/r^2\) gravitational
+nonlinearities, they are strictly limited to the \textbf{radius of
+convergence} of the Taylor expansion. If the initial uncertainty is too
+large, the expansion fails, necessitating hybrid methods such as
+\textbf{GMM-STT}, which partition the state space into smaller, locally
+linear Gaussian kernels.
+
+\subsection{Performance and
+Requirements}\label{performance-and-requirements}
+
+While STT is characterized as highly efficient for evaluating the final
+uncertainty, it faces strict mathematical and implementation barriers:
+
+\begin{itemize}
+\item
+  \textbf{Differentiability:} Similar to DA and LinCov, STT requires the
+  underlying physical dynamics of the system to be \textbf{continuous
+  and differentiable}.
+\item
+  \textbf{Complexity Trade-off:} Although the algebraic evaluation of
+  the final state is fast, the method is described as
+  \textbf{computationally intensive} during the initial phase because of
+  the difficulty involved in deriving and integrating the high-order
+  tensors.
+\end{itemize}
+
+\subsection{Role in Conjunction Assessment
+(CA)}\label{role-in-conjunction-assessment-ca-1}
+
+In the field of orbital mechanics, the STT method is frequently combined
+with the other uncertainty propagation architectures. The sources
+specifically mention the development of hybrid frameworks that pair
+\textbf{Gaussian Mixture Models (GMMs) with STT} to efficiently
+propagate non-Gaussian uncertainties for conjunction analysis. This
+allows the GMM to break a large non-Gaussian problem into smaller
+Gaussian ``kernels,'' each of which is then non-linearly propagated
+using the semi-analytic STT method.
+
+\section{Multi-Fidelity (MF) Method of Uncertainty
+Propagation}\label{multi-fidelity-mf-method-of-uncertainty-propagation}
+
+In the hierarchy of uncertainty propagation (UP) methodologies, the
+\textbf{Multi-Fidelity (MF) Method} represents a data-adaptive,
+\textbf{efficiency-optimized} paradigm designed to reconcile the
+computational burden of high-fidelity (HF) orbital dynamics (meaning
+force-models) with the large-sample requirements of robust statistical
+characterization. MF methods bridge the gap between ``weak''
+approximation sampling (Monte Carlo) and ``strong'' spectral expansions
+(Polynomial Chaos), utilizing a hierarchy of dynamical models to
+construct a surrogate of the propagated probability density function
+(PDF) at a fraction of the cost.
+
+\subsection{Theoretical Framework and
+Assumptions}\label{sec-mf-assumptions}
+
+The fundamental premise of MF methods is that a lower-fidelity model can
+provide a sufficient basis for the space of propagated samples, which is
+then corrected by a small subset of higher-fidelity realizations. This
+approach is particularly effective in astrodynamics because the ``main
+problem'' (two-body dynamics plus \(J_2\) perturbations) captures the
+bulk of orbital motion, while HF perturbations (higher-order gravity,
+atmospheric drag, solar radiation pressure) act as refinements.
+
+\subsubsection{Assumptions and
+Definitions}\label{assumptions-and-definitions}
+
+\begin{itemize}
+\item
+  \textbf{Quantity of Interest (QoI):} These are the variables of
+  interest whose uncertainties are needed to be propagated through the
+  dynamics, such as the orbital state vector \(x \in \mathbb{R}^6\).
+\item
+  \textbf{Model Hierarchy:} In astrodynamics, the LF model typically
+  employs two-body Keplerian dynamics or \(J_2\) perturbations, while
+  the HF model incorporates high-degree gravity fields, atmospheric
+  drag, and solar radiation pressure.
+\item
+  \textbf{Surrogate Basis:} A large ensemble of \(m\) LF samples (say a
+  sample \(\mathbf{x}\) is a vector \(\in \mathbb{R}^n\)) defines a
+  basis for the space of propagated quantities of interest (QoI). From
+  this, a small subset \(r\) of ``important samples'' (where
+  \(r < n \ll m\)) is identified for HF evaluation. `
+\item
+  \textbf{Correction Mapping:} The information gained from the \(r\) HF
+  evaluations is used to ``lift'' the remaining \(m-r\) LF samples
+  toward the HF truth using a stochastic collocation surrogate.
+\end{itemize}
+
+\subsection{Mathematical Architecture}\label{mathematical-architecture}
+
+\subsubsection{Method 1: Stochastic Collocation (SC)
+Multi-Fidelity}\label{method-1-stochastic-collocation-sc-multi-fidelity}
+
+Developed by Jones and Weisman (2019), this non-intrusive method uses a
+large ensemble of LF samples to identify a subset of ``important''
+samples for HF propagation.
+
+\begin{itemize}
+\item
+  \textbf{Initial Ensemble:} A set of \(m\) random inputs
+  \(\Xi = \{\xi_i\}_{i=1}^m\) is generated from the initial probability
+  density function (PDF).
+\item
+  \textbf{LF Basis Construction:} The entire ensemble is propagated
+  using an LF model (e.g., SGP4 or two-body dynamics) to define a
+  subspace \(X_L(\Xi) \subseteq \mathcal{X}\).
+\item
+  \textbf{Important Sample Selection:} Identifying the \(r\) nodes is an
+  optimization problem solved via a \textbf{greedy algorithm} that
+  maximizes the distance between the next selected node and the existing
+  basis. This is implemented by solving the pivoted Cholesky
+  decomposition of the Gramian matrix:
+  \begin{equation}\protect\phantomsection\label{eq-mf-pivoted-cholesky-decomp}{
+  [X_L]^T G_L [X_L] = A^T C_h C_h^T A
+  }\end{equation}
+
+  \textbf{Terms defined:}
+
+  \begin{itemize}
+  \item
+    \(X_L\): Matrix of LF propagated samples.
+  \item
+    \(G_L\): Gramian matrix, where
+    \([G_L]_{i,j} = x_L(\xi_i) \cdot x_L(\xi_j)\) (\(x_L(\xi)\) is the
+    LF propagated state vector for sample \(\xi\)).
+  \item
+    \(A\): Permutation/pivot matrix that identifies the indices of the
+    important samples.
+  \item
+    \(C_h\): Lower triangular Cholesky factor.
+  \end{itemize}
+
+  See Section~\ref{sec-appendix-pivoted-cholesky} for a detailed
+  derivation of the pivoted Cholesky algorithm and its application to MF
+  uncertainty propagation.
+\item
+  \textbf{\(c_\ell(\xi)\) Coefficient Computation:} The expansion
+  coefficients \(c_\ell(\xi)\) in Equation~\ref{eq-mf-surrogate} are
+  computed by solving the linear system: \[
+   \mathbf{C_h C_h}^T \mathbf{c}(\mathbf{\xi}) = \mathbf{g}
+   \]
+
+  where \(g_i = x_L(\xi) \cdot x_L(\xi_i)\) for \(i = 1, \ldots, r\).
+
+  These coefficients effectively map the LF realization of a general
+  sample \(\xi\) to the HF space defined by the \(r\) important samples
+  via Equation~\ref{eq-mf-surrogate}.
+\item
+  \textbf{HF Correction:} The \(r\) samples are propagated through the
+  HF model, and a surrogate is built using the LF-derived coefficients:
+  \begin{equation}\protect\phantomsection\label{eq-mf-surrogate}{
+  \hat{x}_H(\xi) = \sum_{l=1}^r c_\ell(\xi)x_H(\xi_\ell^*)
+  }\end{equation}
+
+  \textbf{Terms defined:}
+
+  \begin{itemize}
+  \item
+    \(\hat{x}_H(\xi)\): The approximated HF state vector for a given
+    input \(\xi\).
+  \item
+    \(x_H(\xi_\ell)\): The exact HF state of the \(\ell\)-th ``important
+    sample''.
+  \item
+    \(c_\ell(\xi)\): Expansion coefficients derived from the LF model to
+    relate the general sample \(\xi\) to the important nodes.
+  \item
+    \(r\): The rank of the surrogate (number of HF evaluations).
+  \end{itemize}
+\end{itemize}
+
+Equation~\ref{eq-mf-surrogate} is what is referred to as the
+``low-rank'' \textbf{stochastic collocation surrogate}. The coefficients
+\(c_\ell(\xi)\) are computed by solving a linear system derived from the
+LF model, ensuring that the surrogate accurately captures the HF
+dynamics while minimizing the number of expensive HF evaluations.
+
+\paragraph{\texorpdfstring{\textbf{Algorithmic
+Flowchart}}{Algorithmic Flowchart}}\label{algorithmic-flowchart}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Start: Initial PDF p(x0)] {-}{-}\textgreater{} B[Generate random inputs ensemble Xi with size m]}
+\NormalTok{    B {-}{-}\textgreater{} C[Propagate ensemble to tf using LF model]}
+\NormalTok{    C {-}{-}\textgreater{} D[Construct matrix of LF samples XL]}
+\NormalTok{    D {-}{-}\textgreater{} E[Compute Pivoted Cholesky Decomposition of XL Gramian]}
+\NormalTok{    E {-}{-}\textgreater{} F[Select r important samples Xi* from pivot matrix A]}
+\NormalTok{    F {-}{-}\textgreater{} G[Propagate only Xi* samples to tf using HF model]}
+\NormalTok{    G {-}{-}\textgreater{} H[Compute surrogate coefficients c\_l using LF basis L]}
+\NormalTok{    H {-}{-}\textgreater{} I[Reconstruct/Correct entire HF ensemble using c\_l and HF realizations]}
+\NormalTok{    I {-}{-}\textgreater{} J[Result: Refined Propagated PDF p(xf)]}
+\NormalTok{    J {-}{-}\textgreater{} K[Stop]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Method 2: Differential Algebra (DA) and Adaptive GMM
+Multi-Fidelity}\label{method-2-differential-algebra-da-and-adaptive-gmm-multi-fidelity}
+
+Developed by Fossà et al., this method combines the local accuracy of
+Taylor expansions with the global flexibility of Gaussian Mixture Models
+(GMMs).
+
+\begin{itemize}
+\item
+  \textbf{Initialization:} The initial PDF is represented as a GMM where
+  each kernel is initialized in the DA framework as a Taylor polynomial.
+\item
+  \textbf{Adaptive Splitting (LOADS):} The Low-Order Automatic Domain
+  Splitting (LOADS) algorithm monitors a DA-based nonlinearity index
+  (\(NLI\)) during LF propagation. If the \(NLI\) exceeds a threshold
+  \(\epsilon_\nu\), the polynomial is split into child kernels to
+  maintain quasi-linearity.
+\item
+  \textbf{LF Propagation:} Statistics are mapped through the LF dynamics
+  (e.g., SGP4) via polynomial evaluation.
+\item
+  \textbf{HF Rectification:} The constant part (center) of each Taylor
+  expansion is propagated point-wise in HF dynamics. The accuracy is
+  restored by re-centering the LF nilpotent part around the HF
+  trajectory: \[
+  [x_{MF}^{(l)}(t_f)] = \mu_{HF}^{(l)}(t_f) + \{[x_{LF}^{(l)}(t_f)] - \bar{x}_{LF}^{(l)}(t_f)\}
+  \]
+
+  where \([x_{MF}^{(l)}]\) is the MF polynomial, \(\mu_{HF}^{(l)}\) is
+  the HF-propagated mean, and the term in braces is the LF nilpotent
+  (varying) part.
+\end{itemize}
+
+\paragraph{\texorpdfstring{\textbf{Algorithmic
+Flowchart}}{Algorithmic Flowchart}}\label{algorithmic-flowchart-1}
+
+The following flowchart illustrates the bi-fidelity uncertianty
+propagation using Differential Algebra and Adaptive GMM as described in
+the sources:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Start: Initial PDF p(x0)] {-}{-}\textgreater{} B[Initialize DA variables or Particles]}
+\NormalTok{    B {-}{-}\textgreater{} C[LF Propagation: Map uncertainty through cheap model]}
+\NormalTok{    C {-}{-}\textgreater{} D\{Nonlinearity Check?\}}
+\NormalTok{    D {-}{-} Yes {-}{-}\textgreater{} E[LOADS/AEGIS: Split domains/kernels]}
+\NormalTok{    E {-}{-}\textgreater{} C}
+\NormalTok{    D {-}{-} No {-}{-}\textgreater{} F[Identify Important Samples/Kernel Means]}
+\NormalTok{    F {-}{-}\textgreater{} G[HF Propagation: Point{-}wise propagation of select points]}
+\NormalTok{    G {-}{-}\textgreater{} H[Polynomial/Surrogate Correction: Re{-}center or Re{-}weight]}
+\NormalTok{    H {-}{-}\textgreater{} I[Result: Refined Propagated PDF p(xf)]}
+\NormalTok{    I {-}{-}\textgreater{} J[Stop]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Hybrid and Efficiency-Optimized
+Frameworks}\label{hybrid-and-efficiency-optimized-frameworks}
+
+The sources highlight several advanced hybridizations and methodological
+variations that leverage MF's scalability:
+
+\begin{itemize}
+\item
+  \textbf{GMM-MF (Gaussian Mixture Multi-Fidelity):} (from Jones and
+  Weisman (2019)) The GMM-MF framework combines the \textbf{Gaussian
+  Mixture Model (GMM)} with \textbf{stochastic collocation MF method} to
+  handle non-Gaussian distributions. The GMM decomposes the initial
+  uncertainty into multiple Gaussian kernels. Then sigma points
+  (\(\zeta\)) are deterministically generated for each kernel, which
+  correspond to random inputs \(\xi\) that are then propagated through
+  multi-fidelity stochastic collocation. This allows for accurate
+  propagation of non-Gaussian distributions while maintaining
+  computational efficiency.
+\item
+  \textbf{Tri-Fidelity Models:} (from Jones and Weisman (2019)) This
+  extension introduces a medium-fidelity (MF) model. LF is used to
+  identify important samples, MF is used to calculate the expansion
+  coefficients \(c\), and HF provides the final collocation points,
+  further optimizing the accuracy-to-cost ratio.
+\item
+  \textbf{Stochastic Acceleration Propagation (PLASMA):} (from Fossà
+  (2024)) To account for poorly modeled forces (process noise), the
+  PLASMA algorithm propagates polynomial approximations of the moments
+  of the PDF through stochastic differential equations (SDEs). In an MF
+  framework, the initial uncertainty is handled by GMM-DA, while the
+  process noise moments are propagated independently and merged \emph{a
+  posteriori}.
+\item
+  \textbf{Analytical vs.~Semianalytical Coupling:}
+
+  \begin{itemize}
+  \item
+    \emph{Analytical LF:} Uses closed-form solutions like SGP4 or
+    \(J_2\)-perturbed Lagrangian coefficients for near-instantaneous
+    mapping.
+  \item
+    \emph{Semianalytical LF:} Uses mean element theories (e.g., DSST,
+    STELA) where short-period variations are removed. This allows larger
+    integration steps while maintaining better fidelity than purely
+    analytical models.
+  \end{itemize}
+\item
+  \textbf{Credibilistic Filtering:} (from Jones et al. (2019)) Because
+  the surrogate introduces systematic (epistemic) error rather than
+  random error, recent frameworks use \textbf{Outer Probability Measures
+  (OPMs)} and possibility functions \(f(x)\) to bound these errors. This
+  provides a ``less over-descriptive'' representation of uncertainty for
+  establishing custody of newly detected objects.
+\end{itemize}
+
+\subsection{Multi-Fidelity in Orbit
+Propagation}\label{multi-fidelity-in-orbit-propagation}
+
+A critical nuance in multi-fidelity orbit propagation is the
+\textbf{state trajectory expansion}.
+
+\begin{itemize}
+\item
+  \textbf{The n=6 Limitation:} Standard MF surrogates are bounded by the
+  state dimension (\(n=6\)). To use more nodes (\(r > 6\)) for higher
+  accuracy, Jones and Weisman (2019) expand the Quantity of Interest
+  (QoI) vector to include the \textbf{state trajectory}.
+\item
+  \textbf{Trajectory Augmentation:} By defining the QoI as the state at
+  \(T\) different time instances, the effective dimensionality becomes
+  \(6T\), allowing for a significantly higher surrogate rank and better
+  representation of the nonlinear manifold.
+\end{itemize}
+
+\subsection{Performance and Conjunction Assessment
+Significance}\label{performance-and-conjunction-assessment-significance}
+
+\begin{itemize}
+\item
+  \textbf{Computational Speedup:} MF achieves a speedup of up to
+  \textbf{four orders of magnitude} (\(10^4\)) compared to brute-force
+  Monte Carlo for high-fidelity LEO propagation.
+\item
+  \textbf{Handling Non-Gaussianity:} Unlike linear methods, MF captures
+  ``banana-shaped'' warpings and asymmetric tails. In conjunction
+  assessment, as few as \textbf{8 important samples} allow MF to produce
+  collision probabilities (\(P_C\)) that fall within the 95\% confidence
+  interval of a full MC simulation.
+\item
+  \textbf{Dimensionality custom:} To avoid limits on \(r\) based on
+  state size (\(n=6\)), researchers use the \textbf{state trajectory}
+  (state at multiple time points) to increase the effective dimension of
+  the Quantity of Interest (QoI) vector, enabling a more accurate basis.
+\end{itemize}
+
+\section{Taylor Map Diffusion Method for Closed-Form solution to
+Fokker-Planck
+equation}\label{taylor-map-diffusion-method-for-closed-form-solution-to-fokker-planck-equation}
+
+\subsection{Fokker-Planck Equation in Orbital
+Mechanics}\label{fokker-planck-equation-in-orbital-mechanics}
+
+The \textbf{Fokker-Planck Equation (FPE)} is a partial differential
+equation that governs the time evolution of the probability density
+function (PDF) of a dynamical system subject to both deterministic
+forces and stochastic process noise. In the context of orbital mechanics
+and conjunction assessment, the FPE is the fundamental tool for
+transitioning from a point-estimate of a spacecraft's position to a
+complete statistical characterization of its possible states.
+
+The FPE describes how a probability cloud ``flows'' through state space
+while simultaneously ``spreading'' due to unmodeled perturbations.
+
+\begin{itemize}
+\item
+  \textbf{Advection-Diffusion Duality:} The equation is composed of two
+  primary operators: the \textbf{drift (advection)} term, which moves
+  the PDF along deterministic trajectories (like Keplerian motion), and
+  the \textbf{diffusion} term, which accounts for stochastic forcing
+  such as atmospheric drag fluctuations or thrust errors.
+\item
+  \textbf{The Governing Equation:} For a system
+  \(dX = f(X)dt + \sigma dW_t\), the PDF \(p(x, t)\) evolves as: \[
+  \frac{\partial p}{\partial t} = -\nabla \cdot (f p) + \frac{1}{2} \text{Tr}(\Sigma_0 \nabla^2 p)
+  \]
+\end{itemize}
+
+Where \(f\) is the deterministic drift and \(\Sigma_0\) is the diffusion
+tensor.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{The Curse of Dimensionality:} Traditional numerical solvers
+  for the FPE rely on spatial grids. In a 6D orbital state, even a
+  coarse grid of 50 points per axis requires approximately \(10^{10}\)
+  evaluations per time step, making grid-based FPE solutions
+  computationally intractable for real-time space operations.
+\end{itemize}
+
+By providing a closed-form solution to the FPE, TMD addresses the
+long-standing ``process noise gap'' in non-intrusive orbital uncertainty
+propagation.
+
+\subsection{Theoretical Mechanics of the TMD
+Framework}\label{theoretical-mechanics-of-the-tmd-framework}
+
+The TMD method is built upon the \textbf{Quadratic Form Conservation
+Theorem}, which establishes that if a distribution starts with a
+specific structural form, it will maintain that form throughout its
+evolution.
+
+\begin{itemize}
+\item
+  \textbf{The Structural Ansatz:} The PDF is represented as
+  \(p(x, t) = N(t) \mu(x, t) \exp(-F(x, t)^T Q(t) F(x, t))\). This
+  formulation separates the distribution into three primary components:
+
+  \begin{itemize}
+  \item
+    \textbf{\(F(x, t)\):} A nonlinear Taylor map that captures the
+    \textbf{shape} of the distribution (curvatures, ``banana-shapes,''
+    and asymmetries).
+  \item
+    \textbf{\(Q(t)\):} A precision matrix (inverse of covariance) that
+    captures the \textbf{concentration} and stochastic broadening.
+  \item
+    \textbf{\(\mu(x, t)\):} A scalar field accounting for the
+    \textbf{divergence} of non-conservative forces like drag.
+  \end{itemize}
+\item
+  \textbf{Augmented ODE System:} Instead of solving a high-dimensional
+  PDE, TMD reduces the problem to a compact system of coupled Ordinary
+  Differential Equations (ODEs). For a 6D state, this involves only
+  \textbf{279 scalar ODEs}, which can be solved in less than a second on
+  standard hardware.
+\item
+  \textbf{Automatic Differentiation (AD):} The implementation leverages
+  AD (e.g., via JAX) to extract the necessary Jacobian and Hessian
+  information from the orbital dynamics, eliminating the need for manual
+  derivation of complex 6D force models.
+\end{itemize}
+
+\subsection{Algorithm: The Taylor Diffusion
+Propagator}\label{algorithm-the-taylor-diffusion-propagator}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial State X0, Covariance P0, Process Noise Σ0] {-}{-}\textgreater{} B[Initialize: Trajectory x0, Map J, Hessian H, Precision Q]}
+\NormalTok{    B {-}{-}\textgreater{} C[Compute Precision Matrix Derivative ¤Q]}
+\NormalTok{    C {-}{-}\textgreater{} D[Extract Map Evolution Derivatives via Automatic Differentiation]}
+\NormalTok{    D {-}{-}\textgreater{} E[Identify Taylor Coefficients: V0, ¤J, ¤H]}
+\NormalTok{    E {-}{-}\textgreater{} F[Apply Zero{-}Tracking Condition: ¤x0 = {-}J⁻¹V0]}
+\NormalTok{    F {-}{-}\textgreater{} G[Integrate Augmented ODE System via RK4]}
+\NormalTok{    G {-}{-}\textgreater{} H\{Final Time Reached?\}}
+\NormalTok{    H {-}{-} No {-}{-}\textgreater{} C}
+\NormalTok{    H {-}{-} Yes {-}{-}\textgreater{} I[Output Analytic PDF: \{x0, J, H, Q\}]}
+\NormalTok{    I {-}{-}\textgreater{} J[Instantaneous Evaluation of Tail Probabilities]}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Appendix}\label{appendix}
+
+\section{Appendix A: Pivoted Cholesky Decomposition for Multi-Fidelity
+Node Selection}\label{sec-appendix-pivoted-cholesky}
+
+In the architecture of \textbf{Multi-Fidelity (MF) Uncertainty
+Propagation}, the \textbf{pivoted Cholesky decomposition} serves as the
+mathematical engine for the ``greedy'' selection of \textbf{important
+samples} (nodes). This approach identifies a small subset of points from
+a large low-fidelity (LF) ensemble that are most representative of the
+state space, ensuring that high-fidelity (HF) evaluations are spent
+where they provide the most information.
+
+\subsection{The Objective: Information
+Maximization}\label{the-objective-information-maximization}
+
+The goal of node selection is to find a set of random inputs
+\(\underline{\Xi} = \{\underline{\xi}_1, \dots, \underline{\xi}_r\}\)
+such that the span of their low-fidelity realizations,
+\(\mathcal{X}_L(\underline{\Xi})\), provides the best possible
+approximation of the full ensemble \(X_L(\Xi)\).
+
+\begin{itemize}
+\item
+  \textbf{Greedy Selection Logic:} The algorithm iteratively picks the
+  next node \(\xi_k\) by maximizing the distance between that sample and
+  the space spanned by the previously selected nodes.
+\item
+  \textbf{Intractability:} Solving this optimization problem directly
+  via
+  \(\text{arg max dist}(\mathbf{x}(\xi), \mathcal{X}(\underline{\Xi}_{k-1}))\)
+  is computationally expensive (intractable) for high-dimensional state
+  spaces.
+\item
+  \textbf{The Cholesky Proxy:} The pivoted Cholesky decomposition
+  provides an efficient linear algebra substitute to this geometric
+  search by operating on the \textbf{Gramian matrix} of the low-fidelity
+  samples.
+\end{itemize}
+
+\subsection{Mathematical
+Architecture}\label{mathematical-architecture-1}
+
+The method leverages the relationship between the inner products of the
+propagated samples to identify the ``rank'' or ``important'' directions
+of the uncertainty volume.
+
+\subsubsection{\texorpdfstring{\textbf{The Decomposition
+Formula}}{The Decomposition Formula}}\label{the-decomposition-formula}
+
+The decomposition is defined as: \[
+[X_L]^T G_L [X_L] = A^T C_h C_h^T A
+\]
+
+\textbf{Terms defined:}
+
+\begin{itemize}
+\item
+  \(X_L\): The matrix of low-fidelity propagated samples
+  (\(n \times m\)).
+\item
+  \(G_L\): The Gramian matrix where
+  \([G_L]_{i,j} = x_L(\xi_i) \cdot x_L(\xi_j)\). It captures the
+  similarity/redundancy between all sample pairs.
+\item
+  \(A\): A \textbf{pivot matrix} (permutation matrix) that reorders the
+  samples based on their importance.
+\item
+  \(C_h\): A lower triangular Cholesky factor (\(m \times r\)).
+\end{itemize}
+
+\subsubsection{\texorpdfstring{\textbf{Weight Update and
+Orthogonalization}}{Weight Update and Orthogonalization}}\label{weight-update-and-orthogonalization}
+
+During the decomposition, the algorithm maintains a vector of
+``weights'' \(w_\ell\) representing the norm of each sample. At each
+step:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  The sample with the largest remaining weight (the most unique point)
+  is selected and ``pivoted'' to the front.
+\item
+  The weights of all other samples are updated by subtracting their
+  projection onto the newly selected node: \[
+  w_t = w_t - C_{h(t,n)}^2
+  \]
+
+  This step effectively ``deflates'' the importance of samples that are
+  redundant with the current basis.
+\end{enumerate}
+
+\subsection{Algorithm: Node Selection via Pivoted
+Cholesky}\label{algorithm-node-selection-via-pivoted-cholesky}
+
+The following flowchart details the procedural logic for identifying
+\(r\) important samples from \(N\) low-fidelity evaluations:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Matrix of LF samples: X\_L] {-}{-}\textgreater{} B[Initialize Weights w: Square of norms of columns in X\_L]}
+\NormalTok{    B {-}{-}\textgreater{} C[Set current rank n = 1]}
+\NormalTok{    C {-}{-}\textgreater{} D[Find index i with max weight w\_i]}
+\NormalTok{    D {-}{-}\textgreater{} E[Is w\_i \textless{} Tolerance?]}
+\NormalTok{    E {-}{-} Yes {-}{-}\textgreater{} F[Stop: System rank reached]}
+\NormalTok{    E {-}{-} No {-}{-}\textgreater{} G[Swap column n with column i in X\_L and weight vector w]}
+\NormalTok{    G {-}{-}\textgreater{} H[Compute diagonal element: Ch\_n,n = sqrt w\_n]}
+\NormalTok{    H {-}{-}\textgreater{} I[Compute Ch\_t,n for remaining samples t \textgreater{} n]}
+\NormalTok{    I {-}{-}\textgreater{} J[Update remaining weights: w\_t = w\_t {-} Ch\_t,n\^{}2]}
+\NormalTok{    J {-}{-}\textgreater{} K[n = n + 1]}
+\NormalTok{    K {-}{-}\textgreater{} L\{n \textless{}= r?\}}
+\NormalTok{    L {-}{-} Yes {-}{-}\textgreater{} D}
+\NormalTok{    L {-}{-} No {-}{-}\textgreater{} M[Output indices of r Important Samples]}
+\end{Highlighting}
+\end{Shaded}
+
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{1}
+\bibitem[\citeproctext]{ref-bosorbit}
+Bos, Justin. 2025. \emph{Orbit Uncertainty Propagation in Space
+Situational Awareness Applied to Conjunction Assessment}.
+
+\bibitem[\citeproctext]{ref-fossa2024propagation}
+Fossà, Alberto. 2024. {``Propagation Multi-Fid{é}lit{é} d'incertitude
+Orbitale En Pr{é}sence d'acc{é}l{é}rations Stochastiques.''} PhD thesis,
+The University of Texas at Austin.
+
+\bibitem[\citeproctext]{ref-JONES2019406}
+Jones, Brandon A., and Ryan Weisman. 2019. {``Multi-Fidelity Orbit
+Uncertainty Propagation.''} \emph{Acta Astronautica} 155: 406--17.
+https://doi.org/\url{https://doi.org/10.1016/j.actaastro.2018.10.023}.
+
+\bibitem[\citeproctext]{ref-2019amosconfE14J}
+Jones, Brandon, Emmanuel Delande, Enrico Zucchelli, and Moriba Jah.
+2019. {``{Multi-Fidelity Orbit Uncertainty Propagation with Systematic
+Errors}.''} In \emph{Advanced Maui Optical and Space Surveillance
+Technologies Conference}, edited by S. Ryan.
+
+\bibitem[\citeproctext]{ref-Julier1997NewEO}
+Julier, Simon J., and Jeffrey K. Uhlmann. 1997. {``New Extension of the
+Kalman Filter to Nonlinear Systems.''} \emph{Defense, Security, and
+Sensing}. \url{https://api.semanticscholar.org/CorpusID:7937456}.
+
+\bibitem[\citeproctext]{ref-thesis_suyog}
+Soman, Suyog. 2025. \emph{Orbital Uncertainty Propagation for Collision
+Probability Computation}.
+
+\end{CSLReferences}
+
+
+
+
+\end{document}
