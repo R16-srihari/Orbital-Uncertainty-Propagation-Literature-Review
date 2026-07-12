@@ -8,6 +8,12 @@ project:
 manuscript:
   article: index.qmd
 
+website: 
+  title: "State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)"
+  site-url: https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/
+  repo-url: https://github.com/R16-srihari/Orbital-Uncertainty-Propagation-Literature-Review/
+  issue-url: https://github.com/R16-srihari/Orbital-Uncertainty-Propagation-Literature-Review/issues
+
 format:
   html:
     comments:
