@@ -1990,3 +1990,327 @@ While homoscedastic libraries often discard skewness, variance-preserving librar
 
 #### 5.4 Multidirectional GMM (MGMM)
 Instead of a single axis, MGMM applies splitting recursively as a tensor product across multiple influential spectral directions. To maintain tractability, a **minimum weight threshold ($\epsilon$)** can be used to prune components in the tails of the distribution that contribute little to the final accuracy.
+
+# 15-07-26
+## Updated Gaussian Mixture Model (GMM) uncertainty propagation methods
+
+In the hierarchy of orbital uncertainty propagation (OUP), **Gaussian Mixture Models (GMMs)** represent a non-parametric framework that bridges the gap between the computational efficiency of linear methods (e.g., LinCov) and the statistical rigor of Monte Carlo (MC) simulations. As spacecraft navigate highly nonlinear dynamical environments, such as cislunar space or long-duration Earth orbits, initial Gaussian state uncertainties inevitably evolve into complex, non-Gaussian probability density functions (PDFs), rendering standard tools like the Unscented Kalman Filter (UKF) inconsistent.
+
+### 1. Theoretical Foundation and PDF Representation
+
+The GMM framework is predicated on the **Universal Approximation Theorem**, which asserts that any continuous PDF can be represented as a weighted sum of Gaussian distributions, converging uniformly as the number of components $L$ increases.
+
+The total PDF of a state vector $\mathbf{x}$ is defined as:
+$$p(\mathbf{x}) \approx \sum_{i=1}^{L} \alpha_i p_g(\mathbf{x}; \hat{\mathbf{x}}_i, \mathbf{P}_i) \quad \text{subject to} \quad \sum_{i=1}^{L} \alpha_i = 1, \quad 0 \le \alpha_i \le 1$$
+
+**Term Definitions:**
+*   $p(\mathbf{x})$: The approximated non-Gaussian PDF of the state.
+*   $L$: The total number of Gaussian mixture elements (GMEs).
+*   $\alpha_i$: The scalar weight assigned to the $i$-th component.
+*   $p_g(\cdot)$: The individual multivariate Gaussian PDF.
+*   $\hat{\mathbf{x}}_i$: The mean state vector of the $i$-th Gaussian component.
+*   $\mathbf{P}_i$: The covariance matrix of the $i$-th Gaussian component.
+
+By discretizing a large uncertainty volume into smaller Gaussian "kernels," each kernel remains small enough to reside within the linear region of the dynamical solution flow for a significantly longer duration.
+
+### 2. General Methodology: The "Split-Propagate-Recombine" Paradigm
+
+The propagation of uncertainty via GMMs follows a three-stage methodology designed to maintain uncertainty consistency.
+
+#### 2.1 Methodology: Initial Splitting
+*   **Coordinate Selection:** Propagation accuracy is highly sensitive to the coordinate system. Cartesian frames exacerbate nonlinearity in all six dimensions. Curvilinear elements (e.g., Equinoctial or Modified Equinoctial) are preferred as they concentrate nonlinearity into a single dimension (mean longitude), allowing for efficient 1D splitting that avoids the "curse of dimensionality".
+*   **Splitting Libraries:** An initial Gaussian is replaced by $L$ components using pre-computed "splitting libraries" that minimize metrics like the $L_2$ distance or Kullback-Leibler (KL) divergence. Libraries currently exist for up to 39 elements.
+*   **Directional Selection:** Splitting is performed along the direction of maximum nonlinearity growth, identified using a second-order divided difference (Stirling’s interpolation):
+    $$\phi = \frac{f(\mathbf{m} + h\sigma \hat{\mathbf{a}}) + f(\mathbf{m} - h\sigma \hat{\mathbf{a}}) - 2f(\mathbf{m})}{2h^2}$$
+    *   $\hat{\mathbf{a}}$ is the splitting unit vector, and $h = \sqrt{3}$ is the recommended step size.
+
+#### 2.2 Methodology: Component-wise Propagation
+Each component $(\hat{\mathbf{x}}_i, \mathbf{P}_i)$ is evolved independently through the nonlinear dynamics using a selected numerical engine (detailed in Section 4).
+
+#### 2.3 Methodology: Recombination and Merging
+At the target epoch, the weighted sum of components provides the final non-Gaussian PDF. To maintain tractability, redundant components are merged using algorithms like **Runnalls’ algorithm**, which minimizes information loss based on the KL discrimination measure.
+
+### 3. Algorithm Flowchart: Hybrid GMM Uncertainty Propagation
+
+```mermaid
+graph TD
+    A[Initial State & Covariance] --> B{Coordinate Frame}
+    B -- Cartesian --> C[High 6D Nonlinearity]
+    B -- Equinoctial/MEE --> D[Nonlinearity in Mean Longitude]
+    C --> E[Compute Nonlinearity Ranking via Stirling Interpolation]
+    D --> E
+    E --> F[Apply Splitting Library: Horwood/Vittaldev]
+    F --> G[Generate L Initial Gaussian Components]
+    G --> H[Propagate Each Component independently]
+    H -- Using UT/STT/DA/PCE/MF --> I[Sum Propagated Components via Weights]
+    I --> J[Result: Final Non-Gaussian PDF]
+```
+
+### 4. Variations and Hybrid Methodological Combinations
+
+The literature identifies several sophisticated "GMM-X" variations that balance precision with computational load.
+
+#### 4.1 GMM-UT (Unscented Transform)
+This is the most common "workhorse" for GMM propagation.
+*   **Methodology:** Each component is represented by $2n+1$ deterministic sigma points $\chi_j$, which are propagated through the full nonlinear dynamics to reconstruct component statistics.
+
+*   **Limitation:** The cost scales linearly with the number of components $L$ and the state dimension $n$, i.e., $O(L \cdot n)$.
+
+#### 4.2 GMM-STT (State Transition Tensors)
+This method regards Gaussian distributions as a function space to express PDFs in closed form.
+
+*   **Methodology:** Instead of solving separate ODEs for each mean and covariance, the STT solution flow is reformulated as a matrix function valid over all components.
+
+*   **Mathematical Formula (State Deviation):**
+    $$\delta \hat{x}_{i}^k(t) \approx \sum_{p=1}^{m} \frac{1}{p!} \Phi^k_{j_1...j_p}(t, t_0) \delta \hat{x}_{0,i}^{j_1} \dots \delta \hat{x}_{0,i}^{j_p}$$
+    *   $\delta \hat{x}_{i}^k(t)$ is the $k$-th state component of the $i$-th component; $\Phi^k_{j_1...j_p}$ is the $p$-th order State Transition Tensor.
+
+*   **Efficiency:** It becomes more efficient than individual component propagation for $L > 7$ components (using a 2nd-order expansion).
+
+#### 4.3 GMM-DA (Differential Algebra)
+GMM-DA leverages the DA technique to automatically compute high-order Taylor expansions of the flow.
+
+*   **Methodology:** The solution flow is expanded into a polynomial up to an arbitrary order $k$ without manual derivation of variational equations. Each component is then evaluated through this single polynomial map.
+
+*   **Variation:** Unlike GMM-STT, DA is self-adaptive to any regular nonlinear system.
+
+#### 4.4 GMM-PCE (Polynomial Chaos Expansions)
+This approach is analogous to **hp-refinement** in Finite Element Methods.
+
+*   **Methodology:** Splitting the initial distribution (h-refinement) reduces the domain of approximation for each element, allowing for lower-order orthogonal polynomials (p-refinement) to capture the distribution shape.
+
+*   **Variation:** GMM-PC reduces the factorial growth of PCE terms in high-dimensional states while accurately representing non-Gaussian tails.
+
+#### 4.5 GMM-MF (Multi-Fidelity)
+GMM-MF addresses the cost of high-fidelity (HF) propagation for large component sets.
+
+*   **Methodology:** The entire ensemble of sigma points from all components is propagated via a computationally cheap low-fidelity (LF) model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian identifies a subset of "important samples" to be corrected by the HF model.
+
+*   **Efficiency:** Studies show an 80% reduction in computation time compared to standard GMM-UT.
+
+#### 4.6 GMM-Moment Method
+This semi-analytical framework evolves the first two statistical moments of each component using Taylor series expansions.
+
+*   **Methodology:** M1 (First-order) updates function like localized EKFs. M2 (Second-order) updates incorporate Hessian matrices $\mathbf{H}_i^k$ to capture nonlinearity in mean and covariance growth.
+
+*   **Formula (M2 Mean Update):**
+    $$\mu_{f,i}^k \approx \phi^k(\boldsymbol{\mu}_{0,i}) + \frac{1}{2} \text{tr}\left( \mathbf{H}_i^k \mathbf{C}_{0,i} \right)$$
+    *   $\mu_{f,i}^k$ is the $k$-th terminal mean component; $\phi^k$ is the solution flow; $\mathbf{H}_i^k$ is the Hessian.
+
+### 5. Advanced Adaptation Strategies
+
+*   **AEGIS (Adaptive Entropy-based Gaussian-mixture Information Synthesis):** Replaces static splitting with online adaptation. It monitors the nonlinearity of each component by comparing the linear evolution of its differential entropy against a nonlinear estimate (via UKF); a split is triggered online if the deviation exceeds a threshold.
+*   **Multidirectional GMM (MGMM):** Standard GMMs often split along a single axis. MGMM recursively applies splits along multiple principal directions identified as nonlinear, forming a regular grid in probability space.
+*   **GMBP (Gaussian Mixture Batch Processor):** Applied to **Initial Orbit Determination (IOD)**, the GMBP translates a batch of noisy measurements into a GMM-based PDF using Bayes' rule. It disperses linearization errors across an ensemble of components, capturing the "crescent-shaped" posteriors common in cislunar and short-arc tracking.
+
+## Produce the moment method formulae for first and second moment propagation
+
+The moment method (or method of moments) is a statistical technique that approximates the evolution of uncertainty by deriving expressions for the **mean** (first moment) and **variance/covariance** (second moment) of an output, typically through Taylor series expansions around the mean values of the inputs. The sources distinguish between **explicit** methods, used when a direct formula $y = f(x)$ is available, and **implicit** methods, used when the dynamics are governed by differential equations $\dot{x} = f(x)$.
+
+### 1. Univariate Moment Method (Scalar Case)
+In the scalar setting, given an input $x \sim \mathcal{N}(\mu_x, \sigma_x^2)$, the moments of the output are propagated using first-order (M1) or second-order (M2) approximations.
+
+#### **Explicit Propagation ($y = f(x)$)**
+*   **First-Order (M1) Approximations:**
+    *   **Mean:** $\mu_y = f(\mu_x)$.
+    *   **Variance:** $\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2$.
+*   **Second-Order (M2) Approximations:**
+    *   **Mean:** $\mu_y = f(\mu_x) + \frac{1}{2} f''(\mu_x) \sigma_x^2$.
+    *   **Variance:** $\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2 + \frac{1}{2} [f''(\mu_x)]^2 \sigma_x^4$.
+
+#### **Implicit Propagation ($\dot{x} = f(x)$)**
+When the terminal state $x_f$ is found via the solution flow $\phi(t; x_0)$, the moments are:
+*   **First-Order (M1):** $\mu_{x_f} = \phi(\mu_{x_0})$ and $\sigma_{x_f}^2 = [\phi'(\mu_{x_0})]^2 \sigma_{x_0}^2$.
+*   **Second-Order (M2):** $\mu_{x_f} = \phi(\mu_{x_0}) + \frac{1}{2} \phi''(\mu_{x_0}) \sigma_{x_0}^2$ and $\sigma_{x_f}^2 = [\phi'(\mu_{x_0})]^2 \sigma_{x_0}^2 + \frac{1}{2} [\phi''(\mu_{x_0})]^2 \sigma_{x_0}^4$.
+
+---
+
+### 2. Multivariate Moment Method ($R^n$ Case)
+For an $n$-dimensional state vector $x \sim \mathcal{N}(\mu_x, \Sigma_x)$, propagation utilizes the **Jacobian** ($J$) and **Hessian** ($H$) of the mapping.
+
+#### **Explicit Multivariate Propagation ($y = f(x)$)**
+*   **First-Order (M1):** 
+    *   **Mean:** $\mu_y = f(\mu_x)$.
+    *   **Covariance:** $\Sigma_y = J \Sigma_x J^T$.
+*   **Second-Order (M2):** 
+    *   **Mean (component $i$):** $\mu_{y,i} = f_i(\mu_x) + \frac{1}{2} \text{tr}(H_{f_i}(\mu_x) \Sigma_x)$.
+    *   **Covariance (element $i, p$):** $\Sigma_y(i, p) = (J \Sigma_x J^T)_{ip} + \frac{1}{2} \text{tr}(H_{f_i} \Sigma_x H_{f_p} \Sigma_x)$.
+
+#### **Implicit Multivariate Propagation ($\dot{x} = f(x)$)**
+Using the nonlinear flow $\phi$, the sensitivities are typically calculated via **Automatic Differentiation**.
+*   **First-Order (M1):** 
+    *   $\mu_{x_f} = \phi(\mu_{x_0})$.
+    *   $\Sigma_{x_f} = J \Sigma_{x_0} J^T$.
+*   **Second-Order (M2):** 
+    *   **Mean:** $\mu_{x_f} = \phi(\mu_{x_0}) + \frac{1}{2} \sum_{j,k} H_{jk} (\Sigma_{x_0})_{jk}$.
+    *   **Covariance:** $\Sigma_{x_f} = J \Sigma_{x_0} J^T + \frac{1}{2} \sum_{j,k,l,m} H_{jl} H_{km} (\Sigma_{x_0})_{jk} (\Sigma_{x_0})_{lm}$.
+
+### 3. Application in Gaussian Mixture Models (GMM)
+In a GMM framework, the initial probability density function is split into $N$ weighted components $(\alpha = 1, \dots, N)$, where each component $i$ is propagated independently using the **Implicit Moment Method** formulae above. The final reconstructed mean ($\mu_m$) and covariance ($C_m$) of the mixture are calculated as follows:
+*   **Mixture Mean:** $\mu_m = \sum_{i=1}^{N} w_i \mu_i$.
+*   **Mixture Covariance:** $C_m = \sum_{i=1}^{N} w_i (C_i + \mu_i \mu_i^T) - \mu_m \mu_m^T$.
+
+## Explain the moment method
+The **Moment Method** (or Method of Moments) is a rigorous statistical technique utilized for uncertainty propagation, primarily focused on estimating how uncertainties in input variables manifest in the statistical moments of an output function. At its core, the methodology relies on approximating the output distribution—typically its mean and variance—through a **Taylor series expansion** of the system dynamics or mapping function around the mean values of the input parameters.
+
+### 1. Theoretical Architecture of the Moment Method
+In the context of orbital mechanics and general nonlinear systems, the moment method provides a computationally efficient alternative to brute-force Monte Carlo simulations. While Monte Carlo requires thousands of samples to achieve statistical convergence, the moment method requires only a few evaluations of the function and its derivatives.
+
+*   **Moment Sufficiency:** For a Gaussian probability density function (PDF), the first two moments—mean and variance (or covariance in multivariate cases)—are mathematically sufficient to completely describe the distribution.
+*   **Expansion Philosophy:** The method assumes that if the input variance is sufficiently small, the nonlinear function $f(x)$ can be locally approximated by its Taylor expansion.
+*   **Analytical Mapping:** By applying the expectation operator $\mathbb{E}[\cdot]$ to the Taylor expansion, one can derive deterministic algebraic expressions for the terminal moments.
+
+---
+
+### 2. Variation I: The Explicit Moment Method
+The **Explicit Moment Method** is employed when the system provides a direct functional relationship, $y = f(x)$, between the uncertain input ($x$) and the resulting output ($y$).
+
+#### **A. Univariate Formulation (1st and 2nd Order)**
+For a Gaussian input $x \sim \mathcal{N}(\mu_x, \sigma_x^2)$, the method seeks the parameters of the output $y \sim \mathcal{N}(\mu_y, \sigma_y^2)$.
+
+**First-Order Equations:**
+1.  **Mean ($\mu_y$):** $\mu_y = f(\mu_x)$
+2.  **Variance ($\sigma_y^2$):** $\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2$
+
+**Second-Order Equations (Correction Terms):**
+1.  **Mean:** $\mu_y = f(\mu_x) + \frac{1}{2} f''(\mu_x) \sigma_x^2$
+2.  **Variance:** $\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2 + \frac{1}{2} [f''(\mu_x)]^2 \sigma_x^4$
+
+*Terms Defined:*
+*   $f(\mu_x)$: Function evaluation at the mean.
+*   $f'(\mu_x)$: First derivative (sensitivity) at the mean.
+*   $f''(\mu_x)$: Second derivative (curvature) at the mean.
+*   $\sigma_x^4$: The square of the input variance.
+
+#### **B. Multivariate Formulation (State Vector in $\mathbb{R}^n$)**
+When the input is an $n$-dimensional random vector $\mathbf{x} \sim \mathcal{N}(\boldsymbol{\mu}_x, \mathbf{\Sigma}_x)$, the propagation involves the Jacobian matrix and Hessian tensors.
+
+**First-Order (Linearized) Moments:**
+$$\boldsymbol{\mu}_y = f(\boldsymbol{\mu}_x)$$
+$$\mathbf{\Sigma}_y = \mathbf{J} \mathbf{\Sigma}_x \mathbf{J}^T$$
+
+**Second-Order Moments (Component-wise):**
+$$\mu_{y,i} = f_i(\boldsymbol{\mu}_x) + \frac{1}{2} \text{tr}(\mathbf{H}_{fi}(\boldsymbol{\mu}_x) \mathbf{\Sigma}_x)$$
+$$\Sigma_y(i, p) = (\mathbf{J} \mathbf{\Sigma}_x \mathbf{J}^T)_{ip} + \frac{1}{2} \text{tr}(\mathbf{H}_{fi} \mathbf{\Sigma}_x \mathbf{H}_{fp} \mathbf{\Sigma}_x)$$
+
+*Terms Defined:*
+*   $\mathbf{J}$: The $n \times n$ Jacobian matrix, $\mathbf{J} = \frac{\partial f}{\partial \mathbf{x}}\big|_{\boldsymbol{\mu}_x}$.
+*   $\mathbf{H}_{fi}$: The Hessian matrix of the $i$-th component of the function $f$.
+*   $\text{tr}(\cdot)$: The trace operator, summing the diagonal elements of the resulting matrix product.
+
+---
+
+### 3. Variation II: The Implicit Moment Method
+In high-fidelity astrodynamics, an explicit formula $y = f(x)$ is rarely available. Instead, the system is defined by a set of nonlinear Ordinary Differential Equations (ODEs):
+$$\dot{\mathbf{x}} = f(\mathbf{x}, t)$$
+
+The **Implicit Moment Method** uses the **solution flow** $\phi(t; \mathbf{x}_0)$ obtained via numerical integration (e.g., Runge-Kutta schemes). The methodology treats the numerical integrator as the mapping function:
+
+1.  **Trajectory Integration:** Propagate the nominal mean $\boldsymbol{\mu}_{x0}$ to find the final state $\phi(\boldsymbol{\mu}_{x0})$.
+2.  **Sensitivity Extraction:** Compute the Jacobian and Hessian of the flow map, often utilizing **Automatic Differentiation (AD)** to ensure machine-precision accuracy.
+3.  **Moment Transformation:** Apply the multivariate moment equations using the flow derivatives to advance the mean and covariance to the target epoch $t_f$.
+
+---
+
+### 4. Algorithmic Implementation Flowchart
+The following flowchart delineates the procedural logic of the general Moment Method for uncertainty propagation.
+
+```mermaid
+graph TD
+    A[Initial Uncertainty: Mean μ_x0, Covariance Σ_x0] --> B{Explicit Formula Available?}
+    B -- Yes --> C[Define y = f x]
+    B -- No --> D[Integrate ODE Flow: φ t; x0]
+    C --> E[Compute Derivatives: Jacobian J, Hessian H]
+    D --> E
+    E --> F[Apply Moment Equations]
+    F --> G[Reconstruct Terminal Mean: μ_f]
+    F --> H[Reconstruct Terminal Covariance: Σ_f]
+    G --> I[Final Terminal Gaussian PDF]
+    H --> I
+```
+
+---
+
+### 5. Methodological Strengths and Constraints
+*   **Computational Efficiency:** The method is significantly faster than Monte Carlo, as it replaces $10^7$ samples with a single nominal propagation and derivative calculations.
+*   **Accuracy Decay:** Accuracy is inversely proportional to the degree of nonlinearity and the magnitude of input uncertainty.
+*   **Differentiability Requirement:** The method strictly necessitates that the governing equations are continuous and differentiable to allow for Taylor expansion.
+*   **Non-Gaussianity Limitation:** A standard single-run moment method cannot capture non-Gaussian "crescent" or "banana" shapes. This requires advanced hybridizations such as the **Gaussian Mixture Model-Moment (GMM-Moment) method**, which partitions the PDF into smaller, locally linear Gaussian components.
+
+## Show the first and second order Taylor expansions needed to formulate the moments
+
+To formulate the statistical moments used in uncertainty propagation, the **Moment Method** relies on approximating a nonlinear function (or dynamical flow) using **Taylor series expansions**. By expanding the function around the mean of the input distribution, one can apply the expectation operator to derive deterministic algebraic expressions for the terminal mean and covariance.
+
+### 1. Methodology: The Taylor Mapping Approach
+The methodology involves representing a nonlinear transformation $\mathbf{y} = \mathbf{f}(\mathbf{x})$ as a polynomial approximation. For a PhD-level implementation, this usually involves:
+*   **Initialization:** Defining the input uncertainty as a Gaussian PDF $\mathcal{N}(\boldsymbol{\mu}_x, \mathbf{\Sigma}_x)$.
+*   **Differentiation:** Computing the sensitivity (Jacobian) and curvature (Hessian) at the nominal mean point. In high-fidelity systems, this is achieved through **Automatic Differentiation (AD)** to ensure machine-precision derivatives.
+*   **Moment Integration:** Integrating the Taylor terms against the probability density function (PDF) to find the expected values.
+
+---
+
+### 2. Univariate Taylor Expansions (Scalar Case)
+In a one-dimensional system where $y = f(x)$, the second-order Taylor expansion about the mean $\mu_x$ is given by:
+
+$$f(x) \approx f(\mu_x) + f'(\mu_x)(x - \mu_x) + \frac{1}{2}f''(\mu_x)(x - \mu_x)^2$$
+
+**Terms Defined:**
+*   $f(\mu_x)$: The function evaluation at the nominal mean.
+*   $f'(\mu_x)$: The first derivative (sensitivity) of the function.
+*   $f''(\mu_x)$: The second derivative (curvature) of the function.
+*   $(x - \mu_x)$: The perturbation from the mean.
+
+#### **Formulating the Moments:**
+1.  **First-Order Mean ($\mu_y$):** By taking the expectation $\mathbb{E}[f(x)]$ and truncating at the first order, the second term vanishes because $\mathbb{E}[x - \mu_x] = 0$. Thus, **$\mu_y = f(\mu_x)$**.
+2.  **Second-Order Mean ($\mu_y$):** Including the second-order term adds a correction for nonlinearity: **$\mu_y = f(\mu_x) + \frac{1}{2}f''(\mu_x)\sigma_x^2$**.
+3.  **Second-Order Variance ($\sigma_y^2$):** Derived from $\mathbb{E}[(f(x) - \mu_y)^2]$. After algebraic expansion and integration of the central moments, the result is: **$\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2 + \frac{1}{2}[f''(\mu_x)]^2 \sigma_x^4$**.
+
+---
+
+### 3. Multivariate Taylor Expansions ($R^n$ Case)
+For a state vector $\mathbf{x} \in \mathbb{R}^n$, the expansion must be performed component-wise for each coordinate $f_i(\mathbf{x})$.
+
+#### **The Component-wise Second-Order Expansion:**
+$$f_i(\mathbf{x}) \approx f_i(\boldsymbol{\mu}_x) + \sum_{j=1}^n \frac{\partial f_i}{\partial x_j} \bigg|_{\boldsymbol{\mu}_x} (x_j - \mu_{x,j}) + \frac{1}{2} \sum_{j,k=1}^n \frac{\partial^2 f_i}{\partial x_j \partial x_k} \bigg|_{\boldsymbol{\mu}_x} (x_j - \mu_{x,j})(x_k - \mu_{x,k})$$
+
+**Terms Defined:**
+*   $\frac{\partial f_i}{\partial x_j}$: Elements of the **Jacobian Matrix ($\mathbf{J}$)**.
+*   $\frac{\partial^2 f_i}{\partial x_j \partial x_k}$: Elements of the **Hessian Matrix ($\mathbf{H}_{fi}$)** for the $i$-th component.
+
+#### **Vector/Matrix Moment Formulation:**
+*   **Mean Vector (Second-Order):** 
+    $$\mu_{y,i} = f_i(\boldsymbol{\mu}_x) + \frac{1}{2} \text{tr}(\mathbf{H}_{fi}(\boldsymbol{\mu}_x) \mathbf{\Sigma}_x)$$
+*   **Covariance Matrix (Second-Order):** 
+    $$\Sigma_y(i, p) = (\mathbf{J} \mathbf{\Sigma}_x \mathbf{J}^T)_{ip} + \frac{1}{2} \text{tr}(\mathbf{H}_{fi} \mathbf{\Sigma}_x \mathbf{H}_{fp} \mathbf{\Sigma}_x)$$
+
+---
+
+### 4. Algorithmic Flowchart for Moment Propagation
+The following flowchart illustrates the implementation of these expansions within a numerical propagation framework (e.g., using **Modified Equinoctial Orbital Elements**).
+
+```mermaid
+graph TD
+    A[Initial PDF: μ_x0, Σ_x0] --> B[Initialize Dynamics: dx/dt = f x,t]
+    B --> C[Compute Nominal Trajectory: φ t; μ_x0]
+    C --> D[Automatic Differentiation: TAPENADE]
+    D --> E[Extract Jacobian J and Hessian H_i]
+    E --> F{Apply Expansion Order}
+    F -- 1st Order --> G["μ_f = φ(μ_0), Σ_f = JΣ_0 J^T"]
+    F -- 2nd Order --> H["Apply Trace Corrections to μ_f and Σ_f"]
+    G --> I[Terminal Gaussian/Mixture Distribution]
+    H --> I
+```
+
+---
+
+### 5. Variations and Advanced Descriptions
+
+*   **Implicit vs. Explicit Mapping:**
+    *   **Explicit:** Used when a closed-form formula $y=f(x)$ exists (e.g., coordinate transformations).
+    *   **Implicit:** The Taylor expansion is applied to the **solution flow map** $\phi(t; \mathbf{x}_0)$ of an ODE. The derivatives are calculated relative to the initial conditions.
+*   **GMM-Moment Integration:**
+    To handle the "loss of Gaussianity" in highly nonlinear orbits, the initial uncertainty is split into a **Gaussian Mixture Model (GMM)** using algorithms like the **Horwood Suboptimal Algorithm**. 
+    *   Each component $i$ is treated as a local Gaussian with its own mean $\boldsymbol{\mu}_i$ and a small covariance $\mathbf{\Sigma}_i$.
+    *   The Taylor expansion is applied to each component separately. Because the local covariances are small, the Taylor approximation remains highly accurate for much longer propagation times than a single-Gaussian approach.
+*   **Automatic Differentiation (AD) Advantage:** 
+    Traditional STT (State Transition Tensor) methods require manual derivation of high-order variational equations. In the GMM-Moment framework, tools like **TAPENADE** parse the C-source dynamics code to generate exact Jacobian and Hessian code automatically, significantly reducing the "curse of dimensionality" associated with manual derivation.

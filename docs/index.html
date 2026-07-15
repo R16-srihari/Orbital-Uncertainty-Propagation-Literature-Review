@@ -95,6 +95,7 @@ window.Quarto = {
 
 <meta name="citation_title" content="State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)">
 <meta name="citation_author" content="Srihari S">
+<meta name="citation_fulltext_html_url" content="https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.html">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Orbit uncertainty propagation in space situational awareness applied to conjunction assessment;,citation_author=Justin Bos;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;">
 <meta name="citation_reference" content="citation_title=Orbital uncertainty propagation for collision probability computation;,citation_author=Suyog Soman;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;">
@@ -102,6 +103,8 @@ window.Quarto = {
 <meta name="citation_reference" content="citation_title=Multi-Fidelity Orbit Uncertainty Propagation with Systematic Errors;,citation_author=Brandon Jones;,citation_author=Emmanuel Delande;,citation_author=Enrico Zucchelli;,citation_author=Moriba Jah;,citation_editor=S. Ryan;,citation_publication_date=2019-09;,citation_cover_date=2019-09;,citation_year=2019;,citation_conference_title=Advanced maui optical and space surveillance technologies conference;">
 <meta name="citation_reference" content="citation_title=New extension of the kalman filter to nonlinear systems;,citation_author=Simon J. Julier;,citation_author=Jeffrey K. Uhlmann;,citation_publication_date=1997;,citation_cover_date=1997;,citation_year=1997;,citation_fulltext_html_url=https://api.semanticscholar.org/CorpusID:7937456;,citation_conference_title=Defense, security, and sensing;">
 <meta name="citation_reference" content="citation_title=Propagation multi-fidélité d’incertitude orbitale en présence d’accélérations stochastiques;,citation_author=Alberto Fossà;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_dissertation_institution=The University of Texas at Austin;">
+<meta name="citation_reference" content="citation_title=Hybrid gaussian mixture model and unscented transformation algorithm for uncertainty propagation within the PUZZLE software;,citation_abstract=Nowadays, the constant increase of space debris represents a great concern for all space operators and agencies. With a higher amount of space junk, the collision risk for active missions inevitably grows. For this reason, building up accurate models for space debris is useful to support the reconstruction of past fragmentation events, but also to foster the prediction of possible future breakups. However, the available data about space debris distribution are not always accurate and the models may lead to incorrect previsions. The work proposed in this paper has two main objectives: firstly, the development of a hybrid method for the non-linear propagation of the uncertainty associated with the state of orbital fragments, then, the inclusion of such model within the PUZZLE software, a routine developed at Politecnico di Milano (initially under a contract with Italian Space Agency) for the detection and characterisation of a past fragmentation event. The first goal is achieved by combining the Gaussian Mixture Model (GMM) and the Unscented Transformation (UT) methods for propagating the uncertainty associated with a non-linear system over time. To accomplish the second goal, a simplified version of the hybrid algorithm is introduced within the PUZZLE software to enrich the data set given as input with additional Two Line Elements (TLEs) for each object, taking into account the specified value of uncertainty. Numerical results and graphical representations will show the capability of the updated software for studying breakup events.;,citation_author=Roberto Detomaso;,citation_author=Andrea Muciaccia;,citation_author=Camilla Colombo;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S0273117725002443;,citation_issue=10;,citation_doi=https://doi.org/10.1016/j.asr.2025.03.026;,citation_issn=0273-1177;,citation_volume=75;,citation_journal_title=Advances in Space Research;">
+<meta name="citation_reference" content="citation_title=Recent advances of practical techniques for nonlinear uncertainty propagation in orbital dynamics;,citation_author=Pan Sun;,citation_author=Kai Cao;,citation_author=Shuang Li;,citation_publication_date=2026;,citation_cover_date=2026;,citation_year=2026;,citation_issue=1;,citation_volume=69;,citation_journal_title=Science China Physics, Mechanics &amp;amp;amp; Astronomy;,citation_publisher=Springer;">
 </head>
 
 <body class="quarto-light">
@@ -190,6 +193,7 @@ window.Quarto = {
   <li><a href="#gmm-stt-state-transition-tensor" id="toc-gmm-stt-state-transition-tensor" class="nav-link" data-scroll-target="#gmm-stt-state-transition-tensor">GMM-STT (State Transition Tensor)</a></li>
   <li><a href="#gmm-da-differential-algebra" id="toc-gmm-da-differential-algebra" class="nav-link" data-scroll-target="#gmm-da-differential-algebra">GMM-DA (Differential Algebra)</a></li>
   <li><a href="#gmm-pce-polynomial-chaos-expansion" id="toc-gmm-pce-polynomial-chaos-expansion" class="nav-link" data-scroll-target="#gmm-pce-polynomial-chaos-expansion">GMM-PCE (Polynomial Chaos Expansion)</a></li>
+  <li><a href="#gmm-moment-method" id="toc-gmm-moment-method" class="nav-link" data-scroll-target="#gmm-moment-method">GMM-Moment Method</a></li>
   </ul></li>
   <li><a href="#advanced-variations-on-the-gmm-method" id="toc-advanced-variations-on-the-gmm-method" class="nav-link" data-scroll-target="#advanced-variations-on-the-gmm-method">Advanced Variations on the GMM Method</a>
   <ul class="collapse">
@@ -205,9 +209,14 @@ window.Quarto = {
   <li><a href="#impact-of-coordinate-frames" id="toc-impact-of-coordinate-frames" class="nav-link" data-scroll-target="#impact-of-coordinate-frames">Impact of Coordinate Frames</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#moment-method" id="toc-moment-method" class="nav-link" data-scroll-target="#moment-method">Moment Method</a>
+  <li><a href="#sec-moment-method" id="toc-sec-moment-method" class="nav-link" data-scroll-target="#sec-moment-method">Moment Method</a>
   <ul class="collapse">
-  <li><a href="#mathematical-framework-and-methodology" id="toc-mathematical-framework-and-methodology" class="nav-link" data-scroll-target="#mathematical-framework-and-methodology">Mathematical Framework and Methodology</a></li>
+  <li><a href="#mathematical-framework-and-methodology" id="toc-mathematical-framework-and-methodology" class="nav-link" data-scroll-target="#mathematical-framework-and-methodology">Mathematical Framework and Methodology</a>
+  <ul class="collapse">
+  <li><a href="#taylor-series-expansion" id="toc-taylor-series-expansion" class="nav-link" data-scroll-target="#taylor-series-expansion">Taylor Series Expansion</a></li>
+  <li><a href="#moment-propagation" id="toc-moment-propagation" class="nav-link" data-scroll-target="#moment-propagation">Moment Propagation</a></li>
+  <li><a href="#multivariate-extension-rn" id="toc-multivariate-extension-rn" class="nav-link" data-scroll-target="#multivariate-extension-rn">Multivariate Extension (<span class="math inline">\(R^n\)</span>)</a></li>
+  </ul></li>
   <li><a href="#comparative-orders-of-approximation" id="toc-comparative-orders-of-approximation" class="nav-link" data-scroll-target="#comparative-orders-of-approximation">Comparative Orders of Approximation</a></li>
   <li><a href="#integration-with-gaussian-mixture-models-gmm" id="toc-integration-with-gaussian-mixture-models-gmm" class="nav-link" data-scroll-target="#integration-with-gaussian-mixture-models-gmm">Integration with Gaussian Mixture Models (GMM)</a></li>
   <li><a href="#algorithm-for-multivariate-implicit-gmm-moment-propagation" id="toc-algorithm-for-multivariate-implicit-gmm-moment-propagation" class="nav-link" data-scroll-target="#algorithm-for-multivariate-implicit-gmm-moment-propagation">Algorithm for Multivariate Implicit GMM-Moment Propagation</a></li>
@@ -275,7 +284,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#mathematical-architecture" id="toc-mathematical-architecture" class="nav-link" data-scroll-target="#mathematical-architecture">Mathematical Architecture</a>
   <ul class="collapse">
-  <li><a href="#method-1-stochastic-collocation-sc-multi-fidelity" id="toc-method-1-stochastic-collocation-sc-multi-fidelity" class="nav-link" data-scroll-target="#method-1-stochastic-collocation-sc-multi-fidelity">Method 1: Stochastic Collocation (SC) Multi-Fidelity</a></li>
+  <li><a href="#sec-mf-sc" id="toc-sec-mf-sc" class="nav-link" data-scroll-target="#sec-mf-sc">Method 1: Stochastic Collocation (SC) Multi-Fidelity</a></li>
   <li><a href="#method-2-differential-algebra-da-and-adaptive-gmm-multi-fidelity" id="toc-method-2-differential-algebra-da-and-adaptive-gmm-multi-fidelity" class="nav-link" data-scroll-target="#method-2-differential-algebra-da-and-adaptive-gmm-multi-fidelity">Method 2: Differential Algebra (DA) and Adaptive GMM Multi-Fidelity</a></li>
   </ul></li>
   <li><a href="#hybrid-and-efficiency-optimized-frameworks" id="toc-hybrid-and-efficiency-optimized-frameworks" class="nav-link" data-scroll-target="#hybrid-and-efficiency-optimized-frameworks">Hybrid and Efficiency-Optimized Frameworks</a></li>
@@ -620,29 +629,35 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <h3 class="anchored" data-anchor-id="gmm-ut-unscented-transform">GMM-UT (Unscented Transform)</h3>
 <p>The most common implementation, where each kernel’s statistics are propagated via <span class="math inline">\(2n+1\)</span> sigma points.</p>
 <ul>
-<li><p><strong>Advantage:</strong> Captures higher-order nonlinear effects for each mixand, significantly outperforming single-run linearization.</p></li>
-<li><p><strong>Limitation:</strong> Computationally expensive for large mixtures, as total evaluations scale as <span class="math inline">\(N_g \times (2n+1)\)</span>.</p></li>
+<li><p><strong>Methodology:</strong> Each component is represented by <span class="math inline">\(2n+1\)</span> deterministic sigma points <span class="math inline">\(\chi_j\)</span>, which are propagated through the full nonlinear dynamics to reconstruct component statistics.</p></li>
+<li><p><strong>Limitation:</strong> The cost scales linearly with the number of components <span class="math inline">\(L\)</span> and the state dimension <span class="math inline">\(n\)</span>, i.e., <span class="math inline">\(O(L \cdot n)\)</span>.</p></li>
 </ul>
 </section>
 <section id="gmm-mf-multi-fidelity" class="level3">
 <h3 class="anchored" data-anchor-id="gmm-mf-multi-fidelity">GMM-MF (Multi-Fidelity)</h3>
 <p>A high-efficiency hybrid where the Multi-Fidelity method propagates the sigma points of the GMM kernels.</p>
 <ul>
-<li><p><strong>Methodology:</strong> Uses low-fidelity dynamics (e.g., J2-only) to propagate many samples, corrected by a tiny subset of high-fidelity evaluations.</p></li>
+<li><p><strong>Methodology:</strong> The entire ensemble of sigma points from all components is propagated via a computationally cheap low-fidelity (LF) model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian identifies a subset of “important samples” to be corrected by the HF model via stochastic collocation. See <a href="#sec-mf-sc" class="quarto-xref">Section&nbsp;10.2.1</a> for a detailed discussion on the stochastic collocation multi-fidelity method.</p></li>
 <li><p><strong>Performance:</strong> Achieves accuracy similar to GMM-UT but with an <strong>80% reduction in computation time</strong>.</p></li>
 </ul>
 </section>
 <section id="gmm-stt-state-transition-tensor" class="level3">
 <h3 class="anchored" data-anchor-id="gmm-stt-state-transition-tensor">GMM-STT (State Transition Tensor)</h3>
-<p>Pairs the GMM with semi-analytical STT propagation.</p>
+<p>This method regards Gaussian distributions as a function space to express PDFs in closed form.</p>
 <ul>
-<li><p><strong>Methodology:</strong> Kernels are evolved using high-order Taylor expansions of the flow.</p></li>
-<li><p>GMM-STT Effectively mitigates the divergence of STTs in high-uncertainty regions by keeping the individual kernel covariances “small” and within the radius of convergence.</p></li>
+<li><p><strong>Methodology:</strong> Instead of solving separate ODEs for each mean and covariance, the STT solution flow is reformulated as a matrix function valid over all components.</p></li>
+<li><p><strong>Mathematical Formula (State Deviation):</strong> <span class="math display">\[
+\delta \hat{x}_{i}^k(t) \approx \sum_{p=1}^{m} \frac{1}{p!} \Phi^k_{j_1...j_p}(t, t_0) \delta \hat{x}_{0,i}^{j_1} \dots \delta \hat{x}_{0,i}^{j_p}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\delta \hat{x}_{i}^k(t)\)</span> is the <span class="math inline">\(k\)</span>-th state component of the <span class="math inline">\(i\)</span>-th component; <span class="math inline">\(\Phi^k_{j_1...j_p}\)</span> is the <span class="math inline">\(p\)</span>-th order State Transition Tensor.</li>
+</ul></li>
+<li><p><strong>Efficiency:</strong> It becomes more efficient than individual component propagation for <span class="math inline">\(L &gt; 7\)</span> components (using a 2nd-order expansion).</p></li>
 </ul>
 </section>
 <section id="gmm-da-differential-algebra" class="level3">
 <h3 class="anchored" data-anchor-id="gmm-da-differential-algebra">GMM-DA (Differential Algebra)</h3>
-<p>Integrates GMMs with high-order Taylor polynomials generated automatically via DA.</p>
+<p>The core innovation of GMM-DA is that the high-order Taylor expansion of the solution flow is computed only once. The solution flow is expanded into a polynomial up to an arbitrary order <span class="math inline">\(k\)</span> without manual derivation of variational equations. All individual Gaussian kernels are then evaluated through this single polynomial map, turning the propagation of thousands of components into a series of efficient algebraic evaluations</p>
 <ul>
 <li><p><strong>Advantage:</strong> Self-adaptive to any regular nonlinear system without requiring manual derivation of derivatives.</p></li>
 <li><p><strong>Variant (DA-LOADS):</strong> Uses a <strong>Nonlinearity Index (NLI)</strong> to trigger adaptive splitting only when the Taylor expansion’s truncation error exceeds a threshold.</p></li>
@@ -655,6 +670,10 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><p><strong>Methodology:</strong> Splitting (h-refinement) reduces the domain of approximation for each component, allowing for lower-order polynomials (p-refinement) to be used effectively.</p></li>
 <li><p><strong>Benefit:</strong> It reduces the factorial growth of PCE terms in high-dimensional states while maintaining the ability to capture full shapes of non-Gaussian distributions.</p></li>
 </ul>
+</section>
+<section id="gmm-moment-method" class="level3">
+<h3 class="anchored" data-anchor-id="gmm-moment-method">GMM-Moment Method</h3>
+<p>This semi-analytical framework propagates the first raw moment (mean) and the second central moment (variance) of each Gaussian component through a nonlinear system using the first/or second-order Taylor expansion of the explicit flow function of the dynamical system. <a href="#sec-moment-method" class="quarto-xref">Section&nbsp;5</a> discusses the mathematical formulation and implementation of the moment method in detail.</p>
 </section>
 </section>
 <section id="advanced-variations-on-the-gmm-method" class="level2">
@@ -729,21 +748,67 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </section>
 </section>
 </section>
-<section id="moment-method" class="level1">
+<section id="sec-moment-method" class="level1">
 <h1>Moment Method</h1>
 <p>The <strong>Moment Method</strong> (or Method of Moments) is a statistical technique utilized in uncertainty propagation to estimate the evolution of a probability density function (PDF) by focusing on its statistical moments—primarily the mean and covariance. Within the hierarchy of uncertainty propagation methods, it serves as a computationally efficient bridge between low-fidelity linear approximations and high-fidelity, but expensive, sampling-based techniques like Monte Carlo (MC).</p>
 <section id="mathematical-framework-and-methodology" class="level2">
 <h2 class="anchored" data-anchor-id="mathematical-framework-and-methodology">Mathematical Framework and Methodology</h2>
 <p>The method relies on the assumption that if an input variable (or vector) is characterized by a Gaussian distribution, its first two moments are necessary and sufficient to describe its state <span class="citation" data-cites="thesis_suyog">(<a href="#ref-thesis_suyog" role="doc-biblioref">Soman 2025</a>)</span>.</p>
-<ul>
-<li><p><strong>Taylor Series Expansion:</strong> The core mechanism involves expanding the nonlinear system function <span class="math inline">\(y = f(x)\)</span> or the numerical flow map <span class="math inline">\(\phi(t; x_0)\)</span> into a Taylor series about the mean value of the inputs.</p></li>
-<li><p><strong>Explicit vs.&nbsp;Implicit Formulations:</strong></p>
+<section id="taylor-series-expansion" class="level3">
+<h3 class="anchored" data-anchor-id="taylor-series-expansion">Taylor Series Expansion</h3>
+<p>The core mechanism involves expanding the nonlinear system function into a Taylor series about the mean value of the inputs.</p>
+<p><strong>Explicit vs.&nbsp;Implicit Formulations:</strong></p>
 <ul>
 <li><p><strong>Explicit Moment Method:</strong> Applied when a direct functional relationship <span class="math inline">\(y = f(x)\)</span> exists between input and output.</p></li>
 <li><p><strong>Implicit Moment Method:</strong> Utilized in astrodynamics when only the governing differential equations <span class="math inline">\(\dot{x} = f(x, t)\)</span> are known. It requires a numerical integrator (e.g., RKF78) to define the solution flow <span class="math inline">\(\phi\)</span>, which is then expanded.</p></li>
-</ul></li>
-<li><p><strong>Multivariate Extension (<span class="math inline">\(R^n\)</span>):</strong> In a 6-dimensional orbital state, the method propagates the mean vector <span class="math inline">\(\mu\)</span> and the covariance matrix <span class="math inline">\(\Sigma\)</span>. For a first-order approximation, the covariance propagates as <span class="math inline">\(\Sigma_{y} = J \Sigma_{x} J^T\)</span>, where <span class="math inline">\(J\)</span> is the Jacobian matrix.</p></li>
 </ul>
+</section>
+<section id="moment-propagation" class="level3">
+<h3 class="anchored" data-anchor-id="moment-propagation">Moment Propagation</h3>
+<p>In order to explain the moment propagation, consider an explicit moment propagation problem with a nonlinear function <span class="math inline">\(y = f(x)\)</span> where <span class="math inline">\(x\)</span> is a random variable with mean <span class="math inline">\(\mu_x\)</span> and covariance <span class="math inline">\(\sigma_x^2\)</span>. The first two moments of the output <span class="math inline">\(y\)</span> can be approximated depending on the order of the Taylor expansion:</p>
+<p><strong>First-Order Equations:</strong></p>
+<ol type="1">
+<li><p><strong>Mean (<span class="math inline">\(\mu_y\)</span>):</strong> <span class="math inline">\(\mu_y = f(\mu_x)\)</span></p></li>
+<li><p><strong>Variance (<span class="math inline">\(\sigma_y^2\)</span>):</strong> <span class="math inline">\(\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2\)</span></p></li>
+</ol>
+<p><strong>Second-Order Equations:</strong></p>
+<ol type="1">
+<li><p><strong>Mean:</strong> <span class="math inline">\(\mu_y = f(\mu_x) + \frac{1}{2} f''(\mu_x) \sigma_x^2\)</span></p></li>
+<li><p><strong>Variance:</strong> <span class="math inline">\(\sigma_y^2 = [f'(\mu_x)]^2\sigma_x^2 + f'(\mu_x)f''(\mu_x)\mu_3^{(x)} + \frac{1}{4}[f''(\mu_x)]^2 (\mu_4^{(x)}-\sigma_x^4)\)</span></p></li>
+</ol>
+<p><strong>Terms Defined:</strong></p>
+<ul>
+<li><p><span class="math inline">\(f(\mu_x)\)</span>: Function evaluation at the mean.</p></li>
+<li><p><span class="math inline">\(f'(\mu_x)\)</span>: First derivative (sensitivity) at the mean.</p></li>
+<li><p><span class="math inline">\(f''(\mu_x)\)</span>: Second derivative (curvature) at the mean.</p></li>
+<li><p><span class="math inline">\(\mu_3^{(x)}\)</span>: The third central moment of the input distribution.</p></li>
+<li><p><span class="math inline">\(\mu_4^{(x)}\)</span>: The fourth central moment of the input distribution.</p></li>
+<li><p><span class="math inline">\(\sigma_x^4\)</span>: The square of the input variance.</p></li>
+</ul>
+<p><strong>Implicit Formulation:</strong></p>
+<p>In high-fidelity astrodynamics, an explicit formula <span class="math inline">\(y = f(x)\)</span> is rarely available. Instead, the system is defined by a set of nonlinear Ordinary Differential Equations (ODEs): <span class="math display">\[\dot{\mathbf{x}} = f(\mathbf{x}, t)\]</span></p>
+<p>The <strong>Implicit Moment Method</strong> uses the <strong>solution flow</strong> <span class="math inline">\(\mathbf{x}(t)=\phi(t; \mathbf{x}_0)\)</span> obtained via numerical integration (e.g., Runge-Kutta schemes). The methodology treats the numerical integrator as the mapping function:</p>
+<ol type="1">
+<li><p><strong>Trajectory Integration:</strong> Propagate the nominal mean <span class="math inline">\(\boldsymbol{\mu}_{x0}\)</span> to find the final state <span class="math inline">\(\phi(\boldsymbol{\mu}_{x0})\)</span>.</p></li>
+<li><p><strong>Sensitivity Extraction:</strong> Compute the Jacobian and Hessian of the flow map, often utilizing <strong>Automatic Differentiation (AD)</strong> to ensure machine-precision accuracy.</p></li>
+<li><p><strong>Moment Transformation:</strong> Apply the multivariate moment equations using the flow derivatives to advance the mean and covariance to the target epoch <span class="math inline">\(t_f\)</span>.</p></li>
+</ol>
+<p>In a 6-dimensional orbital state, the method propagates the mean vector <span class="math inline">\(\mu\)</span> and the covariance matrix <span class="math inline">\(\Sigma\)</span>. The following sections detail the multivariate extension of the moment method.</p>
+</section>
+<section id="multivariate-extension-rn" class="level3">
+<h3 class="anchored" data-anchor-id="multivariate-extension-rn">Multivariate Extension (<span class="math inline">\(R^n\)</span>)</h3>
+<p>When the input is an <span class="math inline">\(n\)</span>-dimensional random vector <span class="math inline">\(\mathbf{x} \sim \mathcal{N}(\boldsymbol{\mu}_x, \mathbf{\Sigma}_x)\)</span>, the propagation involves the Jacobian matrix and Hessian tensors.</p>
+<p><strong>First-Order (Linearized) Moments:</strong> <span class="math display">\[\boldsymbol{\mu}_y = f(\boldsymbol{\mu}_x)\]</span> <span class="math display">\[\mathbf{\Sigma}_y = \mathbf{J} \mathbf{\Sigma}_x \mathbf{J}^T\]</span></p>
+<p><strong>Second-Order Moments (Component-wise):</strong> <span class="math display">\[\mu_{y,i} = f_i(\boldsymbol{\mu}_x) + \frac{1}{2} \text{tr}(\mathbf{H}_{fi}(\boldsymbol{\mu}_x) \mathbf{\Sigma}_x)\]</span> <span class="math display">\[
+\Sigma_y(i, p) = (\mathbf{J} \mathbf{\Sigma}_x \mathbf{J}^T)_{ip} + \frac{1}{2} \text{tr}(\mathbf{H}_{fi} \mathbf{\Sigma}_x \mathbf{H}_{fp} \mathbf{\Sigma}_x)
+\]</span></p>
+<p><strong>Terms Defined:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\mathbf{J}\)</span>: The <span class="math inline">\(n \times n\)</span> Jacobian matrix, <span class="math inline">\(\mathbf{J} = \frac{\partial f}{\partial \mathbf{x}}\big|_{\boldsymbol{\mu}_x}\)</span>.</p></li>
+<li><p><span class="math inline">\(\mathbf{H}_{fi}\)</span>: The Hessian matrix of the <span class="math inline">\(i\)</span>-th component of the function <span class="math inline">\(f\)</span>.</p></li>
+<li><p><span class="math inline">\(\text{tr}(\cdot)\)</span>: The trace operator, summing the diagonal elements of the resulting matrix product.</p></li>
+</ul>
+</section>
 </section>
 <section id="comparative-orders-of-approximation" class="level2">
 <h2 class="anchored" data-anchor-id="comparative-orders-of-approximation">Comparative Orders of Approximation</h2>
@@ -1257,8 +1322,8 @@ N_{coeff} = \frac{(n + k)!}{n!k!}
 </section>
 <section id="mathematical-architecture" class="level2">
 <h2 class="anchored" data-anchor-id="mathematical-architecture">Mathematical Architecture</h2>
-<section id="method-1-stochastic-collocation-sc-multi-fidelity" class="level3">
-<h3 class="anchored" data-anchor-id="method-1-stochastic-collocation-sc-multi-fidelity">Method 1: Stochastic Collocation (SC) Multi-Fidelity</h3>
+<section id="sec-mf-sc" class="level3">
+<h3 class="anchored" data-anchor-id="sec-mf-sc">Method 1: Stochastic Collocation (SC) Multi-Fidelity</h3>
 <p>Developed by <span class="citation" data-cites="JONES2019406">Jones and Weisman (<a href="#ref-JONES2019406" role="doc-biblioref">2019</a>)</span>, this non-intrusive method uses a large ensemble of LF samples to identify a subset of “important” samples for HF propagation.</p>
 <ul>
 <li><p><strong>Initial Ensemble:</strong> A set of <span class="math inline">\(m\)</span> random inputs <span class="math inline">\(\Xi = \{\xi_i\}_{i=1}^m\)</span> is generated from the initial probability density function (PDF).</p></li>
@@ -1482,6 +1547,9 @@ w_t = w_t - C_{h(t,n)}^2
 <div id="ref-bosorbit" class="csl-entry" role="listitem">
 Bos, Justin. 2025. <em>Orbit Uncertainty Propagation in Space Situational Awareness Applied to Conjunction Assessment</em>.
 </div>
+<div id="ref-DETOMASO20257226" class="csl-entry" role="listitem">
+Detomaso, Roberto, Andrea Muciaccia, and Camilla Colombo. 2025. <span>“Hybrid Gaussian Mixture Model and Unscented Transformation Algorithm for Uncertainty Propagation Within the PUZZLE Software.”</span> <em>Advances in Space Research</em> 75 (10): 7226–41. https://doi.org/<a href="https://doi.org/10.1016/j.asr.2025.03.026">https://doi.org/10.1016/j.asr.2025.03.026</a>.
+</div>
 <div id="ref-fossa2024propagation" class="csl-entry" role="listitem">
 Fossà, Alberto. 2024. <span>“Propagation Multi-Fid<span>é</span>lit<span>é</span> d’incertitude Orbitale En Pr<span>é</span>sence d’acc<span>é</span>l<span>é</span>rations Stochastiques.”</span> PhD thesis, The University of Texas at Austin.
 </div>
@@ -1496,6 +1564,9 @@ Julier, Simon J., and Jeffrey K. Uhlmann. 1997. <span>“New Extension of the Ka
 </div>
 <div id="ref-thesis_suyog" class="csl-entry" role="listitem">
 Soman, Suyog. 2025. <em>Orbital Uncertainty Propagation for Collision Probability Computation</em>.
+</div>
+<div id="ref-sun2026recent" class="csl-entry" role="listitem">
+Sun, Pan, Kai Cao, and Shuang Li. 2026. <span>“Recent Advances of Practical Techniques for Nonlinear Uncertainty Propagation in Orbital Dynamics.”</span> <em>Science China Physics, Mechanics &amp; Astronomy</em> 69 (1): 214501.
 </div>
 </div></section></div></main>
 <!-- /main column -->
@@ -1572,7 +1643,7 @@ Soman, Suyog. 2025. <em>Orbital Uncertainty Propagation for Collision Probabilit
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/r16-srihari\.github\.io\/Orbital-Uncertainty-Propagation-Literature-Review\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
