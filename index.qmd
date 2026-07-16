@@ -950,61 +950,52 @@ STT based methods function by analytically mapping initial uncertainties using e
 -   **Algebraic Propagation:** Once the tensors are obtained by numerically integrating along a nominal trajectory, they provide a means to compute the nonlinear propagation of the first two statistical moments (mean and covariance) through relatively simple **algebraic operations**.
 
 ## Mathematical Architecture of STTs
-The STT framework models the flow of a nonlinear dynamical system $\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)$ by expanding the solution in terms of initial state deviations.
+The fundamental premise of the STT method is that the state deviation $\delta \mathbf{x}(t)$ at a future time can be expressed as a function of the initial deviation $\delta \mathbf{x}_0$ using a $P$-order Taylor series expansion about a nominal trajectory $\mathbf{x}^*(t)$.
 
 ### The High-Order Taylor Map
-The state deviation $\delta x_i$ at a future time $t$ is approximated as:
+The $i$-th component of the state deviation at a future time $t$ is approximated as:
 $$
-\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p}(t, t_0) \delta x_{0, k_1} \dots \delta x_{0, k_p}
+\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
 $$
 
-**Terms Defined:**
+**Term Definitions:**
 
-*   $\delta x_i(t)$: The $i$-th component of the state deviation at the final time.
+*   $\delta x_i(t)$: The $i$-th component of the state deviation at time $t$.
 
-*   $\delta x_{0, k_p}$: The $k_p$-th component of the initial state deviation.
+*   $\Phi_{i,k_1 \dots k_p}$: The $p$-th order **State Transition Tensor**, defined as the $p$-th partial derivative of the solution flow with respect to initial conditions: $\frac{\partial^p x_i}{\partial x_{0,k_1} \dots \partial x_{0,k_p}}$.
 
-*   $P$: The highest order of the Taylor expansion (typically $P=2$ or $P=3$).
+*   $\delta x_{0,k_j}$: The $k_j$-th component of the initial state deviation.
 
-*   $\phi_{i, k_1 \dots k_p}$: The $p$-th order **State Transition Tensor**, representing the $p$-th partial derivative of the flow with respect to initial conditions.
+*   $P$: The truncation order of the expansion (typically $P=2$ or $3$).
 
 ### Differential Equations for Tensor Propagation
-The STTs themselves are time-varying and are obtained by numerically integrating their corresponding ordinary differential equations (ODEs) alongside the nominal trajectory:
-$$\dot{\phi}_{i, a} = A_{i, \alpha} \phi_{\alpha, a}$$
-$$\dot{\phi}_{i, ab} = A_{i, \alpha} \phi_{\alpha, ab} + A_{i, \alpha \beta} \phi_{\alpha, a} \phi_{\beta, b}$$
+STTs are obtained by integrating a set of coupled ordinary differential equations (ODEs) derived from the system dynamics $\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)$. For example, the second-order STT evolves according to:
+$$
+\dot{\Phi}_{i,ab} = f_{i,\alpha}^\star \Phi_{\alpha,ab} + f_{i,\alpha\beta}^\star \Phi_{\alpha,a} \Phi_{\beta,b}
+$$
 
-**Terms Defined:**
+**Term Definitions:**
 
-*   $\dot{\phi}_{i, a}$: The time derivative of the first-order tensor (the State Transition Matrix, STM).
+*   $f_{i,\alpha}^\star, f_{i,\alpha\beta}^\star$: The first and second partial derivatives (Jacobian and Hessian) of the dynamics $\mathbf{f}$ evaluated along the nominal trajectory.
 
-*   $A_{i, k_1 \dots k_p}$: The $p$-th partial derivative of the dynamics vector field $\mathbf{f}$ evaluated along the reference trajectory: $A_{i, k_1 \dots k_p} = \frac{\partial^p f_i}{\partial x_{k_1} \dots \partial x_{k_p}}$.
+*   $\alpha, \beta$: Dummy indices using Einstein summation notation.
+
+*   $\Phi_{\alpha,a}, \Phi_{\beta,b}$: First-order STT components that couple into the second-order evolution.
 
 
 ## Methodology: Moment Propagation via Algebraic Mapping
-Unlike sampling methods that propagate individual points, STT-based UQ maps the initial statistical moments directly to the terminal state through simple algebraic operations.
+Unlike sampling methods that propagate individual points, STT-based uncertainty propagation maps the initial statistical moments directly to the terminal state through simple algebraic operations.
 
 1.  **Reference Integration:** Solve the ODEs for the nominal state $\mathbf{x}(t)$ and the tensors $\phi$ up to order $P$.
 
 2.  **Initial Moment Characterization:** Compute the raw moments of the initial PDF (e.g., using the moment-generating function for a Gaussian or uniform distribution).
 
 3.  **Statistical Mapping:** Use the Taylor expansion and the linearity of the expectation operator to compute the terminal mean ($\hat{\mu}$) and covariance ($\hat{\mathbf{P}}$):
-    $$\delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]$$
+    $$
+    \delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
+    $$
 
 4.  **Gaussian Moment Property:** If the initial distribution is Gaussian, higher-order moments are analytically linked to the covariance via **Isserlis' Theorem** (or Wick's formula), allowing for precise reconstruction of non-Gaussian terminal shapes using only the initial mean and covariance.
-
-
-## Variations and Algorithmic Enhancements
-To overcome the "curse of dimensionality" and the high computational cost of calculating factorial-order partial derivatives, several advanced STT variants have been developed.
-
-*   **Directional State Transition Tensors (DSTT):** Reduces complexity by aligning the STT terms only with the most sensitive directions (eigenvectors of the Cauchy-Green tensor) while ignoring stable directions. This can reduce the number of integrated variables from $n^3$ to approximately $n + n^2 + nm^2$.
-
-*   **Time-varying Directional STT (TDSTT):** Improves upon the DSTT by integrating the eigenvalue-eigenvector pairs over time, allowing uncertainty analysis at any historical point rather than just a predefined final epoch.
-
-*   **Distribution Transport (DT):** Organizes polynomial coefficients into a vector form to facilitate parallel calculation using linear algebra libraries and integral correction methods, achieving speed-ups of up to 60 times over conventional STT implementations.
-
-*   **Reduced STT (RSTT):** Assumes two-body dynamics dominate and retains only the secular terms to decrease the integration burden for high-order approximations.
-
-
 
 ## Algorithm: The STT Uncertainty Pipeline
 The following flowchart delineates the procedural execution of an STT-based uncertainty propagation campaign.
@@ -1023,6 +1014,25 @@ graph TD
     I --> K[Pc Calculation for Conjunction Assessment]
     J --> K
 ```
+
+
+## Variations and Algorithmic Enhancements
+
+To overcome the "curse of dimensionality" and the high computational cost of calculating factorial-order partial derivatives, several advanced STT variants have been developed.
+
+*   **Directional State Transition Tensors (DSTT):** Proposed to reduce complexity by only capturing nonlinear effects along "sensitive" directions (e.g., the maximum stretch direction of the Cauchy-Green Tensor). This reduces the number of integrated variables from $O(n^{P+1})$ to $O(n^2 + nm^{P-1})$, where $m$ is the number of sensitive directions.
+
+*   **Time-varying Directional STT (TDSTT):** Improves upon the DSTT by integrating the eigenvalue-eigenvector pairs over time, allowing uncertainty analysis at any historical point rather than just a predefined final epoch.
+
+*   **Distribution Transport (DT):** Organizes polynomial coefficients into a vector form to facilitate parallel calculation using linear algebra libraries and integral correction methods, achieving speed-ups of up to 60 times over conventional STT implementations.
+
+*   **Reduced STT (RSTT):** Assumes two-body dynamics dominate and retains only the secular terms to decrease the integration burden for high-order approximations.
+
+*   **GMM-STT Hybrid Method:** Combines Gaussian Mixture Models with STTs. The initial uncertainty is split into small Gaussian components, each of which is propagated linearly or with low-order STTs to maintain validity over long durations.
+
+*   **Non-Gaussian STT Propagation:** Extends the method to handle arbitrary initial PDFs (e.g., uniform distributions for asteroid gravity fields) by leveraging Moment Generating Functions (MGFs) to calculate initial expectations.
+
+
 
 ## STT in the Spectrum of Surrogate Methods
 Within the broader category of surrogate methods, STTs are defined by distinct trade-offs regarding differentiability and dimensionality.
