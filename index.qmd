@@ -822,10 +822,15 @@ To address specific limitations—such as non-standard distributions, discontinu
 
 In the larger context of **Polynomial and Expansion Methods**, the sources define **Differential Algebra (DA)** as a computational technique that facilitates the nonlinear propagation of uncertainties by substituting classical real algebra with **Taylor series expansions**. While related to other expansion techniques like Polynomial Chaos Expansions (PCE) and State Transition Tensors (STT), DA is distinguished by its ability to calculate higher-order derivatives automatically.
 
-## Mathematical Foundations of DA
-The fundamental principle of DA is to represent any $k$-differentiable function as its Taylor expansion up to a specified order. This is formalized through the definition of the **$nDv$ algebra**, often denoted as $kDn$ in literature.
+## Mathematical Foundations of Differential Algebra methods
+
+The core methodology of DA involves substituting the classical real algebra of floating-point numbers with a truncated power series algebra, typically denoted as $^kD_n$, representing polynomials of order $k$ in $n$ variables.
 
 *   **The Algebra $kDn$:** This algebra consists of equivalence classes of functions that share the same Taylor polynomial up to order $k$ in $n$ variables centered at $x_0$.
+
+*   **State Initialization**: Instead of a single initial state $\mathbf{x}_0$, the state is initialized as a DA variable $[\mathbf{x}] = \mathbf{x}_0 + \delta\mathbf{x}$, where $\delta\mathbf{x}$ represents a deviation or uncertainty around the nominal reference.
+
+*   **Automatic Derivation**: By overloading standard mathematical operators, any numerical integration scheme (e.g., Runge-Kutta) can be implemented to propagate the Taylor expansion of the flow automatically.
 
 *   **Coefficient Cardinality:** The maximum number of coefficients $N_{coeff}$ required to represent a polynomial of order $k$ in $n$ variables is given by:
     $$
@@ -834,20 +839,24 @@ The fundamental principle of DA is to represent any $k$-differentiable function 
 
     For instance, a 10th-order expansion in 6 dimensions (10D6) requires 8,008 coefficients.
 
-*   **The Taylor Map:** The output of a DA-based numerical integration is a high-order multidimensional Taylor map, $\mathcal{T}_{x_0}^{(k)}$, which relates initial perturbations $\delta x_0$ to the future state $x(t)$:
-    $$x(t) = \mathcal{T}_{x_0}^{(k)}(\delta x_0) = \sum_{|\alpha| \le k} c_{\alpha}(t) \delta x_0^{\alpha}$$
+*   **The Taylor Map**: The primary output is a high-order Taylor polynomial map relating initial deviations to the final state.
 
-    **Terms Defined:**
+Mathematically, the transformation is expressed as:
+$$
+[\mathbf{y}] = f([\mathbf{x}]) = \mathcal{T}^k_y(\delta \mathbf{x}) = \sum_{p_1 + \dots + p_n \le k} c_{p_1 \dots p_n} \cdot \delta x_1^{p_1} \dots \delta x_n^{p_n} 
+$$
 
-    *   $x(t)$: The state vector at time $t$.
+**Terms Definition**:
 
-    *   $k$: The expansion order.
+*   $\mathcal{T}^k_y$: The $k$-th order Taylor expansion of the dependent variable $\mathbf{y}$.
 
-    *   $\alpha$: A multi-index $(\alpha_1, \dots, \alpha_n)$ where $\alpha_i \in \mathbb{N} \cup \{0\}$.
+*   $c_{p_1 \dots p_n}$: Taylor coefficients representing high-order partial derivatives of the state with respect to the initial conditions.
 
-    *   $c_{\alpha}(t)$: Time-varying polynomial coefficients representing partial derivatives.
+*   $\delta x_i$: The $i$-th component of the initial state deviation vector.
 
-    *   $\delta x_0$: The initial state deviation vector.
+*   $k$: The expansion order, which determines the accuracy of the nonlinear capture.
+
+*   $\mathbf{y}$: The dependent variable whose uncertainty is being propagated.
 
 
 ## Operational Methodology: High-Order Flow Expansion
@@ -860,21 +869,13 @@ The DA methodology facilitates nonlinear UP by propagating a "neighborhood" of s
 3.  **Map Extraction:** The result is the $k$-th order Taylor expansion of the flow $\phi(t; x_0, \alpha)$. This map is analytic and can be used for near-instantaneous evaluations of displaced initial conditions.
 
 4.  **Statistical Mapping:** Terminal moments are computed by applying the expectation operator $\mathbb{E}[\cdot]$ to the resulting Taylor map.
+    
     *   **Terminal Mean:** $\mu_i(t) = \sum_{|\alpha| \le k} c_{\alpha}(t) \mathbb{E}[\delta x_0^{\alpha}]$.
+    
     *   **Terminal Covariance:** $P_{ij}(t) = \mathbb{E}[x_i(t)x_j(t)] - \mu_i(t)\mu_j(t)$, which involves algebraic operations on the coefficients and initial moments.
 
 
 
-## Variations and Algorithmic Enhancements
-To overcome the limitations of local expansions and computational growth, several advanced variants of the DA framework exist.
-
-*   **Automatic Domain Splitting (ADS/LOADS):** In highly nonlinear regimes, a single Taylor expansion may fail to maintain accuracy over the entire uncertainty volume. ADS monitors the truncation error (e.g., the magnitude of terms of order $k+1$) and adaptively subdivides the uncertainty domain into smaller sub-regions when error thresholds are exceeded.
-
-*   **DA-based Monte Carlo (DAMC):** Instead of thousands of expensive numerical integrations, DAMC samples from the initial PDF and evaluates the samples using the DA-derived Taylor map. This typically achieves a 10-fold reduction in computation time for order $k=3$.
-
-*   **Hybrid GMM-DA:** The initial uncertainty is split into a **Gaussian Mixture Model (GMM)**, and each kernel is nonlinearly propagated via a high-order DA map. This approach is self-adaptive and avoids manual derivation of high-order derivatives.
-
-*   **DA-LOADS Pruning:** Utilizes polynomial bounding techniques to discard regions of the state manifold that do not intersect with observations during initial orbit determination (IOD).
 
 
 ## Algorithmic Implementation Flowcharts
@@ -907,6 +908,38 @@ graph TD
 ```
 
 
+## Variations and Algorithmic Enhancements
+To overcome the limitations of local expansions and computational growth, several advanced variants of the DA framework exist.
+
+*   **Automatic Domain Splitting (ADS/LOADS):** In highly nonlinear regimes, a single Taylor expansion may fail to maintain accuracy over the entire uncertainty volume. ADS monitors the truncation error (e.g., the magnitude of terms of order $k+1$) and adaptively subdivides the uncertainty domain into smaller sub-regions when error thresholds are exceeded.
+
+*   **DA-based Monte Carlo (DAMC):** Instead of thousands of expensive numerical integrations, DAMC samples from the initial PDF and evaluates the samples using the DA-derived Taylor map. This typically achieves a 10-fold reduction in computation time for order $k=3$.
+
+*   **Hybrid GMM-DA:** The initial uncertainty is split into a **Gaussian Mixture Model (GMM)**, and each kernel is nonlinearly propagated via a high-order DA map. This approach is self-adaptive and avoids manual derivation of high-order derivatives.
+
+*   **DA-Based Higher-Order (DAHO)**: This method analytically computes the moments (mean, covariance, skewness, kurtosis) of the transformed probability density function (PDF). This is achieved by computing the expectation of the monomials in the Taylor expansion.
+
+For a Gaussian initial distribution, the expectation of monomials is computed using **Isserlis’ (Wick’s) Formula**:
+$$
+E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 & \text{if } \sum s_i \text{ is odd} \\ Haf(\mathbf{P}) & \text{if } \sum s_i \text{ is even} \end{cases}
+$$
+
+**Terms Definition**:
+
+*   $E\{\cdot\}$: The expectation operator.
+
+*   $Haf(\mathbf{P})$: The Hafnian of the covariance matrix $\mathbf{P}$, which is a sum over all permutations of product terms of the covariance components.
+
+*   **DA-LOADS Pruning:** Utilizes polynomial bounding techniques to discard regions of the state manifold that do not intersect with observations during initial orbit determination (IOD).
+
+*   **Multifidelity DA (MF-DA)**:
+    
+    *   **Methodology**: This approach combines low-fidelity (LF) analytical models (like SGP4) propagated in DA with high-fidelity (HF) point-wise numerical integrations. The LF DA propagation provides the nonlinear "shape" of the uncertainty, while HF integrations of the polynomial centers correct the absolute position accuracy.
+    
+    *   **Efficiency**: This method can achieve speed-ups of 15–20x compared to full HF numerical DA integrations while maintaining high accuracy.
+
+
+
 ## Differential Algebra in the Expansion Taxonomy
 Within the broader context of Expansion and Surrogate methods, DA is distinguished by its **intrusive nature** and **problem independence**.
 
@@ -915,6 +948,8 @@ Within the broader context of Expansion and Surrogate methods, DA is distinguish
 *   **DA vs. Polynomial Chaos (PCE):** PCE is a **non-intrusive** "black-box" spectral technique that characterizes uncertainty using a sum of orthogonal polynomials of random variables. In contrast, DA focuses on the Taylor expansion of the state and requires the system dynamics to be continuous and differentiable ($C^{k+1}$).
 
 *   **Coordinate Frame Dependency:** Unlike methods restricted to specific coordinates to minimize nonlinearity, DA-based methods are largely unaffected by coordinate selection (e.g., Cartesian vs. Element space) because they can adjust expansion orders to maintain accuracy.
+
+*   **Handling Discontinuities**: Traditional DA requires continuous and differentiable dynamics. However, advanced implementations (like Thales' PACE[Ref. @bignon2015accurate]) approximate discontinuities—such as shadow entry/exit in solar radiation pressure—using infinitely differentiable functions like the arctangent to remain within the DA framework.
 
 *   **The Curse of Dimensionality:** Like all expansion methods, DA suffers from factorial growth in terms ($N_{coeff}$) as order $k$ increases. Modern extensions like **Distribution Transport (DT)** attempt to mitigate this by organizing coefficients into vectors for parallel computation.
 
