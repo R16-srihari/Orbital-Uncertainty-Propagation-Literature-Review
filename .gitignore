@@ -2,4 +2,7 @@
 /_manuscript/
 /_site/
 /_freeze/
+/log_files/
+/docs/_tex/
+/docs/site_libs/
 **/*.quarto_ipynb
