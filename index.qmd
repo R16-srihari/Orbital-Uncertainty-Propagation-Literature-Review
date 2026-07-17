@@ -69,6 +69,7 @@ The literature categorize the non-deterministic inputs into two distinct mathema
     *   **Modeling:** Almost universally represented using precise probability distributions (PDFs).
 
 *   **Epistemic Uncertainty (Systematic):**
+
     *   **Definition:** Arises from a lack of knowledge or limited information about the system's physics or model parameters.
 
     *   **Examples:** Modeling inadequacies such as truncated gravity field harmonics (e.g., using a 2x2 vs. 70x70 model), unknown area-to-mass ratios for solar radiation pressure, and errors introduced by using fast surrogate models (metamodels) instead of high-fidelity propagators.
@@ -186,6 +187,7 @@ implying that reducing the error by a factor of (k) requires approximately (k^2)
 :::
 
 -  **Collision Assessment Barriers:** For rare-event quantification, such as conjunction assessment where collision probabilities ($P_C$) may be $10^{-4}$ or lower, the number of required samples can reach **$10^7$ or more** to achieve low statistical error.
+
 -  **Practical Infeasibility:** Due to these requirements, the sources note that standard MC simulations are often infeasible for practical, real-time application to the vast population of resident space objects (RSOs).
 
 ## MC in the Landscape of Sampling Methods
@@ -199,7 +201,7 @@ Current literature place MC within a broader hierarchy of sampling and sample-re
 
 -  **Parallelization:** Leveraging multicore CPUs or GPU acceleration is highlighted as a primary way to reduce the run times of large-scale Monte Carlo campaigns.
 
-# Linearized Covariance (LinCov)
+# Linearized Covariance (LinCov) {#sec-lincov}
 
 In the taxonomy of uncertainty propagation (UP) methods, **Linearised Covariance (LinCov)** represents the foundational entry in the category of **Linear Approximation Methods**. It is characterized by its reliance on first-order Taylor-series expansions to map statistical moments through nonlinear dynamical systems. While computationally superior in terms of execution time, its mathematical architecture introduces significant epistemic risks when the system's nonlinearity induces non-Gaussianity.
 
@@ -919,16 +921,16 @@ To overcome the limitations of local expansions and computational growth, severa
 
 *   **DA-Based Higher-Order (DAHO)**: This method analytically computes the moments (mean, covariance, skewness, kurtosis) of the transformed probability density function (PDF). This is achieved by computing the expectation of the monomials in the Taylor expansion.
 
-For a Gaussian initial distribution, the expectation of monomials is computed using **Isserlis’ (Wick’s) Formula**:
-$$
-E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 & \text{if } \sum s_i \text{ is odd} \\ Haf(\mathbf{P}) & \text{if } \sum s_i \text{ is even} \end{cases}
-$$
+    For a Gaussian initial distribution, the expectation of monomials is computed using **Isserlis’ (Wick’s) Formula**:
+    $$
+    E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 & \text{if } \sum s_i \text{ is odd} \\ Haf(\mathbf{P}) & \text{if } \sum s_i \text{ is even} \end{cases}
+    $$
 
-**Terms Definition**:
+    **Terms Definition**:
 
-*   $E\{\cdot\}$: The expectation operator.
+    *   $E\{\cdot\}$: The expectation operator.
 
-*   $Haf(\mathbf{P})$: The Hafnian of the covariance matrix $\mathbf{P}$, which is a sum over all permutations of product terms of the covariance components.
+    *   $Haf(\mathbf{P})$: The Hafnian of the covariance matrix $\mathbf{P}$, which is a sum over all permutations of product terms of the covariance components.
 
 *   **DA-LOADS Pruning:** Utilizes polynomial bounding techniques to discard regions of the state manifold that do not intersect with observations during initial orbit determination (IOD).
 
@@ -949,7 +951,7 @@ Within the broader context of Expansion and Surrogate methods, DA is distinguish
 
 *   **Coordinate Frame Dependency:** Unlike methods restricted to specific coordinates to minimize nonlinearity, DA-based methods are largely unaffected by coordinate selection (e.g., Cartesian vs. Element space) because they can adjust expansion orders to maintain accuracy.
 
-*   **Handling Discontinuities**: Traditional DA requires continuous and differentiable dynamics. However, advanced implementations (like Thales' PACE[Ref. @bignon2015accurate]) approximate discontinuities—such as shadow entry/exit in solar radiation pressure—using infinitely differentiable functions like the arctangent to remain within the DA framework.
+*   **Handling Discontinuities**: Traditional DA requires continuous and differentiable dynamics. However, advanced implementations (like Thales' PACE \[@bignon2015accurate\]) approximate discontinuities—such as shadow entry/exit in solar radiation pressure—using infinitely differentiable functions like the arctangent to remain within the DA framework.
 
 *   **The Curse of Dimensionality:** Like all expansion methods, DA suffers from factorial growth in terms ($N_{coeff}$) as order $k$ increases. Modern extensions like **Distribution Transport (DT)** attempt to mitigate this by organizing coefficients into vectors for parallel computation.
 
@@ -978,7 +980,7 @@ In the rigorous taxonomy of orbital uncertainty quantification (UQ), **State Tra
 ## Core Mechanics and Relationship to Linear Approximation
 STT based methods function by analytically mapping initial uncertainties using expansions that describe nonlinear behavior within a limited region of the state space. 
 
--   **Extension of the STM:** The sources note that a first-order Taylor expansion in this framework corresponds exactly to solving for the **State Transition Matrix (STM)** used in the **Linearised Covariance (LinCov)** method.
+-   **Extension of the STM:** The sources note that a first-order Taylor expansion in this framework corresponds exactly to solving for the **State Transition Matrix (STM)** used in the **Linearised Covariance (LinCov)** method (See @sec-lincov) .
 
 -   **Handling Nonlinearity:** By solving for higher-order tensors, the method can provide significantly better results than standard linearisation for cases involving **strong nonlinearity**.
 
