@@ -972,7 +972,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </section>
 <section id="polynomial-chaos-expansions-pce" class="level1 page-columns page-full">
 <h1>Polynomial Chaos Expansions (PCE)</h1>
-<p>In the rigorous hierarchy of uncertainty propagation (UP) methodologies, <strong>Polynomial Chaos Expansions (PCE)</strong> represent a powerful class of <strong>non-intrusive spectral techniques</strong>. Situated within the broader category of <strong>Expansion and Surrogate Methods</strong>, PCE bridges the gap between local Taylor-series-based approximations (like Linearized Covariance or State Transition Tensors) and brute-force stochastic simulations (Monte Carlo) by constructing a global functional representation of a system’s stochastic response.</p>
+<p>In the rigorous domain of orbital uncertainty propagation (UP), <strong>Polynomial Chaos Expansion (PCE)</strong> represents a powerful spectral decomposition technique that characterizes the evolution of state uncertainties through highly nonlinear dynamical systems. Unlike traditional linearization methods that assume Gaussianity, PCE provides a non-parametric framework capable of capturing the increasingly non-Gaussian “banana-shaped” probability density functions (PDFs) characteristic of long-term orbital motion.</p>
 <section id="theoretical-classification-and-role" class="level2">
 <h2 class="anchored" data-anchor-id="theoretical-classification-and-role">Theoretical Classification and Role</h2>
 <p>Within the methodological landscape, PCE is distinguished by its ability to map input uncertainties to output responses using a “black-box” approach that does not require alterations to existing high-fidelity solvers.</p>
@@ -1008,24 +1008,47 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </section>
 <section id="orthonormality-and-moment-matching" class="level3">
 <h3 class="anchored" data-anchor-id="orthonormality-and-moment-matching"><strong>Orthonormality and Moment Matching</strong></h3>
-<p>The basis functions are chosen to satisfy the orthogonality condition relative to the input PDF, <span class="math inline">\(\rho(\xi)\)</span>: <span class="math display">\[\langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\xi) \Psi_\beta(\xi) \rho(\xi) d\xi = \delta_{\alpha\beta}\]</span> where <span class="math inline">\(\delta_{\alpha\beta}\)</span> is the Kronecker delta. This property allows for the <strong>analytical evaluation of statistical moments</strong> directly from the spectral coefficients without additional sampling:</p>
+<p>The basis functions are chosen according to the <strong>Wiener-Askey scheme</strong>, ensuring they are orthogonal relative to the input PDF, <span class="math inline">\(\rho(\xi)\)</span>: <span class="math display">\[
+\langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\xi) \Psi_\beta(\xi) \rho(\xi) d\xi = \delta_{\alpha\beta}
+\]</span></p>
+<p>where <span class="math inline">\(\delta_{\alpha\beta}\)</span> is the Kronecker delta. This property allows for the <strong>analytical evaluation of statistical moments</strong> directly from the spectral coefficients without additional sampling:</p>
 <ul>
 <li><p><strong>Mean:</strong> <span class="math inline">\(\mu = c_0\)</span>.</p></li>
 <li><p><strong>Variance:</strong> <span class="math inline">\(\sigma^2 = \sum_{j=1}^P c_j^2 \|\Psi_j\|^2\)</span>.</p></li>
 </ul>
-<hr>
+<div class="callout callout-style-default callout-tip callout-titled" title="Polynomial Families and Corresponding Input Distributions">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Polynomial Families and Corresponding Input Distributions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Usually, the choice of polynomial family is dictated by the distribution of the input uncertainties:</p>
+<ul>
+<li><p><strong>Hermite Polynomials:</strong> For Gaussian inputs.</p></li>
+<li><p><strong>Legendre Polynomials:</strong> For Uniform inputs.</p></li>
+</ul>
+</div>
+</div>
 </section>
 </section>
 <section id="procedural-logic-non-intrusive-pce-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="procedural-logic-non-intrusive-pce-workflow">Procedural Logic: Non-Intrusive PCE Workflow</h2>
-<p>In astrodynamics, the non-intrusive approach is favored because it treats the high-fidelity orbit propagator as a “black box”.</p>
+<p>Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats existing high-fidelity propagators as “black boxes”. The two primary estimation methods for coeffiare:</p>
+<ol type="1">
+<li><p><strong>Pseudo-Spectral Projection:</strong> Exploits orthogonality by projecting the model output onto each basis function using numerical integration (e.g., Gaussian quadrature or Smolyak sparse grids).</p></li>
+<li><p><strong>Least-Squares Regression:</strong> Minimizes the residual between the expansion and model evaluations at a set of sampled points (e.g., Latin Hypercube Sampling).</p></li>
+</ol>
 <pre class="mermaid"><code>graph TD
     A[Initial PDF: p_xi] --&gt; B[Generate Inputs: xi realization via Rosenblatt or Cholesky]
     B --&gt; C[Select Collocation Nodes via Quadrature or Sampling]
     C --&gt; D[Propagate each Node through High-Fidelity ODEs]
     D --&gt; E[Obtain Propagated Realizations: X_ti]
     E --&gt; F[Solve for Spectral Coefficients: c_j]
-    F --&gt; G[Regression: Least-Squares Solution]
+    F --&gt; G[Regression: Least-Squares Solution or Pseudo-Spectral Projection]
     F --&gt; H[Spectral Projection: Numerical Integration]
     G --&gt; I[Final PCE Surrogate: Analytic Response Surface]
     H --&gt; I
@@ -1040,7 +1063,20 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><p><strong>Arbitrary Polynomial Chaos (APC):</strong> A <strong>data-driven approach</strong> that circumvents the need for a presumed parametric distribution. APC constructs an orthogonal basis using only a finite number of moments calculated directly from raw sampling data (e.g., from an admissible region in orbit determination).</p></li>
 <li><p><strong>Sparse PCE and Compressive Sensing:</strong> To combat the curse of dimensionality, modern frameworks exploit the <strong>sparsity-of-effects principle</strong>—the idea that systems are dominated by low-order interactions. Solvers such as <strong>Orthogonal Matching Pursuit (OMP)</strong>, <strong>Least Angle Regression (LARS)</strong>, or <span class="math inline">\(l_1\)</span>-regularized <strong>Compressive Sensing</strong> identify only the most significant coefficients, allowing for accurate surrogates using significantly fewer function evaluations than terms in the full basis.</p></li>
 <li><p><strong>Multi-Element PCE (ME-PCE):</strong> For systems with sharp gradients, discontinuities, or long-term integration errors, global polynomials often fail. ME-PCE utilizes <strong>domain decomposition</strong>, splitting the random input space into smaller sub-regions (elements) and fitting local PCE surrogates to each.</p></li>
-<li><p><strong>Hybrid Meta-Modeling (PC-Kriging):</strong> <strong>Polynomial Chaos-Kriging (PCK)</strong> combines the global trend capture of PCE with the localized interpolation accuracy of <strong>Kriging</strong> (Gaussian Process Regression). In this architecture, a sparse PCE represents the global system behavior while Kriging interpolates the localized high-frequency residuals.</p></li>
+<li><p><strong>Hybrid Meta-Modeling (PC-Kriging):</strong> PCK is a hybrid metamodeling technique that combines the global trend-capturing capabilities of PCE with the local interpolation accuracy of <strong>Kriging</strong> (Gaussian Process Regression).</p>
+<ul>
+<li><p><strong>Formula:</strong> <span class="math inline">\(M_{PCK}(\boldsymbol{X}) = \sum_{i=1}^{P} \alpha_i \Psi_i(\boldsymbol{X}) + \sigma^2 Z(\boldsymbol{X})\)</span>.</p></li>
+<li><p><strong>Methodology:</strong> The PCE expansion serves as the trend function for Universal Kriging, and the Kriging part handles the local residuals. PCK often requires an order of magnitude fewer training points than standard Kriging or PCE to reach the same accuracy.</p></li>
+</ul></li>
+<li><p><strong>GMM-PCE Hybrid methods:</strong> For cases with extreme nonlinearity or long propagation times, <strong>Gaussian Mixture Models (GMMs)</strong> are combined with PCE.</p>
+<ul>
+<li><strong>Methodology:</strong> The initial large Gaussian distribution is split into <span class="math inline">\(N\)</span> smaller Gaussian sub-components (h-refinement). A lower-order PCE is then applied to each sub-component (p-refinement). This “hp-refinement” strategy reduces the domain of approximation for each element, allowing for rapid convergence where global PCE might fail.</li>
+</ul></li>
+<li><p><strong>Dimension Reduction (AS-NIPC &amp; POD-PCE):</strong> To handle high-dimensional state spaces (e.g., constellation sets or high-fidelity fields), dimension reduction techniques are integrated:</p>
+<ul>
+<li><p><strong>Active Subspace (AS):</strong> Identifies lower-dimensional directions in the input space that most influence the output, performing NIPC only in this active subspace.</p></li>
+<li><p><strong>Proper Orthogonal Decomposition (POD):</strong> Used for “field” outputs, POD identifies a latent space to reduce output dimensionality before mapping inputs to latent coordinates via PCE or PCK.</p></li>
+</ul></li>
 <li><p><strong>Multi-Fidelity (MF) Extensions:</strong> Multi-Fidelity PCE incorporates information from a hierarchy of models. It uses a low-fidelity model (e.g., 2-body dynamics) as a foundation and a lower-order PCE to resolve the <strong>model discrepancy</strong> (additive or multiplicative) from a limited set of high-fidelity evaluations.</p></li>
 </ul>
 </section>
