@@ -637,7 +637,6 @@ approximately (k\^{}2) times more samples.
 \end{tcolorbox}
 
 \begin{itemize}
-\tightlist
 \item
   \textbf{Collision Assessment Barriers:} For rare-event quantification,
   such as conjunction assessment where collision probabilities (\(P_C\))
@@ -682,8 +681,7 @@ sample-reliant methods designed to mitigate its costs:
   of large-scale Monte Carlo campaigns.
 \end{itemize}
 
-\section{Linearized Covariance
-(LinCov)}\label{linearized-covariance-lincov}
+\section{Linearized Covariance (LinCov)}\label{sec-lincov}
 
 In the taxonomy of uncertainty propagation (UP) methods,
 \textbf{Linearised Covariance (LinCov)} represents the foundational
@@ -1019,11 +1017,13 @@ propagated via \(2n+1\) sigma points.
 
 \begin{itemize}
 \item
-  \textbf{Advantage:} Captures higher-order nonlinear effects for each
-  mixand, significantly outperforming single-run linearization.
+  \textbf{Methodology:} Each component is represented by \(2n+1\)
+  deterministic sigma points \(\chi_j\), which are propagated through
+  the full nonlinear dynamics to reconstruct component statistics.
 \item
-  \textbf{Limitation:} Computationally expensive for large mixtures, as
-  total evaluations scale as \(N_g \times (2n+1)\).
+  \textbf{Limitation:} The cost scales linearly with the number of
+  components \(L\) and the state dimension \(n\), i.e.,
+  \(O(L \cdot n)\).
 \end{itemize}
 
 \subsubsection{GMM-MF (Multi-Fidelity)}\label{gmm-mf-multi-fidelity}
@@ -1033,9 +1033,13 @@ sigma points of the GMM kernels.
 
 \begin{itemize}
 \item
-  \textbf{Methodology:} Uses low-fidelity dynamics (e.g., J2-only) to
-  propagate many samples, corrected by a tiny subset of high-fidelity
-  evaluations.
+  \textbf{Methodology:} The entire ensemble of sigma points from all
+  components is propagated via a computationally cheap low-fidelity (LF)
+  model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian
+  identifies a subset of ``important samples'' to be corrected by the HF
+  model via stochastic collocation. See Section~\ref{sec-mf-sc} for a
+  detailed discussion on the stochastic collocation multi-fidelity
+  method.
 \item
   \textbf{Performance:} Achieves accuracy similar to GMM-UT but with an
   \textbf{80\% reduction in computation time}.
@@ -1044,23 +1048,42 @@ sigma points of the GMM kernels.
 \subsubsection{GMM-STT (State Transition
 Tensor)}\label{gmm-stt-state-transition-tensor}
 
-Pairs the GMM with semi-analytical STT propagation.
+This method regards Gaussian distributions as a function space to
+express PDFs in closed form.
 
 \begin{itemize}
 \item
-  \textbf{Methodology:} Kernels are evolved using high-order Taylor
-  expansions of the flow.
+  \textbf{Methodology:} Instead of solving separate ODEs for each mean
+  and covariance, the STT solution flow is reformulated as a matrix
+  function valid over all components.
 \item
-  GMM-STT Effectively mitigates the divergence of STTs in
-  high-uncertainty regions by keeping the individual kernel covariances
-  ``small'' and within the radius of convergence.
+  \textbf{Mathematical Formula (State Deviation):} \[
+  \delta \hat{x}_{i}^k(t) \approx \sum_{p=1}^{m} \frac{1}{p!} \Phi^k_{j_1...j_p}(t, t_0) \delta \hat{x}_{0,i}^{j_1} \dots \delta \hat{x}_{0,i}^{j_p}
+  \]
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\delta \hat{x}_{i}^k(t)\) is the \(k\)-th state component of the
+    \(i\)-th component; \(\Phi^k_{j_1...j_p}\) is the \(p\)-th order
+    State Transition Tensor.
+  \end{itemize}
+\item
+  \textbf{Efficiency:} It becomes more efficient than individual
+  component propagation for \(L > 7\) components (using a 2nd-order
+  expansion).
 \end{itemize}
 
 \subsubsection{GMM-DA (Differential
 Algebra)}\label{gmm-da-differential-algebra}
 
-Integrates GMMs with high-order Taylor polynomials generated
-automatically via DA.
+The core innovation of GMM-DA is that the high-order Taylor expansion of
+the solution flow is computed only once. The solution flow is expanded
+into a polynomial up to an arbitrary order \(k\) without manual
+derivation of variational equations. All individual Gaussian kernels are
+then evaluated through this single polynomial map, turning the
+propagation of thousands of components into a series of efficient
+algebraic evaluations
 
 \begin{itemize}
 \item
@@ -1088,6 +1111,15 @@ Methods.
   high-dimensional states while maintaining the ability to capture full
   shapes of non-Gaussian distributions.
 \end{itemize}
+
+\subsubsection{GMM-Moment Method}\label{gmm-moment-method}
+
+This semi-analytical framework propagates the first raw moment (mean)
+and the second central moment (variance) of each Gaussian component
+through a nonlinear system using the first/or second-order Taylor
+expansion of the explicit flow function of the dynamical system.
+Section~\ref{sec-moment-method} discusses the mathematical formulation
+and implementation of the moment method in detail.
 
 \subsection{Advanced Variations on the GMM
 Method}\label{advanced-variations-on-the-gmm-method}
@@ -1276,7 +1308,7 @@ in MEqOE, the uncertainty primarily distributes along a single direction
 (true longitude), which would likely require far fewer splits and
 components to achieve high accuracy.
 
-\section{Moment Method}\label{moment-method}
+\section{Moment Method}\label{sec-moment-method}
 
 The \textbf{Moment Method} (or Method of Moments) is a statistical
 technique utilized in uncertainty propagation to estimate the evolution
@@ -1294,31 +1326,137 @@ The method relies on the assumption that if an input variable (or
 vector) is characterized by a Gaussian distribution, its first two
 moments are necessary and sufficient to describe its state (Soman 2025).
 
+\subsubsection{Taylor Series Expansion}\label{taylor-series-expansion}
+
+The core mechanism involves expanding the nonlinear system function into
+a Taylor series about the mean value of the inputs.
+
+\textbf{Explicit vs.~Implicit Formulations:}
+
 \begin{itemize}
 \item
-  \textbf{Taylor Series Expansion:} The core mechanism involves
-  expanding the nonlinear system function \(y = f(x)\) or the numerical
-  flow map \(\phi(t; x_0)\) into a Taylor series about the mean value of
-  the inputs.
+  \textbf{Explicit Moment Method:} Applied when a direct functional
+  relationship \(y = f(x)\) exists between input and output.
 \item
-  \textbf{Explicit vs.~Implicit Formulations:}
+  \textbf{Implicit Moment Method:} Utilized in astrodynamics when only
+  the governing differential equations \(\dot{x} = f(x, t)\) are known.
+  It requires a numerical integrator (e.g., RKF78) to define the
+  solution flow \(\phi\), which is then expanded.
+\end{itemize}
 
-  \begin{itemize}
-  \item
-    \textbf{Explicit Moment Method:} Applied when a direct functional
-    relationship \(y = f(x)\) exists between input and output.
-  \item
-    \textbf{Implicit Moment Method:} Utilized in astrodynamics when only
-    the governing differential equations \(\dot{x} = f(x, t)\) are
-    known. It requires a numerical integrator (e.g., RKF78) to define
-    the solution flow \(\phi\), which is then expanded.
-  \end{itemize}
+\subsubsection{Moment Propagation}\label{moment-propagation}
+
+In order to explain the moment propagation, consider an explicit moment
+propagation problem with a nonlinear function \(y = f(x)\) where \(x\)
+is a random variable with mean \(\mu_x\) and covariance \(\sigma_x^2\).
+The first two moments of the output \(y\) can be approximated depending
+on the order of the Taylor approximation:
+
+\textbf{First-Order Equations:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
 \item
-  \textbf{Multivariate Extension (\(R^n\)):} In a 6-dimensional orbital
-  state, the method propagates the mean vector \(\mu\) and the
-  covariance matrix \(\Sigma\). For a first-order approximation, the
-  covariance propagates as \(\Sigma_{y} = J \Sigma_{x} J^T\), where
-  \(J\) is the Jacobian matrix.
+  \textbf{Mean (\(\mu_y\)):} \(\mu_y = f(\mu_x)\)
+\item
+  \textbf{Variance (\(\sigma_y^2\)):}
+  \(\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2\)
+\end{enumerate}
+
+While fast, moment propagation on the first-order taylor approximation
+fails to capture the ``mean shift'' caused by nonlinearities and
+performs poorly when the PDF becomes highly non-Gaussian.
+
+\textbf{Second-Order Equations:}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Mean:}
+  \(\mu_y = f(\mu_x) + \frac{1}{2} f''(\mu_x) \sigma_x^2\)
+\item
+  \textbf{Variance:}
+  \(\sigma_y^2 = [f'(\mu_x)]^2\sigma_x^2 + f'(\mu_x)f''(\mu_x)\mu_3^{(x)} + \frac{1}{4}[f''(\mu_x)]^2 (\mu_4^{(x)}-\sigma_x^4)\)
+\end{enumerate}
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(f(\mu_x)\): Function evaluation at the mean.
+\item
+  \(f'(\mu_x)\): First derivative (sensitivity) at the mean.
+\item
+  \(f''(\mu_x)\): Second derivative (curvature) at the mean.
+\item
+  \(\mu_3^{(x)}\): The third central moment of the input distribution.
+\item
+  \(\mu_4^{(x)}\): The fourth central moment of the input distribution.
+\item
+  \(\sigma_x^4\): The square of the input variance.
+\end{itemize}
+
+\textbf{Implicit Formulation:}
+
+In high-fidelity astrodynamics, an explicit formula \(y = f(x)\) is
+rarely available. Instead, the system is defined by a set of nonlinear
+Ordinary Differential Equations (ODEs):
+\[\dot{\mathbf{x}} = f(\mathbf{x}, t)\]
+
+The \textbf{Implicit Moment Method} uses the \textbf{solution flow}
+\(\mathbf{x}(t)=\phi(t; \mathbf{x}_0)\) obtained via numerical
+integration (e.g., Runge-Kutta schemes). The methodology treats the
+numerical integrator as the mapping function:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Trajectory Integration:} Propagate the nominal mean
+  \(\boldsymbol{\mu}_{x0}\) to find the final state
+  \(\phi(\boldsymbol{\mu}_{x0})\).
+\item
+  \textbf{Sensitivity Extraction:} Compute the Jacobian and Hessian of
+  the flow map, often utilizing \textbf{Automatic Differentiation (AD)}
+  to ensure machine-precision accuracy.
+\item
+  \textbf{Moment Transformation:} Apply the multivariate moment
+  equations using the flow derivatives to advance the mean and
+  covariance to the target epoch \(t_f\).
+\end{enumerate}
+
+In a 6-dimensional orbital state, the method propagates the mean vector
+\(\mu\) and the covariance matrix \(\Sigma\). The following sections
+detail the multivariate extension of the moment method.
+
+\subsubsection{\texorpdfstring{Multivariate Extension
+(\(R^n\))}{Multivariate Extension (R\^{}n)}}\label{multivariate-extension-rn}
+
+When the input is an \(n\)-dimensional random vector
+\(\mathbf{x} \sim \mathcal{N}(\boldsymbol{\mu}_x, \mathbf{\Sigma}_x)\),
+the propagation involves the Jacobian matrix and Hessian tensors.
+
+\textbf{First-Order (Linearized) Moments:}
+\[\boldsymbol{\mu}_y = f(\boldsymbol{\mu}_x)\]
+\[\mathbf{\Sigma}_y = \mathbf{J} \mathbf{\Sigma}_x \mathbf{J}^T\]
+
+\textbf{Second-Order Moments (Component-wise):}
+\[\mu_{y,i} = f_i(\boldsymbol{\mu}_x) + \frac{1}{2} \text{tr}(\mathbf{H}_{fi}(\boldsymbol{\mu}_x) \mathbf{\Sigma}_x)\]
+\[
+\Sigma_y(i, p) = (\mathbf{J} \mathbf{\Sigma}_x \mathbf{J}^T)_{ip} + \frac{1}{2} \text{tr}(\mathbf{H}_{fi} \mathbf{\Sigma}_x \mathbf{H}_{fp} \mathbf{\Sigma}_x)
+\]
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(\mathbf{J}\): The \(n \times n\) Jacobian matrix,
+  \(\mathbf{J} = \frac{\partial f}{\partial \mathbf{x}}\big|_{\boldsymbol{\mu}_x}\).
+\item
+  \(\mathbf{H}_{fi}\): The Hessian matrix of the \(i\)-th component of
+  the function \(f\).
+\item
+  \(\text{tr}(\cdot)\): The trace operator, summing the diagonal
+  elements of the resulting matrix product.
 \end{itemize}
 
 \subsection{Comparative Orders of
@@ -1367,9 +1505,12 @@ Taylor expansion used:
 \subsection{Integration with Gaussian Mixture Models
 (GMM)}\label{integration-with-gaussian-mixture-models-gmm}
 
-To handle the ``loss of Gaussianity'' typical in long-term orbital
-propagation, the Moment Method is often integrated into a \textbf{GMM
-framework}.
+In practice, the implicit moment method is often combined with
+\textbf{Gaussian Mixture Models (GMM)} to handle the ``loss of
+Gaussianity'' that occurs in long-term orbital propagation. Each
+Gaussian component is propagated independently using the moment method,
+and the final non-Gaussian PDF is reconstructed by recombining the
+weighted sum of these components.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1624,14 +1765,14 @@ The sources highlight the UT's performance relative to other
 \section{Polynomial Chaos Expansions
 (PCE)}\label{polynomial-chaos-expansions-pce}
 
-In the rigorous hierarchy of uncertainty propagation (UP) methodologies,
-\textbf{Polynomial Chaos Expansions (PCE)} represent a powerful class of
-\textbf{non-intrusive spectral techniques}. Situated within the broader
-category of \textbf{Expansion and Surrogate Methods}, PCE bridges the
-gap between local Taylor-series-based approximations (like Linearized
-Covariance or State Transition Tensors) and brute-force stochastic
-simulations (Monte Carlo) by constructing a global functional
-representation of a system's stochastic response.
+In the rigorous domain of orbital uncertainty propagation (UP),
+\textbf{Polynomial Chaos Expansion (PCE)} represents a powerful spectral
+decomposition technique that characterizes the evolution of state
+uncertainties through highly nonlinear dynamical systems. Unlike
+traditional linearization methods that assume Gaussianity, PCE provides
+a non-parametric framework capable of capturing the increasingly
+non-Gaussian ``banana-shaped'' probability density functions (PDFs)
+characteristic of long-term orbital motion.
 
 \subsection{Theoretical Classification and
 Role}\label{theoretical-classification-and-role}
@@ -1721,9 +1862,12 @@ rapid growth of expansion terms.
 \subsubsection{\texorpdfstring{\textbf{Orthonormality and Moment
 Matching}}{Orthonormality and Moment Matching}}\label{orthonormality-and-moment-matching}
 
-The basis functions are chosen to satisfy the orthogonality condition
-relative to the input PDF, \(\rho(\xi)\):
-\[\langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\xi) \Psi_\beta(\xi) \rho(\xi) d\xi = \delta_{\alpha\beta}\]
+The basis functions are chosen according to the \textbf{Wiener-Askey
+scheme}, ensuring they are orthogonal relative to the input PDF,
+\(\rho(\xi)\): \[
+\langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\xi) \Psi_\beta(\xi) \rho(\xi) d\xi = \delta_{\alpha\beta}
+\]
+
 where \(\delta_{\alpha\beta}\) is the Kronecker delta. This property
 allows for the \textbf{analytical evaluation of statistical moments}
 directly from the spectral coefficients without additional sampling:
@@ -1735,13 +1879,38 @@ directly from the spectral coefficients without additional sampling:
   \textbf{Variance:} \(\sigma^2 = \sum_{j=1}^P c_j^2 \|\Psi_j\|^2\).
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Polynomial Families and Corresponding Input Distributions}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+Usually, the choice of polynomial family is dictated by the distribution
+of the input uncertainties:
+
+\begin{itemize}
+\item
+  \textbf{Hermite Polynomials:} For Gaussian inputs.
+\item
+  \textbf{Legendre Polynomials:} For Uniform inputs.
+\end{itemize}
+
+\end{tcolorbox}
 
 \subsection{Procedural Logic: Non-Intrusive PCE
 Workflow}\label{procedural-logic-non-intrusive-pce-workflow}
 
-In astrodynamics, the non-intrusive approach is favored because it
-treats the high-fidelity orbit propagator as a ``black box''.
+Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats
+existing high-fidelity propagators as ``black boxes''. The two primary
+estimation methods for coeffiare:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Pseudo-Spectral Projection:} Exploits orthogonality by
+  projecting the model output onto each basis function using numerical
+  integration (e.g., Gaussian quadrature or Smolyak sparse grids).
+\item
+  \textbf{Least-Squares Regression:} Minimizes the residual between the
+  expansion and model evaluations at a set of sampled points (e.g.,
+  Latin Hypercube Sampling).
+\end{enumerate}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1751,7 +1920,7 @@ treats the high-fidelity orbit propagator as a ``black box''.
 \NormalTok{    C {-}{-}\textgreater{} D[Propagate each Node through High{-}Fidelity ODEs]}
 \NormalTok{    D {-}{-}\textgreater{} E[Obtain Propagated Realizations: X\_ti]}
 \NormalTok{    E {-}{-}\textgreater{} F[Solve for Spectral Coefficients: c\_j]}
-\NormalTok{    F {-}{-}\textgreater{} G[Regression: Least{-}Squares Solution]}
+\NormalTok{    F {-}{-}\textgreater{} G[Regression: Least{-}Squares Solution or Pseudo{-}Spectral Projection]}
 \NormalTok{    F {-}{-}\textgreater{} H[Spectral Projection: Numerical Integration]}
 \NormalTok{    G {-}{-}\textgreater{} I[Final PCE Surrogate: Analytic Response Surface]}
 \NormalTok{    H {-}{-}\textgreater{} I}
@@ -1797,12 +1966,52 @@ key variations of the PCE method.
   the random input space into smaller sub-regions (elements) and fitting
   local PCE surrogates to each.
 \item
-  \textbf{Hybrid Meta-Modeling (PC-Kriging):} \textbf{Polynomial
-  Chaos-Kriging (PCK)} combines the global trend capture of PCE with the
-  localized interpolation accuracy of \textbf{Kriging} (Gaussian Process
-  Regression). In this architecture, a sparse PCE represents the global
-  system behavior while Kriging interpolates the localized
-  high-frequency residuals.
+  \textbf{Hybrid Meta-Modeling (PC-Kriging):} PCK is a hybrid
+  metamodeling technique that combines the global trend-capturing
+  capabilities of PCE with the local interpolation accuracy of
+  \textbf{Kriging} (Gaussian Process Regression).
+
+  \begin{itemize}
+  \item
+    \textbf{Formula:}
+    \(M_{PCK}(\boldsymbol{X}) = \sum_{i=1}^{P} \alpha_i \Psi_i(\boldsymbol{X}) + \sigma^2 Z(\boldsymbol{X})\).
+  \item
+    \textbf{Methodology:} The PCE expansion serves as the trend function
+    for Universal Kriging, and the Kriging part handles the local
+    residuals. PCK often requires an order of magnitude fewer training
+    points than standard Kriging or PCE to reach the same accuracy.
+  \end{itemize}
+\item
+  \textbf{GMM-PCE Hybrid methods:} For cases with extreme nonlinearity
+  or long propagation times, \textbf{Gaussian Mixture Models (GMMs)} are
+  combined with PCE.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Methodology:} The initial large Gaussian distribution is
+    split into \(N\) smaller Gaussian sub-components (h-refinement). A
+    lower-order PCE is then applied to each sub-component
+    (p-refinement). This ``hp-refinement'' strategy reduces the domain
+    of approximation for each element, allowing for rapid convergence
+    where global PCE might fail.
+  \end{itemize}
+\item
+  \textbf{Dimension Reduction (AS-NIPC \& POD-PCE):} To handle
+  high-dimensional state spaces (e.g., constellation sets or
+  high-fidelity fields), dimension reduction techniques are integrated:
+
+  \begin{itemize}
+  \item
+    \textbf{Active Subspace (AS):} Identifies lower-dimensional
+    directions in the input space that most influence the output,
+    performing NIPC only in this active subspace.
+  \item
+    \textbf{Proper Orthogonal Decomposition (POD):} Used for ``field''
+    outputs, POD identifies a latent space to reduce output
+    dimensionality before mapping inputs to latent coordinates via PCE
+    or PCK.
+  \end{itemize}
 \item
   \textbf{Multi-Fidelity (MF) Extensions:} Multi-Fidelity PCE
   incorporates information from a hierarchy of models. It uses a
@@ -1855,19 +2064,30 @@ Chaos Expansions (PCE) and State Transition Tensors (STT), DA is
 distinguished by its ability to calculate higher-order derivatives
 automatically.
 
-\subsection{Mathematical Foundations of
-DA}\label{mathematical-foundations-of-da}
+\subsection{Mathematical Foundations of Differential Algebra
+methods}\label{mathematical-foundations-of-differential-algebra-methods}
 
-The fundamental principle of DA is to represent any \(k\)-differentiable
-function as its Taylor expansion up to a specified order. This is
-formalized through the definition of the \textbf{\(nDv\) algebra}, often
-denoted as \(kDn\) in literature.
+The core methodology of DA involves substituting the classical real
+algebra of floating-point numbers with a truncated power series algebra,
+typically denoted as \(^kD_n\), representing polynomials of order \(k\)
+in \(n\) variables.
 
 \begin{itemize}
 \item
   \textbf{The Algebra \(kDn\):} This algebra consists of equivalence
   classes of functions that share the same Taylor polynomial up to order
   \(k\) in \(n\) variables centered at \(x_0\).
+\item
+  \textbf{State Initialization}: Instead of a single initial state
+  \(\mathbf{x}_0\), the state is initialized as a DA variable
+  \([\mathbf{x}] = \mathbf{x}_0 + \delta\mathbf{x}\), where
+  \(\delta\mathbf{x}\) represents a deviation or uncertainty around the
+  nominal reference.
+\item
+  \textbf{Automatic Derivation}: By overloading standard mathematical
+  operators, any numerical integration scheme (e.g., Runge-Kutta) can be
+  implemented to propagate the Taylor expansion of the flow
+  automatically.
 \item
   \textbf{Coefficient Cardinality:} The maximum number of coefficients
   \(N_{coeff}\) required to represent a polynomial of order \(k\) in
@@ -1878,28 +2098,33 @@ denoted as \(kDn\) in literature.
   For instance, a 10th-order expansion in 6 dimensions (10D6) requires
   8,008 coefficients.
 \item
-  \textbf{The Taylor Map:} The output of a DA-based numerical
-  integration is a high-order multidimensional Taylor map,
-  \(\mathcal{T}_{x_0}^{(k)}\), which relates initial perturbations
-  \(\delta x_0\) to the future state \(x(t)\):
-  \[x(t) = \mathcal{T}_{x_0}^{(k)}(\delta x_0) = \sum_{|\alpha| \le k} c_{\alpha}(t) \delta x_0^{\alpha}\]
+  \textbf{The Taylor Map}: The primary output is a high-order Taylor
+  polynomial map relating initial deviations to the final state.
+\end{itemize}
 
-  \textbf{Terms Defined:}
+Mathematically, the transformation is expressed as: \[
+[\mathbf{y}] = f([\mathbf{x}]) = \mathcal{T}^k_y(\delta \mathbf{x}) = \sum_{p_1 + \dots + p_n \le k} c_{p_1 \dots p_n} \cdot \delta x_1^{p_1} \dots \delta x_n^{p_n} 
+\]
 
-  \begin{itemize}
-  \item
-    \(x(t)\): The state vector at time \(t\).
-  \item
-    \(k\): The expansion order.
-  \item
-    \(\alpha\): A multi-index \((\alpha_1, \dots, \alpha_n)\) where
-    \(\alpha_i \in \mathbb{N} \cup \{0\}\).
-  \item
-    \(c_{\alpha}(t)\): Time-varying polynomial coefficients representing
-    partial derivatives.
-  \item
-    \(\delta x_0\): The initial state deviation vector.
-  \end{itemize}
+\textbf{Terms Definition}:
+
+\begin{itemize}
+\item
+  \(\mathcal{T}^k_y\): The \(k\)-th order Taylor expansion of the
+  dependent variable \(\mathbf{y}\).
+\item
+  \(c_{p_1 \dots p_n}\): Taylor coefficients representing high-order
+  partial derivatives of the state with respect to the initial
+  conditions.
+\item
+  \(\delta x_i\): The \(i\)-th component of the initial state deviation
+  vector.
+\item
+  \(k\): The expansion order, which determines the accuracy of the
+  nonlinear capture.
+\item
+  \(\mathbf{y}\): The dependent variable whose uncertainty is being
+  propagated.
 \end{itemize}
 
 \subsection{Operational Methodology: High-Order Flow
@@ -1931,7 +2156,6 @@ The DA methodology facilitates nonlinear UP by propagating a
   resulting Taylor map.
 
   \begin{itemize}
-  \tightlist
   \item
     \textbf{Terminal Mean:}
     \(\mu_i(t) = \sum_{|\alpha| \le k} c_{\alpha}(t) \mathbb{E}[\delta x_0^{\alpha}]\).
@@ -1942,37 +2166,6 @@ The DA methodology facilitates nonlinear UP by propagating a
     moments.
   \end{itemize}
 \end{enumerate}
-
-\subsection{Variations and Algorithmic
-Enhancements}\label{variations-and-algorithmic-enhancements}
-
-To overcome the limitations of local expansions and computational
-growth, several advanced variants of the DA framework exist.
-
-\begin{itemize}
-\item
-  \textbf{Automatic Domain Splitting (ADS/LOADS):} In highly nonlinear
-  regimes, a single Taylor expansion may fail to maintain accuracy over
-  the entire uncertainty volume. ADS monitors the truncation error
-  (e.g., the magnitude of terms of order \(k+1\)) and adaptively
-  subdivides the uncertainty domain into smaller sub-regions when error
-  thresholds are exceeded.
-\item
-  \textbf{DA-based Monte Carlo (DAMC):} Instead of thousands of
-  expensive numerical integrations, DAMC samples from the initial PDF
-  and evaluates the samples using the DA-derived Taylor map. This
-  typically achieves a 10-fold reduction in computation time for order
-  \(k=3\).
-\item
-  \textbf{Hybrid GMM-DA:} The initial uncertainty is split into a
-  \textbf{Gaussian Mixture Model (GMM)}, and each kernel is nonlinearly
-  propagated via a high-order DA map. This approach is self-adaptive and
-  avoids manual derivation of high-order derivatives.
-\item
-  \textbf{DA-LOADS Pruning:} Utilizes polynomial bounding techniques to
-  discard regions of the state manifold that do not intersect with
-  observations during initial orbit determination (IOD).
-\end{itemize}
 
 \subsection{Algorithmic Implementation
 Flowcharts}\label{algorithmic-implementation-flowcharts}
@@ -2012,6 +2205,74 @@ Propagation}\label{standard-da-uncertainty-propagation}
 \end{Highlighting}
 \end{Shaded}
 
+\subsection{Variations and Algorithmic
+Enhancements}\label{variations-and-algorithmic-enhancements}
+
+To overcome the limitations of local expansions and computational
+growth, several advanced variants of the DA framework exist.
+
+\begin{itemize}
+\item
+  \textbf{Automatic Domain Splitting (ADS/LOADS):} In highly nonlinear
+  regimes, a single Taylor expansion may fail to maintain accuracy over
+  the entire uncertainty volume. ADS monitors the truncation error
+  (e.g., the magnitude of terms of order \(k+1\)) and adaptively
+  subdivides the uncertainty domain into smaller sub-regions when error
+  thresholds are exceeded.
+\item
+  \textbf{DA-based Monte Carlo (DAMC):} Instead of thousands of
+  expensive numerical integrations, DAMC samples from the initial PDF
+  and evaluates the samples using the DA-derived Taylor map. This
+  typically achieves a 10-fold reduction in computation time for order
+  \(k=3\).
+\item
+  \textbf{Hybrid GMM-DA:} The initial uncertainty is split into a
+  \textbf{Gaussian Mixture Model (GMM)}, and each kernel is nonlinearly
+  propagated via a high-order DA map. This approach is self-adaptive and
+  avoids manual derivation of high-order derivatives.
+\item
+  \textbf{DA-Based Higher-Order (DAHO)}: This method analytically
+  computes the moments (mean, covariance, skewness, kurtosis) of the
+  transformed probability density function (PDF). This is achieved by
+  computing the expectation of the monomials in the Taylor expansion.
+
+  For a Gaussian initial distribution, the expectation of monomials is
+  computed using \textbf{Isserlis' (Wick's) Formula}: \[
+  E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 & \text{if } \sum s_i \text{ is odd} \\ Haf(\mathbf{P}) & \text{if } \sum s_i \text{ is even} \end{cases}
+  \]
+
+  \textbf{Terms Definition}:
+
+  \begin{itemize}
+  \item
+    \(E\{\cdot\}\): The expectation operator.
+  \item
+    \(Haf(\mathbf{P})\): The Hafnian of the covariance matrix
+    \(\mathbf{P}\), which is a sum over all permutations of product
+    terms of the covariance components.
+  \end{itemize}
+\item
+  \textbf{DA-LOADS Pruning:} Utilizes polynomial bounding techniques to
+  discard regions of the state manifold that do not intersect with
+  observations during initial orbit determination (IOD).
+\item
+  \textbf{Multifidelity DA (MF-DA)}:
+
+  \begin{itemize}
+  \item
+    \textbf{Methodology}: This approach combines low-fidelity (LF)
+    analytical models (like SGP4) propagated in DA with high-fidelity
+    (HF) point-wise numerical integrations. The LF DA propagation
+    provides the nonlinear ``shape'' of the uncertainty, while HF
+    integrations of the polynomial centers correct the absolute position
+    accuracy.
+  \item
+    \textbf{Efficiency}: This method can achieve speed-ups of 15--20x
+    compared to full HF numerical DA integrations while maintaining high
+    accuracy.
+  \end{itemize}
+\end{itemize}
+
 \subsection{Differential Algebra in the Expansion
 Taxonomy}\label{differential-algebra-in-the-expansion-taxonomy}
 
@@ -2039,6 +2300,13 @@ independence}.
   largely unaffected by coordinate selection (e.g., Cartesian
   vs.~Element space) because they can adjust expansion orders to
   maintain accuracy.
+\item
+  \textbf{Handling Discontinuities}: Traditional DA requires continuous
+  and differentiable dynamics. However, advanced implementations (like
+  Thales' PACE {[}Bignon et al. (2015){]}) approximate
+  discontinuities---such as shadow entry/exit in solar radiation
+  pressure---using infinitely differentiable functions like the
+  arctangent to remain within the DA framework.
 \item
   \textbf{The Curse of Dimensionality:} Like all expansion methods, DA
   suffers from factorial growth in terms (\(N_{coeff}\)) as order \(k\)
@@ -2106,7 +2374,8 @@ region of the state space.
   \textbf{Extension of the STM:} The sources note that a first-order
   Taylor expansion in this framework corresponds exactly to solving for
   the \textbf{State Transition Matrix (STM)} used in the
-  \textbf{Linearised Covariance (LinCov)} method.
+  \textbf{Linearised Covariance (LinCov)} method (See
+  Section~\ref{sec-lincov}) .
 \item
   \textbf{Handling Nonlinearity:} By solving for higher-order tensors,
   the method can provide significantly better results than standard
@@ -2122,64 +2391,68 @@ region of the state space.
 \subsection{Mathematical Architecture of
 STTs}\label{mathematical-architecture-of-stts}
 
-The STT framework models the flow of a nonlinear dynamical system
-\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)\) by expanding the
-solution in terms of initial state deviations.
+The fundamental premise of the STT method is that the state deviation
+\(\delta \mathbf{x}(t)\) at a future time can be expressed as a function
+of the initial deviation \(\delta \mathbf{x}_0\) using a \(P\)-order
+Taylor series expansion about a nominal trajectory \(\mathbf{x}^*(t)\).
 
 \subsubsection{The High-Order Taylor
 Map}\label{the-high-order-taylor-map}
 
-The state deviation \(\delta x_i\) at a future time \(t\) is
+The \(i\)-th component of the state deviation at a future time \(t\) is
 approximated as: \[
-\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p}(t, t_0) \delta x_{0, k_1} \dots \delta x_{0, k_p}
+\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
 \]
 
-\textbf{Terms Defined:}
+\textbf{Term Definitions:}
 
 \begin{itemize}
 \item
   \(\delta x_i(t)\): The \(i\)-th component of the state deviation at
-  the final time.
+  time \(t\).
 \item
-  \(\delta x_{0, k_p}\): The \(k_p\)-th component of the initial state
+  \(\Phi_{i,k_1 \dots k_p}\): The \(p\)-th order \textbf{State
+  Transition Tensor}, defined as the \(p\)-th partial derivative of the
+  solution flow with respect to initial conditions:
+  \(\frac{\partial^p x_i}{\partial x_{0,k_1} \dots \partial x_{0,k_p}}\).
+\item
+  \(\delta x_{0,k_j}\): The \(k_j\)-th component of the initial state
   deviation.
 \item
-  \(P\): The highest order of the Taylor expansion (typically \(P=2\) or
-  \(P=3\)).
-\item
-  \(\phi_{i, k_1 \dots k_p}\): The \(p\)-th order \textbf{State
-  Transition Tensor}, representing the \(p\)-th partial derivative of
-  the flow with respect to initial conditions.
+  \(P\): The truncation order of the expansion (typically \(P=2\) or
+  \(3\)).
 \end{itemize}
 
 \subsubsection{Differential Equations for Tensor
 Propagation}\label{differential-equations-for-tensor-propagation}
 
-The STTs themselves are time-varying and are obtained by numerically
-integrating their corresponding ordinary differential equations (ODEs)
-alongside the nominal trajectory:
-\[\dot{\phi}_{i, a} = A_{i, \alpha} \phi_{\alpha, a}\]
-\[\dot{\phi}_{i, ab} = A_{i, \alpha} \phi_{\alpha, ab} + A_{i, \alpha \beta} \phi_{\alpha, a} \phi_{\beta, b}\]
+STTs are obtained by integrating a set of coupled ordinary differential
+equations (ODEs) derived from the system dynamics
+\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)\). For example, the
+second-order STT evolves according to: \[
+\dot{\Phi}_{i,ab} = f_{i,\alpha}^\star \Phi_{\alpha,ab} + f_{i,\alpha\beta}^\star \Phi_{\alpha,a} \Phi_{\beta,b}
+\]
 
-\textbf{Terms Defined:}
+\textbf{Term Definitions:}
 
 \begin{itemize}
 \item
-  \(\dot{\phi}_{i, a}\): The time derivative of the first-order tensor
-  (the State Transition Matrix, STM).
+  \(f_{i,\alpha}^\star, f_{i,\alpha\beta}^\star\): The first and second
+  partial derivatives (Jacobian and Hessian) of the dynamics
+  \(\mathbf{f}\) evaluated along the nominal trajectory.
 \item
-  \(A_{i, k_1 \dots k_p}\): The \(p\)-th partial derivative of the
-  dynamics vector field \(\mathbf{f}\) evaluated along the reference
-  trajectory:
-  \(A_{i, k_1 \dots k_p} = \frac{\partial^p f_i}{\partial x_{k_1} \dots \partial x_{k_p}}\).
+  \(\alpha, \beta\): Dummy indices using Einstein summation notation.
+\item
+  \(\Phi_{\alpha,a}, \Phi_{\beta,b}\): First-order STT components that
+  couple into the second-order evolution.
 \end{itemize}
 
 \subsection{Methodology: Moment Propagation via Algebraic
 Mapping}\label{methodology-moment-propagation-via-algebraic-mapping}
 
-Unlike sampling methods that propagate individual points, STT-based UQ
-maps the initial statistical moments directly to the terminal state
-through simple algebraic operations.
+Unlike sampling methods that propagate individual points, STT-based
+uncertainty propagation maps the initial statistical moments directly to
+the terminal state through simple algebraic operations.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -2193,8 +2466,9 @@ through simple algebraic operations.
 \item
   \textbf{Statistical Mapping:} Use the Taylor expansion and the
   linearity of the expectation operator to compute the terminal mean
-  (\(\hat{\mu}\)) and covariance (\(\hat{\mathbf{P}}\)):
-  \[\delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]\]
+  (\(\hat{\mu}\)) and covariance (\(\hat{\mathbf{P}}\)): \[
+  \delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
+  \]
 \item
   \textbf{Gaussian Moment Property:} If the initial distribution is
   Gaussian, higher-order moments are analytically linked to the
@@ -2202,37 +2476,6 @@ through simple algebraic operations.
   allowing for precise reconstruction of non-Gaussian terminal shapes
   using only the initial mean and covariance.
 \end{enumerate}
-
-\subsection{Variations and Algorithmic
-Enhancements}\label{variations-and-algorithmic-enhancements-1}
-
-To overcome the ``curse of dimensionality'' and the high computational
-cost of calculating factorial-order partial derivatives, several
-advanced STT variants have been developed.
-
-\begin{itemize}
-\item
-  \textbf{Directional State Transition Tensors (DSTT):} Reduces
-  complexity by aligning the STT terms only with the most sensitive
-  directions (eigenvectors of the Cauchy-Green tensor) while ignoring
-  stable directions. This can reduce the number of integrated variables
-  from \(n^3\) to approximately \(n + n^2 + nm^2\).
-\item
-  \textbf{Time-varying Directional STT (TDSTT):} Improves upon the DSTT
-  by integrating the eigenvalue-eigenvector pairs over time, allowing
-  uncertainty analysis at any historical point rather than just a
-  predefined final epoch.
-\item
-  \textbf{Distribution Transport (DT):} Organizes polynomial
-  coefficients into a vector form to facilitate parallel calculation
-  using linear algebra libraries and integral correction methods,
-  achieving speed-ups of up to 60 times over conventional STT
-  implementations.
-\item
-  \textbf{Reduced STT (RSTT):} Assumes two-body dynamics dominate and
-  retains only the secular terms to decrease the integration burden for
-  high-order approximations.
-\end{itemize}
 
 \subsection{Algorithm: The STT Uncertainty
 Pipeline}\label{algorithm-the-stt-uncertainty-pipeline}
@@ -2256,6 +2499,48 @@ STT-based uncertainty propagation campaign.
 \NormalTok{    J {-}{-}\textgreater{} K}
 \end{Highlighting}
 \end{Shaded}
+
+\subsection{Variations and Algorithmic
+Enhancements}\label{variations-and-algorithmic-enhancements-1}
+
+To overcome the ``curse of dimensionality'' and the high computational
+cost of calculating factorial-order partial derivatives, several
+advanced STT variants have been developed.
+
+\begin{itemize}
+\item
+  \textbf{Directional State Transition Tensors (DSTT):} Proposed to
+  reduce complexity by only capturing nonlinear effects along
+  ``sensitive'' directions (e.g., the maximum stretch direction of the
+  Cauchy-Green Tensor). This reduces the number of integrated variables
+  from \(O(n^{P+1})\) to \(O(n^2 + nm^{P-1})\), where \(m\) is the
+  number of sensitive directions.
+\item
+  \textbf{Time-varying Directional STT (TDSTT):} Improves upon the DSTT
+  by integrating the eigenvalue-eigenvector pairs over time, allowing
+  uncertainty analysis at any historical point rather than just a
+  predefined final epoch.
+\item
+  \textbf{Distribution Transport (DT):} Organizes polynomial
+  coefficients into a vector form to facilitate parallel calculation
+  using linear algebra libraries and integral correction methods,
+  achieving speed-ups of up to 60 times over conventional STT
+  implementations.
+\item
+  \textbf{Reduced STT (RSTT):} Assumes two-body dynamics dominate and
+  retains only the secular terms to decrease the integration burden for
+  high-order approximations.
+\item
+  \textbf{GMM-STT Hybrid Method:} Combines Gaussian Mixture Models with
+  STTs. The initial uncertainty is split into small Gaussian components,
+  each of which is propagated linearly or with low-order STTs to
+  maintain validity over long durations.
+\item
+  \textbf{Non-Gaussian STT Propagation:} Extends the method to handle
+  arbitrary initial PDFs (e.g., uniform distributions for asteroid
+  gravity fields) by leveraging Moment Generating Functions (MGFs) to
+  calculate initial expectations.
+\end{itemize}
 
 \subsection{STT in the Spectrum of Surrogate
 Methods}\label{stt-in-the-spectrum-of-surrogate-methods}
@@ -2389,7 +2674,7 @@ Definitions}\label{assumptions-and-definitions}
 \subsection{Mathematical Architecture}\label{mathematical-architecture}
 
 \subsubsection{Method 1: Stochastic Collocation (SC)
-Multi-Fidelity}\label{method-1-stochastic-collocation-sc-multi-fidelity}
+Multi-Fidelity}\label{sec-mf-sc}
 
 Developed by Jones and Weisman (2019), this non-intrusive method uses a
 large ensemble of LF samples to identify a subset of ``important''
@@ -2872,9 +3157,27 @@ The following flowchart details the procedural logic for identifying
 
 \protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{1}
+\bibitem[\citeproctext]{ref-acciarini:10.2514ux2f1.G008717}
+Acciarini, Giacomo, Nicola Baresi, David J. B. Lloyd, and Dario Izzo.
+2025. {``Nonlinear Propagation of Non-Gaussian Uncertainties.''}
+\emph{Journal of Guidance, Control, and Dynamics} 48 (4): 903--13.
+\url{https://doi.org/10.2514/1.G008717}.
+
+\bibitem[\citeproctext]{ref-bignon2015accurate}
+Bignon, Emmanuel, P Mercier, Vincent Azzopardi, and R Pinéde. 2015.
+{``Accurate Numerical Orbit Propagation Using Polynomial Algebra
+Computational Engine Pace.''} \emph{ISSFD 2015 Congress}.
+
 \bibitem[\citeproctext]{ref-bosorbit}
 Bos, Justin. 2025. \emph{Orbit Uncertainty Propagation in Space
 Situational Awareness Applied to Conjunction Assessment}.
+
+\bibitem[\citeproctext]{ref-DETOMASO20257226}
+Detomaso, Roberto, Andrea Muciaccia, and Camilla Colombo. 2025.
+{``Hybrid Gaussian Mixture Model and Unscented Transformation Algorithm
+for Uncertainty Propagation Within the PUZZLE Software.''}
+\emph{Advances in Space Research} 75 (10): 7226--41.
+https://doi.org/\url{https://doi.org/10.1016/j.asr.2025.03.026}.
 
 \bibitem[\citeproctext]{ref-fossa2024propagation}
 Fossà, Alberto. 2024. {``Propagation Multi-Fid{é}lit{é} d'incertitude
@@ -2897,9 +3200,26 @@ Julier, Simon J., and Jeffrey K. Uhlmann. 1997. {``New Extension of the
 Kalman Filter to Nonlinear Systems.''} \emph{Defense, Security, and
 Sensing}. \url{https://api.semanticscholar.org/CorpusID:7937456}.
 
+\bibitem[\citeproctext]{ref-park-scheeres:10.2514ux2f1.20177}
+Park, Ryan S., and Daniel J. Scheeres. 2006. {``Nonlinear Mapping of
+Gaussian Statistics: Theory and Applications to Spacecraft Trajectory
+Design.''} \emph{Journal of Guidance, Control, and Dynamics} 29 (6):
+1367--75. \url{https://doi.org/10.2514/1.20177}.
+
 \bibitem[\citeproctext]{ref-thesis_suyog}
 Soman, Suyog. 2025. \emph{Orbital Uncertainty Propagation for Collision
 Probability Computation}.
+
+\bibitem[\citeproctext]{ref-sun2026recent}
+Sun, Pan, Kai Cao, and Shuang Li. 2026. {``Recent Advances of Practical
+Techniques for Nonlinear Uncertainty Propagation in Orbital Dynamics.''}
+\emph{Science China Physics, Mechanics \& Astronomy} 69 (1): 214501.
+
+\bibitem[\citeproctext]{ref-zhou2026time}
+Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2026.
+{``Time-Varying Directional State Transition Tensor for Orbit
+Uncertainty Propagation.''} \emph{Journal of Guidance, Control, and
+Dynamics}, 1--17.
 
 \end{CSLReferences}
 
