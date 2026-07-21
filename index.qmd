@@ -77,6 +77,17 @@ The literature categorize the non-deterministic inputs into two distinct mathema
     *   **Modeling:** While often forced into a PDF-based representation, recent research suggests using Outer Probability Measures (OPMs) and credibilistic filtering to bound these errors without over-characterizing them [@2019amosconfE14J].
 
 
+## Foundational Assumptions in Orbital Uncertainty Propagation
+To make the complex dynamics of orbital motion computationally tractable, researchers generally operate under a standardized set of mathematical and physical assumptions:
+
+*   **Point Mass Dynamics:** For most scenarios, space objects are approximated as point masses, although this assumption may be relaxed for large structures like the International Space Station (ISS). 
+
+*   **State Representation:** In orbital mechanics, the QoIs are represented by the **state vector** $\mathbf{x}$, representing position and velocity in an inertial frame (e.g., ECI) or a specialized coordinate set like the Modified Equinoctial Orbital Elements (MEqOE).
+
+*   **Initial State Quantification:** It is assumed that an initial state $\mathbf{x}_0$ is known at epoch $t_0$, accompanied by a multivariate Probability Density Function (PDF), often initially modeled as Gaussian $N(\boldsymbol{\mu}_0, \mathbf{P}_0)$, where $\boldsymbol{\mu}_0=\mathbf{x}_0$ is the mean state vector and $\mathbf{P}_0$ is the initial covariance matrix.
+
+*   **Deterministic Flow:** The trajectory follows non-linear Ordinary Differential Equations (ODEs) influenced by both central-body gravity and various perturbative accelerations. Hence we do not consider epistemic uncertainty in the dynamics model itself, but rather focus on the propagation of the initial state uncertainty through these deterministic equations.
+
 ## The Fokker-Planck Equation 
 The **Fokker-Planck Equation** (FPE) is the fundamental partial differential equation (PDE) governing the time evolution of the PDF of a dynamical system subject to both deterministic forces and stochastic process noise. 
 
@@ -92,25 +103,13 @@ The **Fokker-Planck Equation** (FPE) is the fundamental partial differential equ
 *   **The Computational Challenge in astrodynamics:** Direct numerical solutions to the FPE are generally intractable in astrodynamics due to the **"curse of dimensionality"**; a 6D orbital state requires spatial grids that grow exponentially, necessitating the use of the state-of-the-art approximation methods discussed in this report.
 
 
-## Foundational Assumptions in Orbital Uncertainty Propagation
-To make the complex dynamics of orbital motion computationally tractable, researchers generally operate under a standardized set of mathematical and physical assumptions:
-
-*   **Point Mass Dynamics:** For most conjunction scenarios, space objects are approximated as point masses, although this assumption may be relaxed for large structures like the International Space Station (ISS).
-
-*   **State Representation:** In orbital mechanics, the QoIs is typically represented by the orbital state vector $\mathbf{x} = [\mathbf{r}, \mathbf{v}]^T \in \mathbb{R}^6$, representing position and velocity in an inertial frame (e.g., ECI) or a specialized coordinate set like Modified Equinoctial Orbital Elements (MEqOE).
-
-*   **Initial State Quantification:** It is assumed that an initial state $\mathbf{x}_0$ is known at epoch $t_0$, accompanied by a multivariate Probability Density Function (PDF), often initially modeled as Gaussian $N(\boldsymbol{\mu}_0, \mathbf{P}_0)$. The random inputs $\boldsymbol{\xi}$ may include initial state uncertainties, force-modeling errors, and environmental perturbations.
-
-*   **Deterministic Flow:** The trajectory follows non-linear Ordinary Differential Equations (ODEs) influenced by both central-body gravity and various perturbative accelerations. Hence we do not consider epistemic uncertainty in the dynamics model itself, but rather focus on the propagation of the initial state uncertainty through these deterministic equations.
-
-
 ## Classification and Methodology of Uncertainty Propagation Techniques
 
 Managing the *curse of dimensionality* and the inherent non‑linearity of orbital mechanics requires a robust taxonomy of methods. These techniques are generally classified by how they represent the PDF: through point‑based samples, linearized mathematical transformations, mixture models, polynomial expansions, or hybrid multi‑fidelity approaches. Each method is assessed based on its ability to preserve the integrity of the PDF over time, its computational efficiency, and its suitability for real‑time operational use. The following sections provide a detailed overview of these methods, highlighting their theoretical foundations, practical implementations, and performance characteristics.
 
 # The Sampling Baseline: Monte Carlo (MC)
 
-The Monte Carlo method serves as the “ground truth” and absolute benchmark for all other techniques. The process involves generating a large set of random samples ($N_{\text{samples}}$) from an initial Gaussian distribution using the square‑right matrix ($S$) of the <u>covariance matrix</u>. 
+The Monte Carlo method serves as the “ground truth” and absolute benchmark for all other techniques. The process involves generating a large set of random samples ($N_{\text{samples}}$) from an initial multivariate Gaussian distribution using the square‑right matrix ($S$) of the <u>covariance matrix</u>. 
 
 $$
 P = SS^{T}
@@ -119,6 +118,14 @@ $$ {#eq-covariance-matrix}
 :::{.column-margin title="Covariance Matrix"}
 The covariance matrix $P$ captures the uncertainty in the state estimate which we get from orbit determination. The square‑right matrix $S$ is obtained through Cholesky decomposition or Singular Value Decomposition (SVD) of $P$. This allows us to generate samples that are consistent with the initial uncertainty.
 :::
+
+The samples are created as follows:
+$$
+\mathbf{x}_0(\boldsymbol{\xi}) = \boldsymbol{\mu}_0 + S\boldsymbol{\xi}, \quad \boldsymbol{\xi} \sim N(0, I_6)
+$$ {#eq-mc-sampling}
+
+Where $\boldsymbol{\xi}$ is a vector of standard normal random variable inputs, generated using a pseudo random number simulator. The random inputs may include initial state uncertainties, force-modeling errors, and environmental perturbations.
+
 
 ## Mechanics of the Sampling-Based Approach
 MC simulation functions by drawing a large ensemble of random samples from an initial distribution, which can be Gaussian or any other known PDF.
@@ -631,16 +638,16 @@ In the rigorous taxonomy of orbital uncertainty quantification, the **Unscented 
 ## Theoretical Context: Deterministic vs. Random Sampling
 Within the landscape of sampling-based methodologies, the UT occupies a unique niche defined by "moderate fidelity" and high efficiency.
 
-*   **Sigma Point Paradigm:** While MC requires $10^5$ to $10^7$ random samples to achieve statistical convergence, the UT utilizes a minimal, carefully selected set of weighted **sigma points** that precisely capture the initial mean and covariance of a distribution.
+*   **Sigma Point Paradigm:** The UT is predicated on the intuition that "it is easier to approximate a Gaussian distribution than it is to approximate an arbitrary nonlinear function or transformation". Unlike the EKF, which linearizes the system dynamics via a first-order Taylor series expansion (State Transition Matrix), the UT parameterizes the state distribution using a set of "sigma points". While MC requires $10^5$ to $10^7$ random samples to achieve statistical convergence, the UT utilizes a minimal, carefully selected set of weighted **sigma points** that precisely capture the initial mean and covariance of a distribution.
 
 *   **Black-Box Dynamics:** Like MC, the UT is non-intrusive; it treats the system dynamics as a "black box," passing the discrete sigma points through the actual nonlinear equations of motion without requiring the derivation of Jacobians or Hessians.
 
 *   **Gaussian Constraint:** A critical limitation noted in the sources is that the standard UT is primarily constrained by **Gaussian assumptions**. It nonlinearly propagates the first and second moments but may fail to naturally represent the "banana-shaped" non-Gaussian warpings that emerge during long-term orbital propagation. 
 
 ## Mathematical Architecture of the UT
-The UT approximates an $n$-dimensional random variable $\mathbf{x}$ using $2n+1$ sigma points. The mathematical selection and weight assignment are governed by the following formulations:
+For an $n$-dimensional state $\mathbf{x}$ with mean $\bar{\mathbf{x}}$ and covariance $\mathbf{P}_{xx}$, a set of $2n+1$ sigma points $\boldsymbol{\chi}_i$ is generated using a matrix square root (typically Cholesky decomposition) of the scaled covariance. The mathematical selection and weight assignment are governed by the following formulations:
 
-### **Sigma Point Selection**
+### Sigma Point Selection
 $$\chi_0 = \bar{\mathbf{x}}$$
 $$
 \chi_i = \bar{\mathbf{x}} + \left( \sqrt{(n + \kappa) \mathbf{P}} \right)_i, \quad i = 1, \dots, n
@@ -674,8 +681,16 @@ $$
 $$
 
 the terminal mean ($\hat{\mathbf{y}}$) and covariance ($\hat{\mathbf{P}}$) are reconstructed:
-$$\hat{\mathbf{y}} = \sum_{i=0}^{2n} W_i \mathbfcal{Y}_i$$
-$$\hat{\mathbf{P}} = \sum_{i=0}^{2n} W_i (\mathbfcal{Y}_i - \hat{\mathbf{y}})(\mathbfcal{Y}_i - \hat{\mathbf{y}})^T$$
+
+**Transformed Mean:**
+$$
+\bar{\mathbf{y}} = \sum_{i=0}^{2n} W_i \mathbfcal{Y}_i
+$$
+
+**Transformed Covariance:**
+$$
+\bar{\mathbf{P}} = \sum_{i=0}^{2n} W_i (\mathbfcal{Y}_i - \hat{\mathbf{y}})(\mathbfcal{Y}_i - \hat{\mathbf{y}})^T
+$$
 
 ## Algorithm: The Unscented Filter (UKF) Logic
 The following flowchart delineates the procedural execution of the UT within a predictive filtering framework, such as the Unscented Kalman Filter:
@@ -694,27 +709,53 @@ graph TD
     G -- No --> K[Output Propagated Analytic Gaussian PDF]
 ```
 
-## Comparative Performance and Hybrid Integration {#sec-ut-performance}
+## Variations and Hybrid Architectures
+The sources identify several advanced iterations of the UT designed to overcome specific numerical or statistical limitations:
+
+*   **Square-Root Unscented Kalman Filter (SR-UKF)** \[@dermerwe2001sq-ut\]:
+    
+    *   **Description**: Instead of propagating the full matrix $\mathbf{P}$, the SR-UKF propagates the Cholesky factor $\mathbf{S}$ (where $\mathbf{P} = \mathbf{SS}^T$) directly.
+    
+    *   **Advantage**: It guarantees positive semi-definiteness of the covariance and offers superior numerical stability and computational efficiency ($O(L^3)$ for state estimation).
+
+*   **Higher-Order Unscented Filter (HOUF)** \[@Tenne2003TheHOUF\]:
+    
+    *   **Description**: Expands the sigma-set to include additional layers of points to match input moments beyond the 4th order (e.g., up to the 12th order).
+    
+    *   **Context**: This is essential for highly nonlinear regimes where standard UT truncation errors (which start at the 4th order) become significant.
+
+*   **Conjugate Unscented Transform (CUT)** \[@Adurthi2012TheCUT\]:
+    
+    *   **Description**: A non-product cubature rule that uses "Conjugate Axes" (combinations of principal axes) to satisfy higher-order moment equations (up to 8th order) with fewer points than Gauss-Hermite rules.
+    
+    *   **Advantage**: It captures cross-moments (e.g., $E[X_i^2 X_j^2]$) that standard UT cannot, while avoiding the "curse of dimensionality".
+
+*   **Gaussian Mixture Model-Unscented Transform (GMM-UT)**:
+    
+    *   **Description**: To overcome the Gaussian limitation, the UT is frequently used to propagate the individual kernels of a **GMM (GMM_UT)**. The GMM-UT method operates on the intuition that while the global distribution may be highly non-Gaussian (e.g., a "banana" shape), the local regions of the probability mass remain nearly Gaussian for a longer duration under nonlinear flow.
+    
+    *   **Methodology**
+
+        *   **Sigma Point Propagation:** For each of the $N_g$ components, a set of $2n+1$ deterministic sigma points is generated using the component’s mean $\mathbf{x}_i$ and covariance $\mathbf{P}_i$.
+
+        *   **Independent Nonlinear Mapping:** These sigma points are passed through the high-fidelity nonlinear dynamics $\mathbf{f}(\cdot)$.
+
+        *   **Moment Reconstruction:** The transformed mean and covariance for *each* kernel are reconstructed using standard UT weighting rules, preserving second-order accuracy.
+
+        *   **Re-Synthesis:** The final non-Gaussian PDF is the re-weighted sum of these nonlinearly propagated Gaussian kernels with their corresponding weights $\alpha_i$.
+
+*   **AEGIS Framework:** In the **Adaptive Entropy-based Gaussian-mixture Information Synthesis (AEGIS)** method, the UT is employed to calculate "nonlinear entropy". By comparing this to the linear entropy from LinCov, the system can detect when the dynamics have become too nonlinear and trigger a component split.
+
+*   **Multi-Fidelity (MF) Advantage:** While the UT is an efficient "middle-ground," the sources characterize Multi-Fidelity (MF) as superior for high-consequence non-Gaussian cases, as MF uses large-scale low-fidelity sampling corrected by high-fidelity samples to capture complex shapes that the UT's single-Gaussian assumption cannot.
+
+
+## Comparative Performance {#sec-ut-performance}
 The sources highlight the UT's performance relative to other "State-of-the-Art" methods:
 
 *   **UT vs. Linearised Covariance (LinCov):** The UT is consistently more accurate than LinCov because it captures more of the distribution's tails and accounts for higher-order nonlinear effects that first-order Taylor expansions ignore.
 
 *   **UT vs. Monte Carlo:** The UT is significantly faster than MC, requiring only 13 points for a standard 6D orbital state compared to the millions needed for MC to reach similar statistical convergence.
 
-*   **Gaussian Mixture Model (GMM) Integration:** To overcome the Gaussian limitation, the UT is frequently used to propagate the individual kernels of a **GMM (GMM_UT)**. The GMM-UT method operates on the intuition that while the global distribution may be highly non-Gaussian (e.g., a "banana" shape), the local regions of the probability mass remain nearly Gaussian for a longer duration under nonlinear flow.
-
-    *   **Sigma Point Propagation:** For each of the $N_g$ components, a set of $2n+1$ deterministic sigma points is generated using the component’s mean $\mathbf{x}_i$ and covariance $\mathbf{P}_i$.
-    
-    *   **Independent Nonlinear Mapping:** These sigma points are passed through the high-fidelity nonlinear dynamics $\mathbf{f}(\cdot)$.
-    
-    *   **Moment Reconstruction:** The transformed mean and covariance for *each* kernel are reconstructed using standard UT weighting rules, preserving second-order accuracy.
-    
-    *   **Re-Synthesis:** The final non-Gaussian PDF is the re-weighted sum of these nonlinearly propagated Gaussian kernels with their corresponding weights $\alpha_i$.
-
-
-*   **AEGIS Framework:** In the **Adaptive Entropy-based Gaussian-mixture Information Synthesis (AEGIS)** method, the UT is employed to calculate "nonlinear entropy". By comparing this to the linear entropy from LinCov, the system can detect when the dynamics have become too nonlinear and trigger a component split.
-
-*   **Multi-Fidelity (MF) Advantage:** While the UT is an efficient "middle-ground," the sources characterize Multi-Fidelity (MF) as superior for high-consequence non-Gaussian cases, as MF uses large-scale low-fidelity sampling corrected by high-fidelity samples to capture complex shapes that the UT's single-Gaussian assumption cannot.
 
 # Polynomial Chaos Expansions (PCE)
 
@@ -743,7 +784,9 @@ This condition ensures that the PCE framework can represent the random solution 
 
 ### **The PCE Surrogate Formula**
 The stochastic output at a future time $t$ is approximated by the finite series expansion:
-$$\hat{\mathbf{X}}(t, \xi) \approx \sum_{j=0}^{P} c_j(t) \Psi_j(\xi)$$
+$$
+\hat{\mathbf{X}}(t, \xi) \approx \sum_{j=0}^{P} c_j(t) \Psi_j(\xi)
+$$
 
 **Terms Defined:**
 
