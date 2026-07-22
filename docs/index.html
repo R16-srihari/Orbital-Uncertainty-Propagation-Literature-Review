@@ -392,7 +392,7 @@ window.Quarto = {
 <ul>
 <li><p><strong>Point Mass Dynamics:</strong> For most scenarios, space objects are approximated as point masses, although this assumption may be relaxed for large structures like the International Space Station (ISS).</p></li>
 <li><p><strong>State Representation:</strong> In orbital mechanics, the QoIs are represented by the <strong>state vector</strong> <span class="math inline">\(\mathbf{x}\)</span>, representing position and velocity in an inertial frame (e.g., ECI) or a specialized coordinate set like the Modified Equinoctial Orbital Elements (MEqOE).</p></li>
-<li><p><strong>Initial State Quantification:</strong> It is assumed that an initial state <span class="math inline">\(\mathbf{x}_0\)</span> is known at epoch <span class="math inline">\(t_0\)</span>, accompanied by a multivariate Probability Density Function (PDF), often initially modeled as Gaussian <span class="math inline">\(N(\boldsymbol{\mu}_0, \mathbf{P}_0)\)</span>, where <span class="math inline">\(\boldsymbol{\mu}_0=\mathbf{x}_0\)</span> is the mean state vector and <span class="math inline">\(\mathbf{P}_0\)</span> is the initial covariance matrix. The random inputs <span class="math inline">\(\boldsymbol{\xi}\)</span> may include initial state uncertainties, force-modeling errors, and environmental perturbations.</p></li>
+<li><p><strong>Initial State Quantification:</strong> It is assumed that an initial state <span class="math inline">\(\mathbf{x}_0\)</span> is known at epoch <span class="math inline">\(t_0\)</span>, accompanied by a multivariate Probability Density Function (PDF), often initially modeled as Gaussian <span class="math inline">\(N(\boldsymbol{\mu}_0, \mathbf{P}_0)\)</span>, where <span class="math inline">\(\boldsymbol{\mu}_0=\mathbf{x}_0\)</span> is the mean state vector and <span class="math inline">\(\mathbf{P}_0\)</span> is the initial covariance matrix.</p></li>
 <li><p><strong>Deterministic Flow:</strong> The trajectory follows non-linear Ordinary Differential Equations (ODEs) influenced by both central-body gravity and various perturbative accelerations. Hence we do not consider epistemic uncertainty in the dynamics model itself, but rather focus on the propagation of the initial state uncertainty through these deterministic equations.</p></li>
 </ul>
 </section>
@@ -415,14 +415,18 @@ window.Quarto = {
 </section>
 <section id="the-sampling-baseline-monte-carlo-mc" class="level1 page-columns page-full">
 <h1>The Sampling Baseline: Monte Carlo (MC)</h1>
-<p>The Monte&nbsp;Carlo method serves as the “ground truth” and absolute benchmark for all other techniques. The process involves generating a large set of random samples (<span class="math inline">\(N_{\text{samples}}\)</span>) from an initial Gaussian distribution using the square‑right matrix (<span class="math inline">\(S\)</span>) of the <u>covariance matrix</u>.</p>
+<p>The Monte&nbsp;Carlo method serves as the “ground truth” and absolute benchmark for all other techniques. The process involves generating a large set of random samples (<span class="math inline">\(N_{\text{samples}}\)</span>) from an initial multivariate Gaussian distribution using the square‑right matrix (<span class="math inline">\(S\)</span>) of the <u>covariance matrix</u>.</p>
 <p><span id="eq-covariance-matrix"><span class="math display">\[
 P = SS^{T}
 \tag{3}\]</span></span></p>
 
 <div class="no-row-height column-margin column-container"><div class="" title="Covariance Matrix">
 <p>The covariance matrix <span class="math inline">\(P\)</span> captures the uncertainty in the state estimate which we get from orbit determination. The square‑right matrix <span class="math inline">\(S\)</span> is obtained through Cholesky decomposition or Singular Value Decomposition (SVD) of <span class="math inline">\(P\)</span>. This allows us to generate samples that are consistent with the initial uncertainty.</p>
-</div></div><section id="mechanics-of-the-sampling-based-approach" class="level2">
+</div></div><p>The samples are created as follows: <span id="eq-mc-sampling"><span class="math display">\[
+\mathbf{x}_0(\boldsymbol{\xi}) = \boldsymbol{\mu}_0 + S\boldsymbol{\xi}, \quad \boldsymbol{\xi} \sim N(0, I_6)
+\tag{4}\]</span></span></p>
+<p>Where <span class="math inline">\(\boldsymbol{\xi}\)</span> is a vector of standard normal random variable inputs, generated using a pseudo random number simulator. The random inputs may include initial state uncertainties, force-modeling errors, and environmental perturbations.</p>
+<section id="mechanics-of-the-sampling-based-approach" class="level2">
 <h2 class="anchored" data-anchor-id="mechanics-of-the-sampling-based-approach">Mechanics of the Sampling-Based Approach</h2>
 <p>MC simulation functions by drawing a large ensemble of random samples from an initial distribution, which can be Gaussian or any other known PDF.</p>
 <ul>
@@ -537,7 +541,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 \bar{\mathbf{x}}(t) &amp;= \Phi(t, t_0)\bar{\mathbf{x}}(t_0) \\
 \mathbf{P}(t) &amp;= \Phi(t, t_0)\mathbf{P}(t_0)\Phi^T(t, t_0) + G(t)Q(t)G^T(t)
 \end{aligned}
-\tag{4}\]</span></span></p>
+\tag{5}\]</span></span></p>
 <p>Where <span class="math inline">\(G(t)\)</span> is the process noise input matrix and <span class="math inline">\(Q(t)\)</span> is the process noise covariance, which are used to account for force-model mismodelling perturbation errors. <span class="citation" data-cites="bosorbit">Bos (<a href="#ref-bosorbit" role="doc-biblioref">2025</a>)</span> does not include process noise in his LinCov implementation.</p></li>
 <li><p><strong>Gaussian Assumption:</strong> A defining characteristic of LinCov is the preservation of the distribution’s functional form; it assumes that an initially Gaussian PDF remains Gaussian throughout the propagation horizon.</p></li>
 </ul>
@@ -904,9 +908,9 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <h3 class="anchored" data-anchor-id="sigma-point-selection">Sigma Point Selection</h3>
 <p><span class="math display">\[\chi_0 = \bar{\mathbf{x}}\]</span> <span id="eq-sigma-points-i"><span class="math display">\[
 \chi_i = \bar{\mathbf{x}} + \left( \sqrt{(n + \kappa) \mathbf{P}} \right)_i, \quad i = 1, \dots, n
-\tag{5}\]</span></span> <span id="eq-sigma-points-in"><span class="math display">\[
+\tag{6}\]</span></span> <span id="eq-sigma-points-in"><span class="math display">\[
 \chi_{i+n} = \bar{\mathbf{x}} - \left( \sqrt{(n + \kappa) \mathbf{P}} \right)_i, \quad i = 1, \dots, n
-\tag{6}\]</span></span></p>
+\tag{7}\]</span></span></p>
 </section>
 <section id="weight-allocation" class="level3">
 <h3 class="anchored" data-anchor-id="weight-allocation"><strong>Weight Allocation</strong></h3>
@@ -1448,7 +1452,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <li><p><strong>LF Basis Construction:</strong> The entire ensemble is propagated using an LF model (e.g., SGP4 or two-body dynamics) to define a subspace <span class="math inline">\(X_L(\Xi) \subseteq \mathcal{X}\)</span>.</p></li>
 <li><p><strong>Important Sample Selection:</strong> Identifying the <span class="math inline">\(r\)</span> nodes is an optimization problem solved via a <strong>greedy algorithm</strong> that maximizes the distance between the next selected node and the existing basis. This is implemented by solving the pivoted Cholesky decomposition of the Gramian matrix: <span id="eq-mf-pivoted-cholesky-decomp"><span class="math display">\[
 [X_L]^T G_L [X_L] = A^T C_h C_h^T A
-\tag{7}\]</span></span></p>
+\tag{8}\]</span></span></p>
 <p><strong>Terms defined:</strong></p>
 <ul>
 <li><p><span class="math inline">\(X_L\)</span>: Matrix of LF propagated samples.</p></li>
@@ -1457,14 +1461,14 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <li><p><span class="math inline">\(C_h\)</span>: Lower triangular Cholesky factor.</p></li>
 </ul>
 <p>See <a href="#sec-appendix-pivoted-cholesky" class="quarto-xref">Section&nbsp;13</a> for a detailed derivation of the pivoted Cholesky algorithm and its application to MF uncertainty propagation.</p></li>
-<li><p><strong><span class="math inline">\(c_\ell(\xi)\)</span> Coefficient Computation:</strong> The expansion coefficients <span class="math inline">\(c_\ell(\xi)\)</span> in <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;8</a> are computed by solving the linear system: <span class="math display">\[
+<li><p><strong><span class="math inline">\(c_\ell(\xi)\)</span> Coefficient Computation:</strong> The expansion coefficients <span class="math inline">\(c_\ell(\xi)\)</span> in <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;9</a> are computed by solving the linear system: <span class="math display">\[
 \mathbf{C_h C_h}^T \mathbf{c}(\mathbf{\xi}) = \mathbf{g}
 \]</span></p>
 <p>where <span class="math inline">\(g_i = x_L(\xi) \cdot x_L(\xi_i)\)</span> for <span class="math inline">\(i = 1, \ldots, r\)</span>.</p>
-<p>These coefficients effectively map the LF realization of a general sample <span class="math inline">\(\xi\)</span> to the HF space defined by the <span class="math inline">\(r\)</span> important samples via <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;8</a>.</p></li>
+<p>These coefficients effectively map the LF realization of a general sample <span class="math inline">\(\xi\)</span> to the HF space defined by the <span class="math inline">\(r\)</span> important samples via <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;9</a>.</p></li>
 <li><p><strong>HF Correction:</strong> The <span class="math inline">\(r\)</span> samples are propagated through the HF model, and a surrogate is built using the LF-derived coefficients: <span id="eq-mf-surrogate"><span class="math display">\[
 \hat{x}_H(\xi) = \sum_{l=1}^r c_\ell(\xi)x_H(\xi_\ell^*)
-\tag{8}\]</span></span></p>
+\tag{9}\]</span></span></p>
 <p><strong>Terms defined:</strong></p>
 <ul>
 <li><p><span class="math inline">\(\hat{x}_H(\xi)\)</span>: The approximated HF state vector for a given input <span class="math inline">\(\xi\)</span>.</p></li>
@@ -1473,7 +1477,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <li><p><span class="math inline">\(r\)</span>: The rank of the surrogate (number of HF evaluations).</p></li>
 </ul></li>
 </ul>
-<p><a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;8</a> is what is referred to as the “low-rank” <strong>stochastic collocation surrogate</strong>. The coefficients <span class="math inline">\(c_\ell(\xi)\)</span> are computed by solving a linear system derived from the LF model, ensuring that the surrogate accurately captures the HF dynamics while minimizing the number of expensive HF evaluations.</p>
+<p><a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;9</a> is what is referred to as the “low-rank” <strong>stochastic collocation surrogate</strong>. The coefficients <span class="math inline">\(c_\ell(\xi)\)</span> are computed by solving a linear system derived from the LF model, ensuring that the surrogate accurately captures the HF dynamics while minimizing the number of expensive HF evaluations.</p>
 <section id="algorithmic-flowchart" class="level4">
 <h4 class="anchored" data-anchor-id="algorithmic-flowchart"><strong>Algorithmic Flowchart</strong></h4>
 <pre class="mermaid"><code>graph TD
