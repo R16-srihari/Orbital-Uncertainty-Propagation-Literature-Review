@@ -415,6 +415,40 @@ mathematical and physical frameworks:
   \end{itemize}
 \end{itemize}
 
+\subsection{Foundational Assumptions in Orbital Uncertainty
+Propagation}\label{foundational-assumptions-in-orbital-uncertainty-propagation}
+
+To make the complex dynamics of orbital motion computationally
+tractable, researchers generally operate under a standardized set of
+mathematical and physical assumptions:
+
+\begin{itemize}
+\item
+  \textbf{Point Mass Dynamics:} For most scenarios, space objects are
+  approximated as point masses, although this assumption may be relaxed
+  for large structures like the International Space Station (ISS).
+\item
+  \textbf{State Representation:} In orbital mechanics, the QoIs are
+  represented by the \textbf{state vector} \(\mathbf{x}\), representing
+  position and velocity in an inertial frame (e.g., ECI) or a
+  specialized coordinate set like the Modified Equinoctial Orbital
+  Elements (MEqOE).
+\item
+  \textbf{Initial State Quantification:} It is assumed that an initial
+  state \(\mathbf{x}_0\) is known at epoch \(t_0\), accompanied by a
+  multivariate Probability Density Function (PDF), often initially
+  modeled as Gaussian \(N(\boldsymbol{\mu}_0, \mathbf{P}_0)\), where
+  \(\boldsymbol{\mu}_0=\mathbf{x}_0\) is the mean state vector and
+  \(\mathbf{P}_0\) is the initial covariance matrix.
+\item
+  \textbf{Deterministic Flow:} The trajectory follows non-linear
+  Ordinary Differential Equations (ODEs) influenced by both central-body
+  gravity and various perturbative accelerations. Hence we do not
+  consider epistemic uncertainty in the dynamics model itself, but
+  rather focus on the propagation of the initial state uncertainty
+  through these deterministic equations.
+\end{itemize}
+
 \subsection{The Fokker-Planck
 Equation}\label{the-fokker-planck-equation}
 
@@ -449,42 +483,6 @@ process noise.
   discussed in this report.
 \end{itemize}
 
-\subsection{Foundational Assumptions in Orbital Uncertainty
-Propagation}\label{foundational-assumptions-in-orbital-uncertainty-propagation}
-
-To make the complex dynamics of orbital motion computationally
-tractable, researchers generally operate under a standardized set of
-mathematical and physical assumptions:
-
-\begin{itemize}
-\item
-  \textbf{Point Mass Dynamics:} For most conjunction scenarios, space
-  objects are approximated as point masses, although this assumption may
-  be relaxed for large structures like the International Space Station
-  (ISS).
-\item
-  \textbf{State Representation:} In orbital mechanics, the QoIs is
-  typically represented by the orbital state vector
-  \(\mathbf{x} = [\mathbf{r}, \mathbf{v}]^T \in \mathbb{R}^6\),
-  representing position and velocity in an inertial frame (e.g., ECI) or
-  a specialized coordinate set like Modified Equinoctial Orbital
-  Elements (MEqOE).
-\item
-  \textbf{Initial State Quantification:} It is assumed that an initial
-  state \(\mathbf{x}_0\) is known at epoch \(t_0\), accompanied by a
-  multivariate Probability Density Function (PDF), often initially
-  modeled as Gaussian \(N(\boldsymbol{\mu}_0, \mathbf{P}_0)\). The
-  random inputs \(\boldsymbol{\xi}\) may include initial state
-  uncertainties, force-modeling errors, and environmental perturbations.
-\item
-  \textbf{Deterministic Flow:} The trajectory follows non-linear
-  Ordinary Differential Equations (ODEs) influenced by both central-body
-  gravity and various perturbative accelerations. Hence we do not
-  consider epistemic uncertainty in the dynamics model itself, but
-  rather focus on the propagation of the initial state uncertainty
-  through these deterministic equations.
-\end{itemize}
-
 \subsection{Classification and Methodology of Uncertainty Propagation
 Techniques}\label{classification-and-methodology-of-uncertainty-propagation-techniques}
 
@@ -506,8 +504,8 @@ and performance characteristics.
 The Monte~Carlo method serves as the ``ground truth'' and absolute
 benchmark for all other techniques. The process involves generating a
 large set of random samples (\(N_{\text{samples}}\)) from an initial
-Gaussian distribution using the square‑right matrix (\(S\)) of the
-covariance matrix.
+multivariate Gaussian distribution using the square‑right matrix (\(S\))
+of the covariance matrix.
 
 \begin{equation}\protect\phantomsection\label{eq-covariance-matrix}{
 P = SS^{T}
@@ -522,6 +520,16 @@ Decomposition (SVD) of \(P\). This allows us to generate samples that
 are consistent with the initial uncertainty.
 
 \end{footnotesize}}
+
+The samples are created as follows:
+\begin{equation}\protect\phantomsection\label{eq-mc-sampling}{
+\mathbf{x}_0(\boldsymbol{\xi}) = \boldsymbol{\mu}_0 + S\boldsymbol{\xi}, \quad \boldsymbol{\xi} \sim N(0, I_6)
+}\end{equation}
+
+Where \(\boldsymbol{\xi}\) is a vector of standard normal random
+variable inputs, generated using a pseudo random number simulator. The
+random inputs may include initial state uncertainties, force-modeling
+errors, and environmental perturbations.
 
 \subsection{Mechanics of the Sampling-Based
 Approach}\label{mechanics-of-the-sampling-based-approach}
@@ -1596,10 +1604,16 @@ unique niche defined by ``moderate fidelity'' and high efficiency.
 
 \begin{itemize}
 \item
-  \textbf{Sigma Point Paradigm:} While MC requires \(10^5\) to \(10^7\)
-  random samples to achieve statistical convergence, the UT utilizes a
-  minimal, carefully selected set of weighted \textbf{sigma points} that
-  precisely capture the initial mean and covariance of a distribution.
+  \textbf{Sigma Point Paradigm:} The UT is predicated on the intuition
+  that ``it is easier to approximate a Gaussian distribution than it is
+  to approximate an arbitrary nonlinear function or transformation''.
+  Unlike the EKF, which linearizes the system dynamics via a first-order
+  Taylor series expansion (State Transition Matrix), the UT
+  parameterizes the state distribution using a set of ``sigma points''.
+  While MC requires \(10^5\) to \(10^7\) random samples to achieve
+  statistical convergence, the UT utilizes a minimal, carefully selected
+  set of weighted \textbf{sigma points} that precisely capture the
+  initial mean and covariance of a distribution.
 \item
   \textbf{Black-Box Dynamics:} Like MC, the UT is non-intrusive; it
   treats the system dynamics as a ``black box,'' passing the discrete
@@ -1617,12 +1631,14 @@ unique niche defined by ``moderate fidelity'' and high efficiency.
 \subsection{Mathematical Architecture of the
 UT}\label{mathematical-architecture-of-the-ut}
 
-The UT approximates an \(n\)-dimensional random variable \(\mathbf{x}\)
-using \(2n+1\) sigma points. The mathematical selection and weight
-assignment are governed by the following formulations:
+For an \(n\)-dimensional state \(\mathbf{x}\) with mean
+\(\bar{\mathbf{x}}\) and covariance \(\mathbf{P}_{xx}\), a set of
+\(2n+1\) sigma points \(\boldsymbol{\chi}_i\) is generated using a
+matrix square root (typically Cholesky decomposition) of the scaled
+covariance. The mathematical selection and weight assignment are
+governed by the following formulations:
 
-\subsubsection{\texorpdfstring{\textbf{Sigma Point
-Selection}}{Sigma Point Selection}}\label{sigma-point-selection}
+\subsubsection{Sigma Point Selection}\label{sigma-point-selection}
 
 \[\chi_0 = \bar{\mathbf{x}}\]
 \begin{equation}\protect\phantomsection\label{eq-sigma-points-i}{
@@ -1677,8 +1693,14 @@ After passing each \(\chi_i\) through the nonlinear dynamics
 
 the terminal mean (\(\hat{\mathbf{y}}\)) and covariance
 (\(\hat{\mathbf{P}}\)) are reconstructed:
-\[\hat{\mathbf{y}} = \sum_{i=0}^{2n} W_i \mathbfcal{Y}_i\]
-\[\hat{\mathbf{P}} = \sum_{i=0}^{2n} W_i (\mathbfcal{Y}_i - \hat{\mathbf{y}})(\mathbfcal{Y}_i - \hat{\mathbf{y}})^T\]
+
+\textbf{Transformed Mean:} \[
+\bar{\mathbf{y}} = \sum_{i=0}^{2n} W_i \mathbfcal{Y}_i
+\]
+
+\textbf{Transformed Covariance:} \[
+\bar{\mathbf{P}} = \sum_{i=0}^{2n} W_i (\mathbfcal{Y}_i - \hat{\mathbf{y}})(\mathbfcal{Y}_i - \hat{\mathbf{y}})^T
+\]
 
 \subsection{Algorithm: The Unscented Filter (UKF)
 Logic}\label{algorithm-the-unscented-filter-ukf-logic}
@@ -1703,49 +1725,89 @@ Filter:
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Comparative Performance and Hybrid
-Integration}\label{sec-ut-performance}
+\subsection{Variations and Hybrid
+Architectures}\label{variations-and-hybrid-architectures-1}
 
-The sources highlight the UT's performance relative to other
-``State-of-the-Art'' methods:
+The sources identify several advanced iterations of the UT designed to
+overcome specific numerical or statistical limitations:
 
 \begin{itemize}
 \item
-  \textbf{UT vs.~Linearised Covariance (LinCov):} The UT is consistently
-  more accurate than LinCov because it captures more of the
-  distribution's tails and accounts for higher-order nonlinear effects
-  that first-order Taylor expansions ignore.
-\item
-  \textbf{UT vs.~Monte Carlo:} The UT is significantly faster than MC,
-  requiring only 13 points for a standard 6D orbital state compared to
-  the millions needed for MC to reach similar statistical convergence.
-\item
-  \textbf{Gaussian Mixture Model (GMM) Integration:} To overcome the
-  Gaussian limitation, the UT is frequently used to propagate the
-  individual kernels of a \textbf{GMM (GMM\_UT)}. The GMM-UT method
-  operates on the intuition that while the global distribution may be
-  highly non-Gaussian (e.g., a ``banana'' shape), the local regions of
-  the probability mass remain nearly Gaussian for a longer duration
-  under nonlinear flow.
+  \textbf{Square-Root Unscented Kalman Filter (SR-UKF)} {[}Van der Merwe
+  and Wan (2001){]}:
 
   \begin{itemize}
   \item
-    \textbf{Sigma Point Propagation:} For each of the \(N_g\)
-    components, a set of \(2n+1\) deterministic sigma points is
-    generated using the component's mean \(\mathbf{x}_i\) and covariance
-    \(\mathbf{P}_i\).
+    \textbf{Description}: Instead of propagating the full matrix
+    \(\mathbf{P}\), the SR-UKF propagates the Cholesky factor
+    \(\mathbf{S}\) (where \(\mathbf{P} = \mathbf{SS}^T\)) directly.
   \item
-    \textbf{Independent Nonlinear Mapping:} These sigma points are
-    passed through the high-fidelity nonlinear dynamics
-    \(\mathbf{f}(\cdot)\).
+    \textbf{Advantage}: It guarantees positive semi-definiteness of the
+    covariance and offers superior numerical stability and computational
+    efficiency (\(O(L^3)\) for state estimation).
+  \end{itemize}
+\item
+  \textbf{Higher-Order Unscented Filter (HOUF)} {[}Tenne and Singh
+  (2003){]}:
+
+  \begin{itemize}
   \item
-    \textbf{Moment Reconstruction:} The transformed mean and covariance
-    for \emph{each} kernel are reconstructed using standard UT weighting
-    rules, preserving second-order accuracy.
+    \textbf{Description}: Expands the sigma-set to include additional
+    layers of points to match input moments beyond the 4th order (e.g.,
+    up to the 12th order).
   \item
-    \textbf{Re-Synthesis:} The final non-Gaussian PDF is the re-weighted
-    sum of these nonlinearly propagated Gaussian kernels with their
-    corresponding weights \(\alpha_i\).
+    \textbf{Context}: This is essential for highly nonlinear regimes
+    where standard UT truncation errors (which start at the 4th order)
+    become significant.
+  \end{itemize}
+\item
+  \textbf{Conjugate Unscented Transform (CUT)} {[}Adurthi et al.
+  (2012){]}:
+
+  \begin{itemize}
+  \item
+    \textbf{Description}: A non-product cubature rule that uses
+    ``Conjugate Axes'' (combinations of principal axes) to satisfy
+    higher-order moment equations (up to 8th order) with fewer points
+    than Gauss-Hermite rules.
+  \item
+    \textbf{Advantage}: It captures cross-moments (e.g.,
+    \(E[X_i^2 X_j^2]\)) that standard UT cannot, while avoiding the
+    ``curse of dimensionality''.
+  \end{itemize}
+\item
+  \textbf{Gaussian Mixture Model-Unscented Transform (GMM-UT)}:
+
+  \begin{itemize}
+  \item
+    \textbf{Description}: To overcome the Gaussian limitation, the UT is
+    frequently used to propagate the individual kernels of a \textbf{GMM
+    (GMM\_UT)}. The GMM-UT method operates on the intuition that while
+    the global distribution may be highly non-Gaussian (e.g., a
+    ``banana'' shape), the local regions of the probability mass remain
+    nearly Gaussian for a longer duration under nonlinear flow.
+  \item
+    \textbf{Methodology}
+
+    \begin{itemize}
+    \item
+      \textbf{Sigma Point Propagation:} For each of the \(N_g\)
+      components, a set of \(2n+1\) deterministic sigma points is
+      generated using the component's mean \(\mathbf{x}_i\) and
+      covariance \(\mathbf{P}_i\).
+    \item
+      \textbf{Independent Nonlinear Mapping:} These sigma points are
+      passed through the high-fidelity nonlinear dynamics
+      \(\mathbf{f}(\cdot)\).
+    \item
+      \textbf{Moment Reconstruction:} The transformed mean and
+      covariance for \emph{each} kernel are reconstructed using standard
+      UT weighting rules, preserving second-order accuracy.
+    \item
+      \textbf{Re-Synthesis:} The final non-Gaussian PDF is the
+      re-weighted sum of these nonlinearly propagated Gaussian kernels
+      with their corresponding weights \(\alpha_i\).
+    \end{itemize}
   \end{itemize}
 \item
   \textbf{AEGIS Framework:} In the \textbf{Adaptive Entropy-based
@@ -1760,6 +1822,23 @@ The sources highlight the UT's performance relative to other
   large-scale low-fidelity sampling corrected by high-fidelity samples
   to capture complex shapes that the UT's single-Gaussian assumption
   cannot.
+\end{itemize}
+
+\subsection{Comparative Performance}\label{sec-ut-performance}
+
+The sources highlight the UT's performance relative to other
+``State-of-the-Art'' methods:
+
+\begin{itemize}
+\item
+  \textbf{UT vs.~Linearised Covariance (LinCov):} The UT is consistently
+  more accurate than LinCov because it captures more of the
+  distribution's tails and accounts for higher-order nonlinear effects
+  that first-order Taylor expansions ignore.
+\item
+  \textbf{UT vs.~Monte Carlo:} The UT is significantly faster than MC,
+  requiring only 13 points for a standard 6D orbital state compared to
+  the millions needed for MC to reach similar statistical convergence.
 \end{itemize}
 
 \section{Polynomial Chaos Expansions
@@ -1825,8 +1904,9 @@ expansion coefficients.
 Formula}}{The PCE Surrogate Formula}}\label{the-pce-surrogate-formula}
 
 The stochastic output at a future time \(t\) is approximated by the
-finite series expansion:
-\[\hat{\mathbf{X}}(t, \xi) \approx \sum_{j=0}^{P} c_j(t) \Psi_j(\xi)\]
+finite series expansion: \[
+\hat{\mathbf{X}}(t, \xi) \approx \sum_{j=0}^{P} c_j(t) \Psi_j(\xi)
+\]
 
 \textbf{Terms Defined:}
 
@@ -3163,6 +3243,13 @@ Acciarini, Giacomo, Nicola Baresi, David J. B. Lloyd, and Dario Izzo.
 \emph{Journal of Guidance, Control, and Dynamics} 48 (4): 903--13.
 \url{https://doi.org/10.2514/1.G008717}.
 
+\bibitem[\citeproctext]{ref-Adurthi2012TheCUT}
+Adurthi, Nagavenkat, Puneet Singla, and Tarunraj Singh. 2012. {``The
+Conjugate Unscented Transform --- an Approach to Evaluate
+Multi-Dimensional Expectation Integrals.''} \emph{2012 American Control
+Conference (ACC)}, 5556--61.
+\url{https://doi.org/10.1109/ACC.2012.6314970}.
+
 \bibitem[\citeproctext]{ref-bignon2015accurate}
 Bignon, Emmanuel, P Mercier, Vincent Azzopardi, and R Pinéde. 2015.
 {``Accurate Numerical Orbit Propagation Using Polynomial Algebra
@@ -3196,9 +3283,16 @@ Errors}.''} In \emph{Advanced Maui Optical and Space Surveillance
 Technologies Conference}, edited by S. Ryan.
 
 \bibitem[\citeproctext]{ref-Julier1997NewEO}
-Julier, Simon J., and Jeffrey K. Uhlmann. 1997. {``New Extension of the
+Julier, Simon J., and Jeffrey K. Uhlmann. 1997a. {``New Extension of the
 Kalman Filter to Nonlinear Systems.''} \emph{Defense, Security, and
 Sensing}. \url{https://api.semanticscholar.org/CorpusID:7937456}.
+
+\bibitem[\citeproctext]{ref-Julier1997NewUKF}
+Julier, Simon J., and Jeffrey K. Uhlmann. 1997b. {``{New extension of
+the Kalman filter to nonlinear systems}.''} In \emph{Signal Processing,
+Sensor Fusion, and Target Recognition VI}, edited by Ivan Kadar, vol.
+3068. International Society for Optics; Photonics; SPIE.
+\url{https://doi.org/10.1117/12.280797}.
 
 \bibitem[\citeproctext]{ref-park-scheeres:10.2514ux2f1.20177}
 Park, Ryan S., and Daniel J. Scheeres. 2006. {``Nonlinear Mapping of
@@ -3214,6 +3308,18 @@ Probability Computation}.
 Sun, Pan, Kai Cao, and Shuang Li. 2026. {``Recent Advances of Practical
 Techniques for Nonlinear Uncertainty Propagation in Orbital Dynamics.''}
 \emph{Science China Physics, Mechanics \& Astronomy} 69 (1): 214501.
+
+\bibitem[\citeproctext]{ref-Tenne2003TheHOUF}
+Tenne, D., and T. Singh. 2003. {``The Higher Order Unscented Filter.''}
+\emph{Proceedings of the 2003 American Control Conference, 2003.} 3:
+2441--2446 vol.3. \url{https://doi.org/10.1109/ACC.2003.1243441}.
+
+\bibitem[\citeproctext]{ref-dermerwe2001sq-ut}
+Van der Merwe, R., and E. A. Wan. 2001. {``The Square-Root Unscented
+Kalman Filter for State and Parameter-Estimation.''} \emph{2001 IEEE
+International Conference on Acoustics, Speech, and Signal Processing.
+Proceedings (Cat. No.01CH37221)} 6: 3461--3464 vol.6.
+\url{https://doi.org/10.1109/ICASSP.2001.940586}.
 
 \bibitem[\citeproctext]{ref-zhou2026time}
 Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2026.
