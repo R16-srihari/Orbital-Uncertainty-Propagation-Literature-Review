@@ -179,14 +179,16 @@ window.Quarto = {
   <li><a href="#taxonomy-of-orbital-uncertainties" id="toc-taxonomy-of-orbital-uncertainties" class="nav-link" data-scroll-target="#taxonomy-of-orbital-uncertainties">Taxonomy of Orbital Uncertainties</a></li>
   <li><a href="#foundational-assumptions-in-orbital-uncertainty-propagation" id="toc-foundational-assumptions-in-orbital-uncertainty-propagation" class="nav-link" data-scroll-target="#foundational-assumptions-in-orbital-uncertainty-propagation">Foundational Assumptions in Orbital Uncertainty Propagation</a></li>
   <li><a href="#the-fokker-planck-equation" id="toc-the-fokker-planck-equation" class="nav-link" data-scroll-target="#the-fokker-planck-equation">The Fokker-Planck Equation</a></li>
-  <li><a href="#classification-and-methodology-of-uncertainty-propagation-techniques" id="toc-classification-and-methodology-of-uncertainty-propagation-techniques" class="nav-link" data-scroll-target="#classification-and-methodology-of-uncertainty-propagation-techniques">Classification and Methodology of Uncertainty Propagation Techniques</a></li>
   </ul></li>
   <li><a href="#the-sampling-baseline-monte-carlo-mc" id="toc-the-sampling-baseline-monte-carlo-mc" class="nav-link" data-scroll-target="#the-sampling-baseline-monte-carlo-mc">The Sampling Baseline: Monte Carlo (MC)</a>
   <ul class="collapse">
-  <li><a href="#mechanics-of-the-sampling-based-approach" id="toc-mechanics-of-the-sampling-based-approach" class="nav-link" data-scroll-target="#mechanics-of-the-sampling-based-approach">Mechanics of the Sampling-Based Approach</a></li>
+  <li><a href="#mechanics-of-the-sampling-based-approach" id="toc-mechanics-of-the-sampling-based-approach" class="nav-link" data-scroll-target="#mechanics-of-the-sampling-based-approach">Mechanics of the Sampling-Based Approach</a>
+  <ul class="collapse">
+  <li><a href="#algorithmic-flow-of-monte-carlo-simulation" id="toc-algorithmic-flow-of-monte-carlo-simulation" class="nav-link" data-scroll-target="#algorithmic-flow-of-monte-carlo-simulation">Algorithmic Flow of Monte Carlo Simulation</a></li>
+  </ul></li>
   <li><a href="#role-as-the-ground-truth-baseline" id="toc-role-as-the-ground-truth-baseline" class="nav-link" data-scroll-target="#role-as-the-ground-truth-baseline">Role as the “Ground Truth” Baseline</a></li>
   <li><a href="#the-computational-trade-off" id="toc-the-computational-trade-off" class="nav-link" data-scroll-target="#the-computational-trade-off">The Computational Trade-off</a></li>
-  <li><a href="#mc-in-the-landscape-of-sampling-methods" id="toc-mc-in-the-landscape-of-sampling-methods" class="nav-link" data-scroll-target="#mc-in-the-landscape-of-sampling-methods">MC in the Landscape of Sampling Methods</a></li>
+  <li><a href="#variations-and-technological-extensions" id="toc-variations-and-technological-extensions" class="nav-link" data-scroll-target="#variations-and-technological-extensions">Variations and Technological Extensions</a></li>
   </ul></li>
   <li><a href="#sec-lincov" id="toc-sec-lincov" class="nav-link" data-scroll-target="#sec-lincov">Linearized Covariance (LinCov)</a>
   <ul class="collapse">
@@ -248,8 +250,8 @@ window.Quarto = {
   <li><a href="#mathematical-architecture-of-the-ut" id="toc-mathematical-architecture-of-the-ut" class="nav-link" data-scroll-target="#mathematical-architecture-of-the-ut">Mathematical Architecture of the UT</a>
   <ul class="collapse">
   <li><a href="#sigma-point-selection" id="toc-sigma-point-selection" class="nav-link" data-scroll-target="#sigma-point-selection">Sigma Point Selection</a></li>
-  <li><a href="#weight-allocation" id="toc-weight-allocation" class="nav-link" data-scroll-target="#weight-allocation"><strong>Weight Allocation</strong></a></li>
-  <li><a href="#statistical-reconstruction" id="toc-statistical-reconstruction" class="nav-link" data-scroll-target="#statistical-reconstruction"><strong>Statistical Reconstruction</strong></a></li>
+  <li><a href="#weight-allocation" id="toc-weight-allocation" class="nav-link" data-scroll-target="#weight-allocation">Weight Allocation</a></li>
+  <li><a href="#statistical-reconstruction" id="toc-statistical-reconstruction" class="nav-link" data-scroll-target="#statistical-reconstruction">Statistical Reconstruction</a></li>
   </ul></li>
   <li><a href="#algorithm-the-unscented-filter-ukf-logic" id="toc-algorithm-the-unscented-filter-ukf-logic" class="nav-link" data-scroll-target="#algorithm-the-unscented-filter-ukf-logic">Algorithm: The Unscented Filter (UKF) Logic</a></li>
   <li><a href="#variations-and-hybrid-architectures-1" id="toc-variations-and-hybrid-architectures-1" class="nav-link" data-scroll-target="#variations-and-hybrid-architectures-1">Variations and Hybrid Architectures</a></li>
@@ -260,9 +262,9 @@ window.Quarto = {
   <li><a href="#theoretical-classification-and-role" id="toc-theoretical-classification-and-role" class="nav-link" data-scroll-target="#theoretical-classification-and-role">Theoretical Classification and Role</a></li>
   <li><a href="#mathematical-foundations-of-pce" id="toc-mathematical-foundations-of-pce" class="nav-link" data-scroll-target="#mathematical-foundations-of-pce">Mathematical Foundations of PCE</a>
   <ul class="collapse">
-  <li><a href="#the-pce-surrogate-formula" id="toc-the-pce-surrogate-formula" class="nav-link" data-scroll-target="#the-pce-surrogate-formula"><strong>The PCE Surrogate Formula</strong></a></li>
-  <li><a href="#expansion-order-and-the-curse-of-dimensionality" id="toc-expansion-order-and-the-curse-of-dimensionality" class="nav-link" data-scroll-target="#expansion-order-and-the-curse-of-dimensionality"><strong>Expansion Order and the Curse of Dimensionality</strong></a></li>
-  <li><a href="#orthonormality-and-moment-matching" id="toc-orthonormality-and-moment-matching" class="nav-link" data-scroll-target="#orthonormality-and-moment-matching"><strong>Orthonormality and Moment Matching</strong></a></li>
+  <li><a href="#the-pce-surrogate-formula" id="toc-the-pce-surrogate-formula" class="nav-link" data-scroll-target="#the-pce-surrogate-formula">The PCE Surrogate Formula</a></li>
+  <li><a href="#expansion-order-and-the-curse-of-dimensionality" id="toc-expansion-order-and-the-curse-of-dimensionality" class="nav-link" data-scroll-target="#expansion-order-and-the-curse-of-dimensionality">Expansion Order and the Curse of Dimensionality</a></li>
+  <li><a href="#orthogonality-and-basis-selection" id="toc-orthogonality-and-basis-selection" class="nav-link" data-scroll-target="#orthogonality-and-basis-selection">Orthogonality and Basis Selection</a></li>
   </ul></li>
   <li><a href="#procedural-logic-non-intrusive-pce-workflow" id="toc-procedural-logic-non-intrusive-pce-workflow" class="nav-link" data-scroll-target="#procedural-logic-non-intrusive-pce-workflow">Procedural Logic: Non-Intrusive PCE Workflow</a></li>
   <li><a href="#variations-of-expansion-and-surrogate-methods" id="toc-variations-of-expansion-and-surrogate-methods" class="nav-link" data-scroll-target="#variations-of-expansion-and-surrogate-methods">Variations of Expansion and Surrogate Methods</a></li>
@@ -358,12 +360,12 @@ window.Quarto = {
 <li><p>If events are disjoint, <span class="math inline">\(\mathcal{P}(\bigcup_i A_i) = \sum_i \mathcal{P}(A_i)\)</span>. <em>Example</em>: For a fair die, <span class="math inline">\(\mathcal{P}(\{2\}) = \tfrac{1}{6}\)</span>.</p></li>
 </ul></li>
 </ul>
-</div></div><p>The random input vector <span class="math inline">\(\mathbf{\xi} \in \mathbb{R}^d\)</span> is defined on <span class="math inline">\((\mathcal{S}, \Sigma, \mathcal{P})\)</span> and consists of <span class="math inline">\(d\)</span> independent random inputs that characterize the stochastic system. These inputs are drawn from a probability distribution defined over the space <span class="math inline">\(\Gamma^d \subset \mathbb{R}^d\)</span>, which is the support of the random variables. The support space <span class="math inline">\(\Gamma^d\)</span> depends on the problem; for example, <span class="math inline">\(\Gamma^d = [0,1]^d\)</span> for <span class="math inline">\(d\)</span>-dimensional uniform random variables in the range <span class="math inline">\([0,1]\)</span>.</p>
+</div></div><p>The random input vector <span class="math inline">\(\mathbf{\xi} \in \mathbb{R}^d\)</span> is defined on <span class="math inline">\((\mathcal{S}, \Sigma, \mathcal{P})\)</span> and consists of <span class="math inline">\(d\)</span> independent random inputs that characterize the stochastic system. These inputs are drawn from a probability distribution defined over the space <span class="math inline">\(\mathcal{S}\to\Gamma^d \subseteq \mathbb{R}^d\)</span>, which is the support of the random variables. The choice of <span class="math inline">\(\Gamma^d\)</span> depends on the problem; for example, <span class="math inline">\(\Gamma^d = [0,1]^d\)</span> for <span class="math inline">\(d\)</span>-dimensional uniform random variables in the range <span class="math inline">\([0,1]\)</span>.</p>
 <p>The uncertainty propagation problem seeks to generate a solution to a stochastic ordinary differential equation:</p>
 <p><span id="eq-stochastic-ode"><span class="math display">\[
 \mathcal{A}(t, \mathbf{\xi}; \mathbf{x}) = 0,
 \quad (t, \mathbf{\xi}) \in [0, t_f] \times \Gamma^d,
-\quad \mathcal{P}\text{-a.s. in } \mathcal{S}
+\quad \mathcal{P}\text{- a.s. in } \mathcal{S}
 \tag{1}\]</span></span></p>
 <p>where <span class="math inline">\(t \in [0, t_f]\)</span> is the time variable, <span class="math inline">\(\mathbf{x} \in \mathbb{R}^n\)</span> is a vector of Quantities of Interest (QoIs), and <span class="math inline">\(\mathcal{A}\)</span> is the stochastic ODE operator that defines the flow of <span class="math inline">\(\mathbf{x}\)</span> to <span class="math inline">\(t\)</span> as a function of <span class="math inline">\(\mathbf{\xi}\)</span>. A solution to the uncertainty propagation problem quantifies the effects of random inputs <span class="math inline">\(\mathbf{\xi}\)</span> on the random QoIs <span class="math inline">\(\mathbf{x}\)</span> as a function of time <span class="math inline">\(t\)</span> and the random inputs <span class="math inline">\(\boldsymbol{\xi}\)</span>.</p>
 <p>The random inputs <span class="math inline">\(\boldsymbol{\xi}\)</span> may include initial state uncertainties, force-modeling errors, and environmental perturbations.</p>
@@ -407,10 +409,12 @@ window.Quarto = {
 <p>where <span class="math inline">\(\mathbf{f}\)</span> is the deterministic flow vector, <span class="math inline">\(\mathbf{\Sigma}\)</span> is the diffusion tensor, and <span class="math inline">\(p(\mathbf{x}, t)\)</span> is the PDF at time <span class="math inline">\(t\)</span>.</p></li>
 <li><p><strong>The Computational Challenge in astrodynamics:</strong> Direct numerical solutions to the FPE are generally intractable in astrodynamics due to the <strong>“curse of dimensionality”</strong>; a 6D orbital state requires spatial grids that grow exponentially, necessitating the use of the state-of-the-art approximation methods discussed in this report.</p></li>
 </ul>
-</section>
-<section id="classification-and-methodology-of-uncertainty-propagation-techniques" class="level2">
-<h2 class="anchored" data-anchor-id="classification-and-methodology-of-uncertainty-propagation-techniques">Classification and Methodology of Uncertainty Propagation Techniques</h2>
-<p>Managing the <em>curse of dimensionality</em> and the inherent non‑linearity of orbital mechanics requires a robust taxonomy of methods. These techniques are generally classified by how they represent the PDF: through point‑based samples, linearized mathematical transformations, mixture models, polynomial expansions, or hybrid multi‑fidelity approaches. Each method is assessed based on its ability to preserve the integrity of the PDF over time, its computational efficiency, and its suitability for real‑time operational use. The following sections provide a detailed overview of these methods, highlighting their theoretical foundations, practical implementations, and performance characteristics.</p>
+<p>The following sections provide a detailed overview of various methods of uncertainty propagation as well as frameworks that improve the accuracy amd modeling of the final uncertainty distribution, highlighting their mathematical and theoretical foundations, practical implementations and variations among them, an overview on the combinations with existing research the methods with</p>
+<!--
+## Classification and Methodology of Uncertainty Propagation Techniques
+
+Managing the *curse of dimensionality* and the inherent non‑linearity of orbital mechanics requires a robust taxonomy of methods. These techniques are generally classified by how they represent the PDF: through point‑based samples, linearized mathematical transformations, mixture models, polynomial expansions, or hybrid multi‑fidelity approaches. Each method is assessed based on its ability to preserve the integrity of the PDF over time, its computational efficiency, and its suitability for real‑time operational use. The following sections provide a detailed overview of these methods, highlighting their theoretical foundations, practical implementations, and performance characteristics.
+-->
 </section>
 </section>
 <section id="the-sampling-baseline-monte-carlo-mc" class="level1 page-columns page-full">
@@ -434,13 +438,24 @@ P = SS^{T}
 <li><p><strong>Non-Intrusive Nature:</strong> Because each sample is treated separately, MC is intrinsically non-intrusive, meaning it treats the dynamics model as a “black box” and requires no modifications to existing dynamics code.</p></li>
 <li><p><strong>Statistical Reconstruction:</strong> After propagation, the ensemble of final states provides a discrete representation of the final PDF. Statistical properties, such as the mean and covariance, are estimated directly by computing the average and sample-covariance of the propagated points.</p></li>
 </ul>
+<section id="algorithmic-flow-of-monte-carlo-simulation" class="level3">
+<h3 class="anchored" data-anchor-id="algorithmic-flow-of-monte-carlo-simulation">Algorithmic Flow of Monte Carlo Simulation</h3>
+<pre class="mermaid"><code>graph TD
+    A[Initial PDF &amp; Covariance] --&gt; B[Generate Ω Random Samples]
+    B --&gt; C[Propagate Each Sample Independently via RK8/High-Fidelity Dynamics]
+    C --&gt; D[Collect Final States]
+    D --&gt; E[Compute Mean &amp; Covariance]
+    D --&gt; F[Construct Terminal PDF/Histogram]
+    E --&gt; G[Validation Baseline for Other Methods]
+    F --&gt; G</code></pre>
+</section>
 </section>
 <section id="role-as-the-ground-truth-baseline" class="level2">
 <h2 class="anchored" data-anchor-id="role-as-the-ground-truth-baseline">Role as the “Ground Truth” Baseline</h2>
 <p>The sources [<span class="citation" data-cites="bosorbit">Bos (<a href="#ref-bosorbit" role="doc-biblioref">2025</a>)</span>]<span class="citation" data-cites="thesis_suyog">(<a href="#ref-thesis_suyog" role="doc-biblioref">Soman 2025</a>)</span> identify MC simulation as the <strong>definitive benchmark</strong> for evaluating the accuracy of all other UP methods.</p>
 <ul>
-<li><strong>Reliability:</strong> MC results approach the “true” probability distribution as the number of samples goes to infinity.</li>
-<li><strong>Accuracy Metric:</strong> In comparative studies, researchers typically use a large-scale MC run (such as <span class="math inline">\(10^5\)</span> samples) as the reference truth to calculate accuracy metrics like the <strong>N L2 distance</strong> for alternative methods.</li>
+<li><p><strong>Reliability:</strong> MC results approach the “true” probability distribution as the number of samples goes to infinity.</p></li>
+<li><p><strong>Accuracy Metric:</strong> In comparative studies, researchers typically use a large-scale MC run (such as <span class="math inline">\(10^5\)</span> samples) as the reference truth to calculate accuracy metrics like the <strong>N L2 distance</strong> for alternative methods.</p></li>
 </ul>
 </section>
 <section id="the-computational-trade-off" class="level2">
@@ -495,14 +510,14 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <li><p><strong>Practical Infeasibility:</strong> Due to these requirements, the sources note that standard MC simulations are often infeasible for practical, real-time application to the vast population of resident space objects (RSOs).</p></li>
 </ul>
 </section>
-<section id="mc-in-the-landscape-of-sampling-methods" class="level2">
-<h2 class="anchored" data-anchor-id="mc-in-the-landscape-of-sampling-methods">MC in the Landscape of Sampling Methods</h2>
-<p>Current literature place MC within a broader hierarchy of sampling and sample-reliant methods designed to mitigate its costs:</p>
+<section id="variations-and-technological-extensions" class="level2">
+<h2 class="anchored" data-anchor-id="variations-and-technological-extensions">Variations and Technological Extensions</h2>
+<p>To mitigate the extreme computational burden of the base Monte Carlo simulation, several variations have been developed that leverage modern hardware and statistical theory:</p>
 <ul>
-<li><p><strong>Deterministic Sampling (Unscented Transform):</strong> Unlike MC’s random sampling, the <strong>Unscented Transform (UT)</strong> uses a small, deterministically chosen set of weighted <strong>sigma points</strong> to represent the first two moments of a distribution.</p></li>
-<li><p><strong>Multi-Fidelity (MF) Architectures:</strong> This “promising” alternative leverages sampling concepts by propagating a large set of samples through fast, <strong>low-fidelity dynamics</strong> and then using a tiny subset of “important samples” propagated through high-fidelity dynamics to correct the results. MF can achieve speed-ups of up to <strong>4 orders of magnitude</strong> over standard MC while maintaining a high level of agreement.</p></li>
-<li><p><strong>Enhanced Sampling Techniques:</strong> To improve efficiency, researchers utilize variance reduction techniques like <strong>importance sampling</strong> or <strong>stratified sampling</strong>, as well as <strong>Quasi-Monte Carlo</strong> methods which use special sequences for more uniform coverage of the uncertainty space.</p></li>
-<li><p><strong>Parallelization:</strong> Leveraging multicore CPUs or GPU acceleration is highlighted as a primary way to reduce the run times of large-scale Monte Carlo campaigns.</p></li>
+<li><p><strong>Parallel MC (GPGPU):</strong> Since samples are independent, they are ideally suited for massively parallel architectures,. Implementation on Graphics Processing Units (GPGPUs) can reduce computational time linearly with the number of cores, though it introduces bottlenecks in memory transfer (PCI Express bus) and requires re-coding dynamics without standard libraries like SPICE.</p></li>
+<li><p><strong>Importance Sampling (IS) and Cross-Entropy (CE):</strong> In conjunction analysis, where collision probability (<span class="math inline">\(P_C\)</span>) is a “rare event” (often <span class="math inline">\(10^{-4}\)</span> to <span class="math inline">\(10^{-6}\)</span>), brute-force methods are computationally exhaustive,. IS biases the sampling toward the “failure set” (the collision region), and the Cross-Entropy method iteratively solves for the optimal proposal distribution.</p></li>
+<li><p><strong>Surrogate-Assisted MC:</strong> Rather than numerical integration for every sample, surrogate models—such as high-order Taylor polynomials via Differential Algebra (DA) or Polynomial Chaos Expansions (PCE)—are used to rapidly evaluate samples.</p></li>
+<li><p><strong>MC from Epoch vs.&nbsp;MC from TCA:</strong> Baseline “from Epoch” propagation uses high-fidelity models from the initial measurement time, while “from TCA” propagates uncertainty to the Time of Closest Approach (TCA) first and then performs a localized MC simulation, significantly saving time when it comes to rare-event probability (like collision probability <span class="math inline">\(P_C\)</span>) estimation.</p></li>
 </ul>
 </section>
 </section>
@@ -913,7 +928,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 \tag{7}\]</span></span></p>
 </section>
 <section id="weight-allocation" class="level3">
-<h3 class="anchored" data-anchor-id="weight-allocation"><strong>Weight Allocation</strong></h3>
+<h3 class="anchored" data-anchor-id="weight-allocation">Weight Allocation</h3>
 <p><span class="math display">\[W_0 = \frac{\kappa}{n + \kappa}\]</span> <span class="math display">\[W_i = \frac{1}{2(n + \kappa)}, \quad i = 1, \dots, 2n\]</span></p>
 <p><strong>Terms Defined:</strong></p>
 <ul>
@@ -939,7 +954,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </ul>
 </section>
 <section id="statistical-reconstruction" class="level3">
-<h3 class="anchored" data-anchor-id="statistical-reconstruction"><strong>Statistical Reconstruction</strong></h3>
+<h3 class="anchored" data-anchor-id="statistical-reconstruction">Statistical Reconstruction</h3>
 <p>After passing each <span class="math inline">\(\chi_i\)</span> through the nonlinear dynamics <span class="math inline">\(\mathbf{f}(\cdot)\)</span>, <span class="math display">\[
 \mathbfcal{Y}_i = \mathbf{f}(\chi_i)
 \]</span></p>
@@ -1030,7 +1045,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <p>Here, a random variable or a stochastic solution is called <strong>square-measurable</strong> if its second moment is finite: <span class="math display">\[\mathbb{E}[\mathbf{X}^2] &lt; \infty\]</span></p>
 <p>This condition ensures that the PCE framework can represent the random solution as a series of orthogonal polynomials and that statistical moments (like mean and variance) can be computed analytically from the expansion coefficients.</p>
 </div></div><section id="the-pce-surrogate-formula" class="level3">
-<h3 class="anchored" data-anchor-id="the-pce-surrogate-formula"><strong>The PCE Surrogate Formula</strong></h3>
+<h3 class="anchored" data-anchor-id="the-pce-surrogate-formula">The PCE Surrogate Formula</h3>
 <p>The stochastic output at a future time <span class="math inline">\(t\)</span> is approximated by the finite series expansion: <span class="math display">\[
 \hat{\mathbf{X}}(t, \xi) \approx \sum_{j=0}^{P} c_j(t) \Psi_j(\xi)
 \]</span></p>
@@ -1044,12 +1059,12 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </ul>
 </section>
 <section id="expansion-order-and-the-curse-of-dimensionality" class="level3">
-<h3 class="anchored" data-anchor-id="expansion-order-and-the-curse-of-dimensionality"><strong>Expansion Order and the Curse of Dimensionality</strong></h3>
+<h3 class="anchored" data-anchor-id="expansion-order-and-the-curse-of-dimensionality">Expansion Order and the Curse of Dimensionality</h3>
 <p>The total number of coefficients <span class="math inline">\(P\)</span> required for a given order <span class="math inline">\(p\)</span> and dimension <span class="math inline">\(d\)</span> is calculated as: <span class="math display">\[P+1 = \frac{(p+d)!}{p!d!}\]</span></p>
 <p>This factorial growth highlights the primary limitation of classical PCE: the <strong>curse of dimensionality</strong>, where high-dimensional problems (e.g., <span class="math inline">\(d &gt; 10\)</span>) become computationally demanding due to the rapid growth of expansion terms.</p>
 </section>
-<section id="orthonormality-and-moment-matching" class="level3">
-<h3 class="anchored" data-anchor-id="orthonormality-and-moment-matching"><strong>Orthonormality and Moment Matching</strong></h3>
+<section id="orthogonality-and-basis-selection" class="level3">
+<h3 class="anchored" data-anchor-id="orthogonality-and-basis-selection">Orthogonality and Basis Selection</h3>
 <p>The basis functions are chosen according to the <strong>Wiener-Askey scheme</strong>, ensuring they are orthogonal relative to the input PDF, <span class="math inline">\(\rho(\xi)\)</span>: <span class="math display">\[
 \langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\xi) \Psi_\beta(\xi) \rho(\xi) d\xi = \delta_{\alpha\beta}
 \]</span></p>
@@ -1079,7 +1094,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </section>
 <section id="procedural-logic-non-intrusive-pce-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="procedural-logic-non-intrusive-pce-workflow">Procedural Logic: Non-Intrusive PCE Workflow</h2>
-<p>Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats existing high-fidelity propagators as “black boxes”. The two primary estimation methods for coeffiare:</p>
+<p>Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats existing high-fidelity propagators as “black boxes”. The two primary estimation methods for coefficients are:</p>
 <ol type="1">
 <li><p><strong>Pseudo-Spectral Projection:</strong> Exploits orthogonality by projecting the model output onto each basis function using numerical integration (e.g., Gaussian quadrature or Smolyak sparse grids).</p></li>
 <li><p><strong>Least-Squares Regression:</strong> Minimizes the residual between the expansion and model evaluations at a set of sampled points (e.g., Latin Hypercube Sampling).</p></li>

@@ -42,14 +42,14 @@ The stochastic uncertainty propagation problem is defined on a probability space
   - If events are disjoint, $\mathcal{P}(\bigcup_i A_i) = \sum_i \mathcal{P}(A_i)$. *Example*: For a fair die, $\mathcal{P}(\{2\}) = \tfrac{1}{6}$.
 :::
 
-The random input vector $\mathbf{\xi} \in \mathbb{R}^d$ is defined on $(\mathcal{S}, \Sigma, \mathcal{P})$ and consists of $d$ independent random inputs that characterize the stochastic system. These inputs are drawn from a probability distribution defined over the space $\Gamma^d \subset \mathbb{R}^d$, which is the support of the random variables. The support space $\Gamma^d$ depends on the problem; for example, $\Gamma^d = [0,1]^d$ for $d$-dimensional uniform random variables in the range $[0,1]$.
+The random input vector $\mathbf{\xi} \in \mathbb{R}^d$ is defined on $(\mathcal{S}, \Sigma, \mathcal{P})$ and consists of $d$ independent random inputs that characterize the stochastic system. These inputs are drawn from a probability distribution defined over the space $\mathcal{S}\to\Gamma^d \subseteq \mathbb{R}^d$, which is the support of the random variables. The choice of $\Gamma^d$ depends on the problem; for example, $\Gamma^d = [0,1]^d$ for $d$-dimensional uniform random variables in the range $[0,1]$.
 
 The uncertainty propagation problem seeks to generate a solution to a stochastic ordinary differential equation:
 
 $$
 \mathcal{A}(t, \mathbf{\xi}; \mathbf{x}) = 0, 
 \quad (t, \mathbf{\xi}) \in [0, t_f] \times \Gamma^d, 
-\quad \mathcal{P}\text{-a.s. in } \mathcal{S}
+\quad \mathcal{P}\text{- a.s. in } \mathcal{S}
 $$ {#eq-stochastic-ode}
 
 where $t \in [0, t_f]$ is the time variable, $\mathbf{x} \in \mathbb{R}^n$ is a vector of Quantities of Interest (QoIs), and $\mathcal{A}$ is the stochastic ODE operator that defines the flow of $\mathbf{x}$ to $t$ as a function of $\mathbf{\xi}$. A solution to the uncertainty propagation problem quantifies the effects of random inputs $\mathbf{\xi}$ on the random QoIs $\mathbf{x}$ as a function of time $t$ and the random inputs $\boldsymbol{\xi}$.
@@ -102,11 +102,13 @@ The **Fokker-Planck Equation** (FPE) is the fundamental partial differential equ
 
 *   **The Computational Challenge in astrodynamics:** Direct numerical solutions to the FPE are generally intractable in astrodynamics due to the **"curse of dimensionality"**; a 6D orbital state requires spatial grids that grow exponentially, necessitating the use of the state-of-the-art approximation methods discussed in this report.
 
+The following sections provide a detailed overview of various methods of uncertainty propagation as well as frameworks that improve the accuracy amd modeling of the final uncertainty distribution, highlighting their mathematical and theoretical foundations, practical implementations and variations among them, an overview on the combinations with existing research the methods with 
 
+<!--
 ## Classification and Methodology of Uncertainty Propagation Techniques
 
 Managing the *curse of dimensionality* and the inherent non‑linearity of orbital mechanics requires a robust taxonomy of methods. These techniques are generally classified by how they represent the PDF: through point‑based samples, linearized mathematical transformations, mixture models, polynomial expansions, or hybrid multi‑fidelity approaches. Each method is assessed based on its ability to preserve the integrity of the PDF over time, its computational efficiency, and its suitability for real‑time operational use. The following sections provide a detailed overview of these methods, highlighting their theoretical foundations, practical implementations, and performance characteristics.
-
+-->
 # The Sampling Baseline: Monte Carlo (MC)
 
 The Monte Carlo method serves as the “ground truth” and absolute benchmark for all other techniques. The process involves generating a large set of random samples ($N_{\text{samples}}$) from an initial multivariate Gaussian distribution using the square‑right matrix ($S$) of the <u>covariance matrix</u>. 
@@ -136,10 +138,25 @@ MC simulation functions by drawing a large ensemble of random samples from an in
 
 -  **Statistical Reconstruction:** After propagation, the ensemble of final states provides a discrete representation of the final PDF. Statistical properties, such as the mean and covariance, are estimated directly by computing the average and sample-covariance of the propagated points.
 
+### Algorithmic Flow of Monte Carlo Simulation
+
+```mermaid
+graph TD
+    A[Initial PDF & Covariance] --> B[Generate Ω Random Samples]
+    B --> C[Propagate Each Sample Independently via RK8/High-Fidelity Dynamics]
+    C --> D[Collect Final States]
+    D --> E[Compute Mean & Covariance]
+    D --> F[Construct Terminal PDF/Histogram]
+    E --> G[Validation Baseline for Other Methods]
+    F --> G
+```
+
+
 ## Role as the "Ground Truth" Baseline
 The sources [@bosorbit][@thesis_suyog] identify MC simulation as the **definitive benchmark** for evaluating the accuracy of all other UP methods.
 
 -  **Reliability:** MC results approach the "true" probability distribution as the number of samples goes to infinity.
+
 -  **Accuracy Metric:** In comparative studies, researchers typically use a large-scale MC run (such as $10^5$ samples) as the reference truth to calculate accuracy metrics like the **N L2 distance** for alternative methods.
 
 ## The Computational Trade-off
@@ -197,16 +214,16 @@ implying that reducing the error by a factor of (k) requires approximately (k^2)
 
 -  **Practical Infeasibility:** Due to these requirements, the sources note that standard MC simulations are often infeasible for practical, real-time application to the vast population of resident space objects (RSOs).
 
-## MC in the Landscape of Sampling Methods
-Current literature place MC within a broader hierarchy of sampling and sample-reliant methods designed to mitigate its costs:
+## Variations and Technological Extensions
+To mitigate the extreme computational burden of the base Monte Carlo simulation, several variations have been developed that leverage modern hardware and statistical theory:
 
--  **Deterministic Sampling (Unscented Transform):** Unlike MC's random sampling, the **Unscented Transform (UT)** uses a small, deterministically chosen set of weighted **sigma points** to represent the first two moments of a distribution.
+*   **Parallel MC (GPGPU):** Since samples are independent, they are ideally suited for massively parallel architectures,. Implementation on Graphics Processing Units (GPGPUs) can reduce computational time linearly with the number of cores, though it introduces bottlenecks in memory transfer (PCI Express bus) and requires re-coding dynamics without standard libraries like SPICE.
 
--  **Multi-Fidelity (MF) Architectures:** This "promising" alternative leverages sampling concepts by propagating a large set of samples through fast, **low-fidelity dynamics** and then using a tiny subset of "important samples" propagated through high-fidelity dynamics to correct the results. MF can achieve speed-ups of up to **4 orders of magnitude** over standard MC while maintaining a high level of agreement.
+*   **Importance Sampling (IS) and Cross-Entropy (CE):** In conjunction analysis, where collision probability ($P_C$) is a "rare event" (often $10^{-4}$ to $10^{-6}$), brute-force methods are computationally exhaustive,. IS biases the sampling toward the "failure set" (the collision region), and the Cross-Entropy method iteratively solves for the optimal proposal distribution.
 
--  **Enhanced Sampling Techniques:** To improve efficiency, researchers utilize variance reduction techniques like **importance sampling** or **stratified sampling**, as well as **Quasi-Monte Carlo** methods which use special sequences for more uniform coverage of the uncertainty space.
+*   **Surrogate-Assisted MC:** Rather than numerical integration for every sample, surrogate models—such as high-order Taylor polynomials via Differential Algebra (DA) or Polynomial Chaos Expansions (PCE)—are used to rapidly evaluate samples.
 
--  **Parallelization:** Leveraging multicore CPUs or GPU acceleration is highlighted as a primary way to reduce the run times of large-scale Monte Carlo campaigns.
+*   **MC from Epoch vs. MC from TCA:** Baseline "from Epoch" propagation uses high-fidelity models from the initial measurement time, while "from TCA" propagates uncertainty to the Time of Closest Approach (TCA) first and then performs a localized MC simulation, significantly saving time when it comes to rare-event probability (like collision probability $P_C$) estimation.
 
 # Linearized Covariance (LinCov) {#sec-lincov}
 
@@ -656,7 +673,7 @@ $$
 \chi_{i+n} = \bar{\mathbf{x}} - \left( \sqrt{(n + \kappa) \mathbf{P}} \right)_i, \quad i = 1, \dots, n
 $$ {#eq-sigma-points-i+n}
 
-### **Weight Allocation**
+### Weight Allocation
 $$W_0 = \frac{\kappa}{n + \kappa}$$
 $$W_i = \frac{1}{2(n + \kappa)}, \quad i = 1, \dots, 2n$$
 
@@ -674,7 +691,7 @@ The Cholesky decomposition of a positive definite matrix $\mathbf{P}$ is a lower
 
 *   $\kappa$: A scaling/tuning parameter, often set such that $n + \kappa = 3$ for Gaussian distributions to minimize higher-order errors.
 
-### **Statistical Reconstruction**
+### Statistical Reconstruction
 After passing each $\chi_i$ through the nonlinear dynamics $\mathbf{f}(\cdot)$,
 $$
 \mathbfcal{Y}_i = \mathbf{f}(\chi_i)
@@ -782,7 +799,7 @@ This condition ensures that the PCE framework can represent the random solution 
 :::
 
 
-### **The PCE Surrogate Formula**
+### The PCE Surrogate Formula
 The stochastic output at a future time $t$ is approximated by the finite series expansion:
 $$
 \hat{\mathbf{X}}(t, \xi) \approx \sum_{j=0}^{P} c_j(t) \Psi_j(\xi)
@@ -800,13 +817,13 @@ $$
 
 *   $P$: The number of terms in the expansion, determined by the polynomial order $p$ and input dimension $d$.
 
-### **Expansion Order and the Curse of Dimensionality**
+### Expansion Order and the Curse of Dimensionality
 The total number of coefficients $P$ required for a given order $p$ and dimension $d$ is calculated as:
 $$P+1 = \frac{(p+d)!}{p!d!}$$
 
 This factorial growth highlights the primary limitation of classical PCE: the **curse of dimensionality**, where high-dimensional problems (e.g., $d > 10$) become computationally demanding due to the rapid growth of expansion terms.
 
-### **Orthonormality and Moment Matching**
+### Orthogonality and Basis Selection
 The basis functions are chosen according to the **Wiener-Askey scheme**, ensuring they are orthogonal relative to the input PDF, $\rho(\xi)$:
 $$
 \langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\xi) \Psi_\beta(\xi) \rho(\xi) d\xi = \delta_{\alpha\beta}
@@ -827,7 +844,7 @@ Usually, the choice of polynomial family is dictated by the distribution of the 
 ::: 
 
 ## Procedural Logic: Non-Intrusive PCE Workflow
-Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats existing high-fidelity propagators as "black boxes". The two primary estimation methods for coeffiare:
+Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats existing high-fidelity propagators as "black boxes". The two primary estimation methods for coefficients are:
 
 1.  **Pseudo-Spectral Projection:** Exploits orthogonality by projecting the model output onto each basis function using numerical integration (e.g., Gaussian quadrature or Smolyak sparse grids).
 
