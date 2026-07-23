@@ -347,10 +347,10 @@ The random input vector \(\mathbf{\xi} \in \mathbb{R}^d\) is defined on
 \((\mathcal{S}, \Sigma, \mathcal{P})\) and consists of \(d\) independent
 random inputs that characterize the stochastic system. These inputs are
 drawn from a probability distribution defined over the space
-\(\Gamma^d \subset \mathbb{R}^d\), which is the support of the random
-variables. The support space \(\Gamma^d\) depends on the problem; for
-example, \(\Gamma^d = [0,1]^d\) for \(d\)-dimensional uniform random
-variables in the range \([0,1]\).
+\(\mathcal{S}\to\Gamma^d \subseteq \mathbb{R}^d\), which is the support
+of the random variables. The choice of \(\Gamma^d\) depends on the
+problem; for example, \(\Gamma^d = [0,1]^d\) for \(d\)-dimensional
+uniform random variables in the range \([0,1]\).
 
 The uncertainty propagation problem seeks to generate a solution to a
 stochastic ordinary differential equation:
@@ -358,7 +358,7 @@ stochastic ordinary differential equation:
 \begin{equation}\protect\phantomsection\label{eq-stochastic-ode}{
 \mathcal{A}(t, \mathbf{\xi}; \mathbf{x}) = 0, 
 \quad (t, \mathbf{\xi}) \in [0, t_f] \times \Gamma^d, 
-\quad \mathcal{P}\text{-a.s. in } \mathcal{S}
+\quad \mathcal{P}\text{- a.s. in } \mathcal{S}
 }\end{equation}
 
 where \(t \in [0, t_f]\) is the time variable,
@@ -483,10 +483,12 @@ process noise.
   discussed in this report.
 \end{itemize}
 
-The following sections provide a detailed overview of these methods,
-highlighting their mathematical and theoretical foundations, practical
-implementations and variations among them, an overview on the
-combinations with other major methods and performance characteristics.
+The following sections provide a detailed overview of various methods of
+uncertainty propagation as well as frameworks that improve the accuracy
+amd modeling of the final uncertainty distribution, highlighting their
+mathematical and theoretical foundations, practical implementations and
+variations among them, an overview on the combinations with existing
+research the methods with
 
 \section{The Sampling Baseline: Monte Carlo
 (MC)}\label{the-sampling-baseline-monte-carlo-mc}
@@ -546,6 +548,22 @@ PDF.
   propagated points.
 \end{itemize}
 
+\subsubsection{Algorithmic Flow of Monte Carlo
+Simulation}\label{algorithmic-flow-of-monte-carlo-simulation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial PDF \& Covariance] {-}{-}\textgreater{} B[Generate Ω Random Samples]}
+\NormalTok{    B {-}{-}\textgreater{} C[Propagate Each Sample Independently via RK8/High{-}Fidelity Dynamics]}
+\NormalTok{    C {-}{-}\textgreater{} D[Collect Final States]}
+\NormalTok{    D {-}{-}\textgreater{} E[Compute Mean \& Covariance]}
+\NormalTok{    D {-}{-}\textgreater{} F[Construct Terminal PDF/Histogram]}
+\NormalTok{    E {-}{-}\textgreater{} G[Validation Baseline for Other Methods]}
+\NormalTok{    F {-}{-}\textgreater{} G}
+\end{Highlighting}
+\end{Shaded}
+
 \subsection{Role as the ``Ground Truth''
 Baseline}\label{role-as-the-ground-truth-baseline}
 
@@ -554,7 +572,6 @@ The sources {[}Bos (2025){]}(Soman 2025) identify MC simulation as the
 UP methods.
 
 \begin{itemize}
-\tightlist
 \item
   \textbf{Reliability:} MC results approach the ``true'' probability
   distribution as the number of samples goes to infinity.
@@ -647,36 +664,40 @@ approximately (k\^{}2) times more samples.
   space objects (RSOs).
 \end{itemize}
 
-\subsection{MC in the Landscape of Sampling
-Methods}\label{mc-in-the-landscape-of-sampling-methods}
+\subsection{Variations and Technological
+Extensions}\label{variations-and-technological-extensions}
 
-Current literature place MC within a broader hierarchy of sampling and
-sample-reliant methods designed to mitigate its costs:
+To mitigate the extreme computational burden of the base Monte Carlo
+simulation, several variations have been developed that leverage modern
+hardware and statistical theory:
 
 \begin{itemize}
 \item
-  \textbf{Deterministic Sampling (Unscented Transform):} Unlike MC's
-  random sampling, the \textbf{Unscented Transform (UT)} uses a small,
-  deterministically chosen set of weighted \textbf{sigma points} to
-  represent the first two moments of a distribution.
+  \textbf{Parallel MC (GPGPU):} Since samples are independent, they are
+  ideally suited for massively parallel architectures,. Implementation
+  on Graphics Processing Units (GPGPUs) can reduce computational time
+  linearly with the number of cores, though it introduces bottlenecks in
+  memory transfer (PCI Express bus) and requires re-coding dynamics
+  without standard libraries like SPICE.
 \item
-  \textbf{Multi-Fidelity (MF) Architectures:} This ``promising''
-  alternative leverages sampling concepts by propagating a large set of
-  samples through fast, \textbf{low-fidelity dynamics} and then using a
-  tiny subset of ``important samples'' propagated through high-fidelity
-  dynamics to correct the results. MF can achieve speed-ups of up to
-  \textbf{4 orders of magnitude} over standard MC while maintaining a
-  high level of agreement.
+  \textbf{Importance Sampling (IS) and Cross-Entropy (CE):} In
+  conjunction analysis, where collision probability (\(P_C\)) is a
+  ``rare event'' (often \(10^{-4}\) to \(10^{-6}\)), brute-force methods
+  are computationally exhaustive,. IS biases the sampling toward the
+  ``failure set'' (the collision region), and the Cross-Entropy method
+  iteratively solves for the optimal proposal distribution.
 \item
-  \textbf{Enhanced Sampling Techniques:} To improve efficiency,
-  researchers utilize variance reduction techniques like
-  \textbf{importance sampling} or \textbf{stratified sampling}, as well
-  as \textbf{Quasi-Monte Carlo} methods which use special sequences for
-  more uniform coverage of the uncertainty space.
+  \textbf{Surrogate-Assisted MC:} Rather than numerical integration for
+  every sample, surrogate models---such as high-order Taylor polynomials
+  via Differential Algebra (DA) or Polynomial Chaos Expansions
+  (PCE)---are used to rapidly evaluate samples.
 \item
-  \textbf{Parallelization:} Leveraging multicore CPUs or GPU
-  acceleration is highlighted as a primary way to reduce the run times
-  of large-scale Monte Carlo campaigns.
+  \textbf{MC from Epoch vs.~MC from TCA:} Baseline ``from Epoch''
+  propagation uses high-fidelity models from the initial measurement
+  time, while ``from TCA'' propagates uncertainty to the Time of Closest
+  Approach (TCA) first and then performs a localized MC simulation,
+  significantly saving time when it comes to rare-event probability
+  (like collision probability \(P_C\)) estimation.
 \end{itemize}
 
 \section{Linearized Covariance (LinCov)}\label{sec-lincov}
@@ -1889,8 +1910,8 @@ expansion coefficients.
 
 \end{footnotesize}}
 
-\subsubsection{\texorpdfstring{\textbf{The PCE Surrogate
-Formula}}{The PCE Surrogate Formula}}\label{the-pce-surrogate-formula}
+\subsubsection{The PCE Surrogate
+Formula}\label{the-pce-surrogate-formula}
 
 The stochastic output at a future time \(t\) is approximated by the
 finite series expansion: \[
@@ -1917,8 +1938,8 @@ finite series expansion: \[
   polynomial order \(p\) and input dimension \(d\).
 \end{itemize}
 
-\subsubsection{\texorpdfstring{\textbf{Expansion Order and the Curse of
-Dimensionality}}{Expansion Order and the Curse of Dimensionality}}\label{expansion-order-and-the-curse-of-dimensionality}
+\subsubsection{Expansion Order and the Curse of
+Dimensionality}\label{expansion-order-and-the-curse-of-dimensionality}
 
 The total number of coefficients \(P\) required for a given order \(p\)
 and dimension \(d\) is calculated as: \[P+1 = \frac{(p+d)!}{p!d!}\]
@@ -1928,8 +1949,8 @@ PCE: the \textbf{curse of dimensionality}, where high-dimensional
 problems (e.g., \(d > 10\)) become computationally demanding due to the
 rapid growth of expansion terms.
 
-\subsubsection{\texorpdfstring{\textbf{Orthonormality and Moment
-Matching}}{Orthonormality and Moment Matching}}\label{orthonormality-and-moment-matching}
+\subsubsection{Orthogonality and Basis
+Selection}\label{orthogonality-and-basis-selection}
 
 The basis functions are chosen according to the \textbf{Wiener-Askey
 scheme}, ensuring they are orthogonal relative to the input PDF,
@@ -1967,7 +1988,7 @@ Workflow}\label{procedural-logic-non-intrusive-pce-workflow}
 
 Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats
 existing high-fidelity propagators as ``black boxes''. The two primary
-estimation methods for coeffiare:
+estimation methods for coefficients are:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
