@@ -179,7 +179,6 @@ window.Quarto = {
   <li><a href="#taxonomy-of-orbital-uncertainties" id="toc-taxonomy-of-orbital-uncertainties" class="nav-link" data-scroll-target="#taxonomy-of-orbital-uncertainties">Taxonomy of Orbital Uncertainties</a></li>
   <li><a href="#foundational-assumptions-in-orbital-uncertainty-propagation" id="toc-foundational-assumptions-in-orbital-uncertainty-propagation" class="nav-link" data-scroll-target="#foundational-assumptions-in-orbital-uncertainty-propagation">Foundational Assumptions in Orbital Uncertainty Propagation</a></li>
   <li><a href="#the-fokker-planck-equation" id="toc-the-fokker-planck-equation" class="nav-link" data-scroll-target="#the-fokker-planck-equation">The Fokker-Planck Equation</a></li>
-  <li><a href="#classification-and-methodology-of-uncertainty-propagation-techniques" id="toc-classification-and-methodology-of-uncertainty-propagation-techniques" class="nav-link" data-scroll-target="#classification-and-methodology-of-uncertainty-propagation-techniques">Classification and Methodology of Uncertainty Propagation Techniques</a></li>
   </ul></li>
   <li><a href="#the-sampling-baseline-monte-carlo-mc" id="toc-the-sampling-baseline-monte-carlo-mc" class="nav-link" data-scroll-target="#the-sampling-baseline-monte-carlo-mc">The Sampling Baseline: Monte Carlo (MC)</a>
   <ul class="collapse">
@@ -248,8 +247,8 @@ window.Quarto = {
   <li><a href="#mathematical-architecture-of-the-ut" id="toc-mathematical-architecture-of-the-ut" class="nav-link" data-scroll-target="#mathematical-architecture-of-the-ut">Mathematical Architecture of the UT</a>
   <ul class="collapse">
   <li><a href="#sigma-point-selection" id="toc-sigma-point-selection" class="nav-link" data-scroll-target="#sigma-point-selection">Sigma Point Selection</a></li>
-  <li><a href="#weight-allocation" id="toc-weight-allocation" class="nav-link" data-scroll-target="#weight-allocation"><strong>Weight Allocation</strong></a></li>
-  <li><a href="#statistical-reconstruction" id="toc-statistical-reconstruction" class="nav-link" data-scroll-target="#statistical-reconstruction"><strong>Statistical Reconstruction</strong></a></li>
+  <li><a href="#weight-allocation" id="toc-weight-allocation" class="nav-link" data-scroll-target="#weight-allocation">Weight Allocation</a></li>
+  <li><a href="#statistical-reconstruction" id="toc-statistical-reconstruction" class="nav-link" data-scroll-target="#statistical-reconstruction">Statistical Reconstruction</a></li>
   </ul></li>
   <li><a href="#algorithm-the-unscented-filter-ukf-logic" id="toc-algorithm-the-unscented-filter-ukf-logic" class="nav-link" data-scroll-target="#algorithm-the-unscented-filter-ukf-logic">Algorithm: The Unscented Filter (UKF) Logic</a></li>
   <li><a href="#variations-and-hybrid-architectures-1" id="toc-variations-and-hybrid-architectures-1" class="nav-link" data-scroll-target="#variations-and-hybrid-architectures-1">Variations and Hybrid Architectures</a></li>
@@ -407,10 +406,12 @@ window.Quarto = {
 <p>where <span class="math inline">\(\mathbf{f}\)</span> is the deterministic flow vector, <span class="math inline">\(\mathbf{\Sigma}\)</span> is the diffusion tensor, and <span class="math inline">\(p(\mathbf{x}, t)\)</span> is the PDF at time <span class="math inline">\(t\)</span>.</p></li>
 <li><p><strong>The Computational Challenge in astrodynamics:</strong> Direct numerical solutions to the FPE are generally intractable in astrodynamics due to the <strong>“curse of dimensionality”</strong>; a 6D orbital state requires spatial grids that grow exponentially, necessitating the use of the state-of-the-art approximation methods discussed in this report.</p></li>
 </ul>
-</section>
-<section id="classification-and-methodology-of-uncertainty-propagation-techniques" class="level2">
-<h2 class="anchored" data-anchor-id="classification-and-methodology-of-uncertainty-propagation-techniques">Classification and Methodology of Uncertainty Propagation Techniques</h2>
-<p>Managing the <em>curse of dimensionality</em> and the inherent non‑linearity of orbital mechanics requires a robust taxonomy of methods. These techniques are generally classified by how they represent the PDF: through point‑based samples, linearized mathematical transformations, mixture models, polynomial expansions, or hybrid multi‑fidelity approaches. Each method is assessed based on its ability to preserve the integrity of the PDF over time, its computational efficiency, and its suitability for real‑time operational use. The following sections provide a detailed overview of these methods, highlighting their theoretical foundations, practical implementations, and performance characteristics.</p>
+<p>The following sections provide a detailed overview of these methods, highlighting their mathematical and theoretical foundations, practical implementations and variations among them, an overview on the combinations with other major methods and performance characteristics.</p>
+<!--
+## Classification and Methodology of Uncertainty Propagation Techniques
+
+Managing the *curse of dimensionality* and the inherent non‑linearity of orbital mechanics requires a robust taxonomy of methods. These techniques are generally classified by how they represent the PDF: through point‑based samples, linearized mathematical transformations, mixture models, polynomial expansions, or hybrid multi‑fidelity approaches. Each method is assessed based on its ability to preserve the integrity of the PDF over time, its computational efficiency, and its suitability for real‑time operational use. The following sections provide a detailed overview of these methods, highlighting their theoretical foundations, practical implementations, and performance characteristics.
+-->
 </section>
 </section>
 <section id="the-sampling-baseline-monte-carlo-mc" class="level1 page-columns page-full">
@@ -913,7 +914,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 \tag{7}\]</span></span></p>
 </section>
 <section id="weight-allocation" class="level3">
-<h3 class="anchored" data-anchor-id="weight-allocation"><strong>Weight Allocation</strong></h3>
+<h3 class="anchored" data-anchor-id="weight-allocation">Weight Allocation</h3>
 <p><span class="math display">\[W_0 = \frac{\kappa}{n + \kappa}\]</span> <span class="math display">\[W_i = \frac{1}{2(n + \kappa)}, \quad i = 1, \dots, 2n\]</span></p>
 <p><strong>Terms Defined:</strong></p>
 <ul>
@@ -939,7 +940,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </ul>
 </section>
 <section id="statistical-reconstruction" class="level3">
-<h3 class="anchored" data-anchor-id="statistical-reconstruction"><strong>Statistical Reconstruction</strong></h3>
+<h3 class="anchored" data-anchor-id="statistical-reconstruction">Statistical Reconstruction</h3>
 <p>After passing each <span class="math inline">\(\chi_i\)</span> through the nonlinear dynamics <span class="math inline">\(\mathbf{f}(\cdot)\)</span>, <span class="math display">\[
 \mathbfcal{Y}_i = \mathbf{f}(\chi_i)
 \]</span></p>

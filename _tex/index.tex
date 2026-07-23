@@ -483,20 +483,10 @@ process noise.
   discussed in this report.
 \end{itemize}
 
-\subsection{Classification and Methodology of Uncertainty Propagation
-Techniques}\label{classification-and-methodology-of-uncertainty-propagation-techniques}
-
-Managing the \emph{curse of dimensionality} and the inherent
-non‑linearity of orbital mechanics requires a robust taxonomy of
-methods. These techniques are generally classified by how they represent
-the PDF: through point‑based samples, linearized mathematical
-transformations, mixture models, polynomial expansions, or hybrid
-multi‑fidelity approaches. Each method is assessed based on its ability
-to preserve the integrity of the PDF over time, its computational
-efficiency, and its suitability for real‑time operational use. The
-following sections provide a detailed overview of these methods,
-highlighting their theoretical foundations, practical implementations,
-and performance characteristics.
+The following sections provide a detailed overview of these methods,
+highlighting their mathematical and theoretical foundations, practical
+implementations and variations among them, an overview on the
+combinations with other major methods and performance characteristics.
 
 \section{The Sampling Baseline: Monte Carlo
 (MC)}\label{the-sampling-baseline-monte-carlo-mc}
@@ -1648,8 +1638,7 @@ governed by the following formulations:
 \chi_{i+n} = \bar{\mathbf{x}} - \left( \sqrt{(n + \kappa) \mathbf{P}} \right)_i, \quad i = 1, \dots, n
 }\end{equation}
 
-\subsubsection{\texorpdfstring{\textbf{Weight
-Allocation}}{Weight Allocation}}\label{weight-allocation}
+\subsubsection{Weight Allocation}\label{weight-allocation}
 
 \[W_0 = \frac{\kappa}{n + \kappa}\]
 \[W_i = \frac{1}{2(n + \kappa)}, \quad i = 1, \dots, 2n\]
@@ -1683,8 +1672,8 @@ is a lower triangular matrix \(\mathbf{L}\) such that
   errors.
 \end{itemize}
 
-\subsubsection{\texorpdfstring{\textbf{Statistical
-Reconstruction}}{Statistical Reconstruction}}\label{statistical-reconstruction}
+\subsubsection{Statistical
+Reconstruction}\label{statistical-reconstruction}
 
 After passing each \(\chi_i\) through the nonlinear dynamics
 \(\mathbf{f}(\cdot)\), \[
