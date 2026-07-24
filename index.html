@@ -319,7 +319,9 @@ window.Quarto = {
   <li><a href="#fokker-planck-equation-in-orbital-mechanics" id="toc-fokker-planck-equation-in-orbital-mechanics" class="nav-link" data-scroll-target="#fokker-planck-equation-in-orbital-mechanics">Fokker-Planck Equation in Orbital Mechanics</a></li>
   <li><a href="#theoretical-mechanics-of-the-tmd-framework" id="toc-theoretical-mechanics-of-the-tmd-framework" class="nav-link" data-scroll-target="#theoretical-mechanics-of-the-tmd-framework">Theoretical Mechanics of the TMD Framework</a></li>
   <li><a href="#algorithm-the-taylor-diffusion-propagator" id="toc-algorithm-the-taylor-diffusion-propagator" class="nav-link" data-scroll-target="#algorithm-the-taylor-diffusion-propagator">Algorithm: The Taylor Diffusion Propagator</a></li>
-  <li><a href="#limitations-of-orbital-uncertainty-propagation-methods" id="toc-limitations-of-orbital-uncertainty-propagation-methods" class="nav-link" data-scroll-target="#limitations-of-orbital-uncertainty-propagation-methods">Limitations of Orbital Uncertainty Propagation Methods</a></li>
+  </ul></li>
+  <li><a href="#limitations-of-orbital-uncertainty-propagation-methods" id="toc-limitations-of-orbital-uncertainty-propagation-methods" class="nav-link" data-scroll-target="#limitations-of-orbital-uncertainty-propagation-methods">Limitations of Orbital Uncertainty Propagation Methods</a>
+  <ul class="collapse">
   <li><a href="#cross-cutting-limitations" id="toc-cross-cutting-limitations" class="nav-link" data-scroll-target="#cross-cutting-limitations">Cross-Cutting Limitations</a>
   <ul class="collapse">
   <li><a href="#overall-assessment" id="toc-overall-assessment" class="nav-link" data-scroll-target="#overall-assessment">Overall Assessment</a></li>
@@ -1480,7 +1482,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <li><p><span class="math inline">\(A\)</span>: Permutation/pivot matrix that identifies the indices of the important samples.</p></li>
 <li><p><span class="math inline">\(C_h\)</span>: Lower triangular Cholesky factor.</p></li>
 </ul>
-<p>See <a href="#sec-appendix-pivoted-cholesky" class="quarto-xref">Section&nbsp;13</a> for a detailed derivation of the pivoted Cholesky algorithm and its application to MF uncertainty propagation.</p></li>
+<p>See <a href="#sec-appendix-pivoted-cholesky" class="quarto-xref">Section&nbsp;14</a> for a detailed derivation of the pivoted Cholesky algorithm and its application to MF uncertainty propagation.</p></li>
 <li><p><strong><span class="math inline">\(c_\ell(\xi)\)</span> Coefficient Computation:</strong> The expansion coefficients <span class="math inline">\(c_\ell(\xi)\)</span> in <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;9</a> are computed by solving the linear system: <span class="math display">\[
 \mathbf{C_h C_h}^T \mathbf{c}(\mathbf{\xi}) = \mathbf{g}
 \]</span></p>
@@ -1620,8 +1622,9 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
     H -- Yes --&gt; I[Output Analytic PDF: {x0, J, H, Q}]
     I --&gt; J[Instantaneous Evaluation of Tail Probabilities]</code></pre>
 </section>
-<section id="limitations-of-orbital-uncertainty-propagation-methods" class="level2">
-<h2 class="anchored" data-anchor-id="limitations-of-orbital-uncertainty-propagation-methods">Limitations of Orbital Uncertainty Propagation Methods</h2>
+</section>
+<section id="limitations-of-orbital-uncertainty-propagation-methods" class="level1">
+<h1>Limitations of Orbital Uncertainty Propagation Methods</h1>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
@@ -1831,7 +1834,6 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 </tr>
 </tbody>
 </table>
-</section>
 <section id="cross-cutting-limitations" class="level2">
 <h2 class="anchored" data-anchor-id="cross-cutting-limitations">Cross-Cutting Limitations</h2>
 <table class="caption-top table">
