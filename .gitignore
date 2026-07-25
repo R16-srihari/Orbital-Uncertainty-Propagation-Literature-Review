@@ -6,3 +6,4 @@
 /docs/_tex/
 /docs/site_libs/
 **/*.quarto_ipynb
+/.github/

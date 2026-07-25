@@ -3322,3 +3322,9 @@ with increasing generality and usually increasing computational cost.
 For the specific orbital uncertainty propagation research documented in the log, the most important research gap is therefore not simply the development of another propagator, but the development of **adaptive hybrid methods that can identify the local level of nonlinearity and automatically select the least expensive representation capable of preserving the uncertainty features relevant to the mission objective**.
 
 The thesis comparison similarly shows that LinCov is fastest but becomes unsuitable when the final distribution is strongly non-Gaussian, while PCE and multi-fidelity methods provide better performance in such regimes. GMM methods remain sensitive to component representation, and AEGIS can become computationally inefficient for long propagations.
+
+
+# 25-07-26
+
+## LinCov: Process Noise Covariance matrix Q
+
