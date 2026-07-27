@@ -8,6 +8,8 @@ project:
 
 manuscript:
   article: index.qmd
+  notebooks: 
+    - up_methods_comparison.qmd
 
 website: 
   title: "State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)"

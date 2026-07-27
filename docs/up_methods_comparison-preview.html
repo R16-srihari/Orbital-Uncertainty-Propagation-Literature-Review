@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-    <title>Orbital Uncertainty Propagation Method Comparison</title>
+    <title>Limitations of Orbital Uncertainty Propagation Methods</title>
     <style>
       /* Default styles provided by pandoc.
       ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -131,14 +131,14 @@
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script>   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script> 
+</script>  
       </head>
 
   <body class="quarto-notebook quarto-light">
     <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
       
       <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
-      <h6><i class="bi bi-journal-code"></i> Orbital Uncertainty Propagation Method Comparison</h6>
+      <h6><i class="bi bi-journal-code"></i> Limitations of Orbital Uncertainty Propagation Methods</h6>
 
             <a href="./up_methods_comparison.qmd" class="btn btn-primary quarto-download-embed" download="up_methods_comparison.qmd">Download Source</a>
           </div>
@@ -146,7 +146,7 @@
      <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Orbital Uncertainty Propagation Method Comparison</h1>
+      <h1 class="title">Limitations of Orbital Uncertainty Propagation Methods</h1>
           </div>
 
     
@@ -174,9 +174,26 @@
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#table-of-comparison" id="toc-table-of-comparison" class="nav-link active" data-scroll-target="#table-of-comparison">Table of Comparison</a></li>
-  <li><a href="#cross-cutting-limitations" id="toc-cross-cutting-limitations" class="nav-link" data-scroll-target="#cross-cutting-limitations">Cross-Cutting Limitations</a></li>
-  <li><a href="#overall-assessment" id="toc-overall-assessment" class="nav-link" data-scroll-target="#overall-assessment">Overall Assessment</a></li>
+  <li><a href="#summary-table" id="toc-summary-table" class="nav-link active" data-scroll-target="#summary-table">Summary Table</a></li>
+  <li><a href="#method-by-method-discussion" id="toc-method-by-method-discussion" class="nav-link" data-scroll-target="#method-by-method-discussion">Method-by-Method Discussion</a>
+  <ul class="collapse">
+  <li><a href="#monte-carlo" id="toc-monte-carlo" class="nav-link" data-scroll-target="#monte-carlo">Monte Carlo</a></li>
+  <li><a href="#linearised-covariance" id="toc-linearised-covariance" class="nav-link" data-scroll-target="#linearised-covariance">Linearised covariance</a></li>
+  <li><a href="#unscented-transform" id="toc-unscented-transform" class="nav-link" data-scroll-target="#unscented-transform">Unscented transform</a></li>
+  <li><a href="#polynomial-chaos-expansion" id="toc-polynomial-chaos-expansion" class="nav-link" data-scroll-target="#polynomial-chaos-expansion">Polynomial chaos expansion</a>
+  <ul class="collapse">
+  <li><a href="#non-intrusive-polynomial-chaos" id="toc-non-intrusive-polynomial-chaos" class="nav-link" data-scroll-target="#non-intrusive-polynomial-chaos">Non-intrusive polynomial chaos</a></li>
+  <li><a href="#intrusive-polynomial-chaos" id="toc-intrusive-polynomial-chaos" class="nav-link" data-scroll-target="#intrusive-polynomial-chaos">Intrusive polynomial chaos</a></li>
+  </ul></li>
+  <li><a href="#state-transition-tensors" id="toc-state-transition-tensors" class="nav-link" data-scroll-target="#state-transition-tensors">State transition tensors</a></li>
+  <li><a href="#differential-algebra" id="toc-differential-algebra" class="nav-link" data-scroll-target="#differential-algebra">Differential algebra</a></li>
+  <li><a href="#multi-fidelity-propagation" id="toc-multi-fidelity-propagation" class="nav-link" data-scroll-target="#multi-fidelity-propagation">Multi-fidelity propagation</a></li>
+  <li><a href="#gmm-based-methods" id="toc-gmm-based-methods" class="nav-link" data-scroll-target="#gmm-based-methods">GMM-based methods</a></li>
+  <li><a href="#hybrid-gmm-methods" id="toc-hybrid-gmm-methods" class="nav-link" data-scroll-target="#hybrid-gmm-methods">Hybrid GMM methods</a></li>
+  <li><a href="#aegis" id="toc-aegis" class="nav-link" data-scroll-target="#aegis">AEGIS</a></li>
+  <li><a href="#moment-based-propagation" id="toc-moment-based-propagation" class="nav-link" data-scroll-target="#moment-based-propagation">Moment-based propagation</a></li>
+  </ul></li>
+  <li><a href="#overall-conclusion" id="toc-overall-conclusion" class="nav-link" data-scroll-target="#overall-conclusion">Overall conclusion</a></li>
   </ul>
 </nav>
 </div>
@@ -184,533 +201,225 @@
 </div>
 <main class="content quarto-banner-title-block" id="quarto-document-content">      
 
-       <section id="table-of-comparison" class="level1">
-<h1>Table of Comparison</h1>
+       <p>Orbital uncertainty propagation methods differ mainly in how they balance three competing objectives: computational efficiency, fidelity to nonlinear dynamics, and the ability to represent non-Gaussian probability distributions. No single method is optimal in all regimes. Methods that are fast are usually based on local linearity or low-order statistics, while methods that can represent strongly distorted probability densities are usually more expensive or more difficult to scale.</p>
+<section id="summary-table" class="level1">
+<h1>Summary Table</h1>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 27%">
-<col style="width: 27%">
-<col style="width: 28%">
-<col style="width: 0%">
-<col style="width: 0%">
-<col style="width: 0%">
-<col style="width: 0%">
-<col style="width: 0%">
-<col style="width: 0%">
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 39%">
 <col style="width: 0%">
 <col style="width: 0%">
 <col style="width: 0%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Method / Framework</th>
-<th>Principal Strength</th>
-<th>Major Limitations</th>
-<th>Failure Mechanism / Critical Issue</th>
-<th>Implication for Orbital Uncertainty Propagation</th>
+<th>Method / framework</th>
+<th>Principal strength</th>
+<th>Main limitation</th>
+<th>Failure mechanism / critical issue</th>
+<th>Why the limitation matters</th>
 <th>Dynamics Intrusiveness</th>
 <th>Open source Implementation</th>
 <th>Result Accuracy and Computational cost</th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><strong>Monte Carlo (MC)</strong></td>
-<td>Provides the most direct and general representation of the propagated PDF; minimal assumptions on the dynamics or distribution</td>
-<td>Extremely computationally expensive; slow statistical convergence; inefficient for rare-event probability estimation</td>
-<td>Statistical error decreases only as (<span class="math inline">\(1/\sqrt{N}\)</span>); high-fidelity dynamics must be integrated for every sample</td>
-<td>Excellent as a reference or validation method, but often unsuitable for real-time or large-scale operational conjunction assessment</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>Asymptotically exact and distribution-agnostic</td>
+<td>Computationally expensive and slow to converge</td>
+<td>Poor convergence in rare-event regimes and long propagation horizons</td>
+<td>It provides the most direct baseline, but the number of samples required for accurate statistics becomes very large, especially for long propagation times and rare-event probabilities.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="even">
-<td><strong>Linearised Covariance (LinCov)</strong></td>
-<td>Very high computational efficiency; simple and suitable for onboard implementation</td>
-<td>Assumes local linearity and usually Gaussian uncertainty; cannot capture higher-order distributional deformation</td>
-<td>The linearized state transition model becomes inaccurate as uncertainty grows or the dynamics become strongly nonlinear</td>
-<td>Effective for short propagation times and small uncertainties; unreliable for long-term propagation, highly elliptical orbits, and non-Gaussian PDFs</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><strong>Linearised covariance (LinCov / STM)</strong></td>
+<td>Extremely efficient first-order propagation</td>
+<td>Relies on local linearity and a Gaussian description of uncertainty</td>
+<td>Breakdown of linear approximation under nonlinear orbital dynamics (e.g., stretching, folding)</td>
+<td>As orbital dynamics become nonlinear, the propagated distribution departs from an ellipse and LinCov can no longer represent the true uncertainty accurately.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="odd">
 <td><strong>Unscented Transform (UT)</strong></td>
-<td>Captures nonlinear effects more accurately than first-order linearization with relatively few propagated points</td>
-<td>Primarily represents only low-order statistics; generally assumes that mean and covariance sufficiently describe the distribution</td>
-<td>A finite sigma-point set cannot reproduce strongly skewed, multimodal, or highly deformed PDFs</td>
-<td>Efficient for moderate nonlinearities and Gaussian-like uncertainties, but inadequate as a standalone method for strongly non-Gaussian long-term propagation</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>Captures nonlinear effects up to second-order moments with few samples</td>
+<td>Captures only low-order moments and depends on a small sigma-point set</td>
+<td>Moment closure failure for skewed or multimodal distributions</td>
+<td>UT improves on linearisation, but it still cannot fully describe strongly skewed, multimodal, or highly stretched distributions.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="even">
 <td><strong>Polynomial Chaos Expansion (PCE)</strong></td>
-<td>Can represent nonlinear input-output mappings and highly non-Gaussian propagated distributions with high accuracy</td>
-<td>Suffers from the curse of dimensionality; computational cost rises rapidly with polynomial order and state dimension</td>
-<td>Number of polynomial basis terms increases combinatorially; regression or projection may become ill-conditioned or fail to converge</td>
-<td>Powerful for low- to moderate-dimensional problems, but difficult to scale to high-dimensional orbital uncertainty spaces</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>Spectral accuracy for smooth stochastic systems</td>
+<td>Suffers from the curse of dimensionality</td>
+<td>Exponential growth of basis size with dimension/order</td>
+<td>The number of basis terms grows rapidly with dimension and polynomial order, which makes the method difficult to scale to realistic orbital problems.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="odd">
-<td><strong>PCE — discontinuous/non-smooth dynamics</strong></td>
-<td>Flexible surrogate representation</td>
-<td>Poor performance near discontinuities or non-smooth force-model transitions</td>
-<td>Global polynomial approximation can exhibit Gibbs-type oscillations and local approximation errors</td>
-<td>Requires domain decomposition, multi-element PCE, or other adaptive techniques when discontinuities are present</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><strong>Non-intrusive PCE (NIPC)</strong></td>
+<td>Black-box compatibility with existing propagators</td>
+<td>Needs many model evaluations and struggles with low smoothness</td>
+<td>Regression instability and sampling inefficiency in high dimensions</td>
+<td>It is attractive because it treats the dynamics as a black box, but it becomes costly in high dimension and less reliable when the response surface is not smooth.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="even">
-<td><strong>PCE — long-duration propagation</strong></td>
-<td>Maintains high accuracy when a suitable expansion remains valid</td>
-<td>A single global polynomial may become inaccurate over large propagated uncertainty domains</td>
-<td>Increasing nonlinearity causes the surrogate to lose accuracy and may require domain splitting</td>
-<td>Long-term orbital propagation generally requires adaptive or multi-element formulations</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><strong>Intrusive PCE</strong></td>
+<td>High efficiency once governing equations are reformulated</td>
+<td>Requires reformulation of the governing equations</td>
+<td>Structural rigidity and implementation complexity of stochastic Galerkin system</td>
+<td>The Galerkin system must be derived and solved directly, which increases implementation effort and makes the method less flexible for complex force models.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="odd">
 <td><strong>State Transition Tensors (STT)</strong></td>
-<td>Extends the STM concept to higher-order nonlinear mappings; can directly propagate higher-order statistics</td>
-<td>High computational and derivational complexity; requires high-order derivatives or variational equations</td>
-<td>Number of tensor terms grows rapidly with state dimension and expansion order</td>
-<td>Attractive for high-accuracy local nonlinear propagation, but difficult to implement for high-fidelity, high-dimensional dynamics</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>STT — local validity</strong></td>
-<td>Provides a high-order local Taylor representation</td>
-<td>Limited radius of convergence</td>
-<td>The Taylor expansion may become inaccurate or diverge when the uncertainty region extends far from the nominal trajectory</td>
-<td>Large initial uncertainties and strongly nonlinear orbital regimes may require domain splitting or multiple local expansions</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><strong>STT — discontinuities and maneuvers</strong></td>
-<td>Effective for smooth nonlinear dynamics</td>
-<td>Difficult to apply directly to discontinuous dynamics, impulsive events, and piecewise force models</td>
-<td>Derivative-based expansion is not naturally compatible with state jumps or non-differentiable transitions</td>
-<td>Maneuver segmentation and special transition mappings are required</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>High-order nonlinear state mapping accuracy</td>
+<td>High derivational and computational complexity</td>
+<td>Tensor order explosion with state dimension and truncation error accumulation</td>
+<td>Higher-order tensors improve nonlinear fidelity, but the method becomes expensive quickly as state dimension and expansion order increase.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="even">
 <td><strong>Differential Algebra (DA)</strong></td>
-<td>Automates high-order Taylor expansion and avoids manual derivation of high-order derivatives</td>
-<td>Expansion order, memory, and number of polynomial terms can become large</td>
-<td>High-dimensional high-order polynomial representations create computational and memory overhead</td>
-<td>More practical than manually derived STTs, but still subject to local expansion and truncation limitations</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>Automated high-order Taylor expansion of dynamics</td>
+<td>Local and truncated polynomial representation</td>
+<td>Loss of validity outside local expansion region</td>
+<td>DA can propagate high-order nonlinear effects efficiently, but the approximation remains local and can lose accuracy when the uncertainty region becomes large.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="odd">
-<td><strong>DA with automatic domain splitting</strong></td>
-<td>Extends the region over which polynomial representations remain accurate</td>
-<td>Requires additional splitting logic and repeated local representations</td>
-<td>Excessive splitting can create a large number of domains or polynomial maps</td>
-<td>Accuracy can be maintained at the cost of increasing computational and memory requirements</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>DA — finite PDF representation</strong></td>
-<td>Can calculate high-order statistical information</td>
-<td>The propagated uncertainty is still represented through a finite-dimensional polynomial approximation</td>
-<td>The polynomial representation is not an exact arbitrary PDF</td>
-<td>May not accurately reproduce complex tails or highly multimodal distributions without additional decomposition</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><strong>Stochastic Collocation (SC) Multi-Fidelity</strong></td>
-<td>Reduces the number of expensive high-fidelity simulations by exploiting a cheap low-fidelity model</td>
-<td>Accuracy depends strongly on the relationship between low- and high-fidelity dynamics</td>
-<td>Poor correlation between fidelity levels produces inaccurate corrections or surrogates</td>
-<td>Highly effective when the low-fidelity model captures the dominant dynamics; unreliable when model discrepancy is large</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>SC Multi-Fidelity — rank limitation</strong></td>
-<td>Uses a small number of important high-fidelity samples</td>
-<td>The number of independent correction directions can be limited by the rank/dimensionality of the approximation</td>
-<td>A small number of basis directions may be insufficient to represent complex propagated PDFs</td>
-<td>Efficiency is high, but representational capacity can be limited for highly complex distributions</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><strong>SC Multi-Fidelity — tolerance sensitivity</strong></td>
-<td>Allows control of computational effort and approximation accuracy</td>
-<td>Results depend on low-fidelity and surrogate tolerances</td>
-<td>Poor tolerance selection can either waste computation or produce inaccurate uncertainty distributions</td>
-<td>Requires careful parameter tuning and problem-specific calibration</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>DA / LOADS-type adaptive MF methods</strong></td>
-<td>Detect nonlinear regions and refine the representation adaptively</td>
-<td>Adaptive splitting can generate many local models</td>
-<td>Strong nonlinearities lead to domain proliferation and increased computational cost</td>
-<td>Improves robustness but may reduce the computational advantage of the original surrogate</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><strong>PLASMA / stochastic moment-based MF approaches</strong></td>
-<td>Efficiently propagates statistical information using low-order moments</td>
-<td>Accuracy depends on the adequacy of the selected moment order and approximation</td>
-<td>Higher-order nonlinear effects may not be represented by a limited moment set</td>
-<td>Suitable when the distribution remains sufficiently regular; less reliable for strongly non-Gaussian PDFs</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>AEGIS</strong></td>
-<td>Adaptively splits Gaussian components based on detected nonlinear deformation</td>
-<td>Computational cost can grow rapidly as the number of mixture components increases</td>
-<td>Repeated splitting causes component proliferation; delayed splitting can lose information about accumulated nonlinear deformation</td>
-<td>Can represent nonlinear deformation, but may become impractical for long propagation times and strongly nonlinear regimes</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><strong>AEGIS — correlation buildup</strong></td>
-<td>Adaptive entropy-based refinement</td>
-<td>Component correlations can become increasingly complex</td>
-<td>Components may spread across irrelevant directions or deviate from the true distribution</td>
-<td>Requires improved splitting strategies such as multidirectional or hybrid adaptive methods</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><strong>Multi-fidelity (MF) propagation</strong></td>
+<td>Reduces cost via surrogate correction</td>
+<td>Depends on the quality of the low-fidelity model</td>
+<td>Model mismatch leading to biased correction updates</td>
+<td>If the low-fidelity dynamics do not capture the dominant structure of the true motion, the correction strategy can become inaccurate or inefficient.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="even">
 <td><strong>Gaussian Mixture Models (GMMs)</strong></td>
-<td>Can represent non-Gaussian and multimodal PDFs using a mixture of Gaussian components</td>
-<td>Accuracy depends on the number, placement, covariance, and weights of components</td>
-<td>Insufficient components fail to capture tails, skewness, multimodality, or sharp deformation</td>
-<td>Flexible but computationally sensitive; component management becomes a central problem</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>Flexible representation of multimodal distributions</td>
+<td>Component management is difficult</td>
+<td>Component explosion or poor tail representation due to improper splitting/merging</td>
+<td>GMMs can represent complex distributions, but they require careful splitting, merging, and weighting to avoid excessive cost or poor tail approximation.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="odd">
-<td><strong>GMM–UT</strong></td>
-<td>Combines distribution decomposition with efficient sigma-point propagation</td>
-<td>Accuracy depends on both the initial mixture representation and the UT approximation</td>
-<td>Each Gaussian component is still propagated using a low-order statistical approximation</td>
-<td>More capable than a single UT, but may still poorly represent extreme tails of highly non-Gaussian distributions</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><strong>GMM–UT / GMM–STT / GMM–DA / GMM–PCE</strong></td>
+<td>Combines local Gaussian decomposition with nonlinear propagation</td>
+<td>Inherit limitations of both mixture and propagator</td>
+<td>Compounded approximation error and mixture proliferation</td>
+<td>These hybrid methods are more flexible, but they still suffer from component proliferation, local approximation error, or dimensionality growth.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="even">
-<td><strong>GMM–STT</strong></td>
-<td>Combines local Gaussian decomposition with high-order nonlinear mapping</td>
-<td>High-order tensor calculations become expensive for many components</td>
-<td>Computational complexity increases with mixture size, state dimension, and tensor order</td>
-<td>Accurate for suitable local regions, but scalability is a major limitation</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><strong>AEGIS</strong></td>
+<td>Adaptive entropy-based refinement of distribution</td>
+<td>Adaptive splitting can become computationally heavy</td>
+<td>Rapid growth in number of Gaussian components over time</td>
+<td>It improves PDF representation, but repeated splitting increases the number of components and can make long-term propagation expensive.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="odd">
-<td><strong>GMM–DA</strong></td>
-<td>Uses automatic polynomial mappings for each mixture component</td>
-<td>Polynomial order and mixture size can produce substantial memory and processing requirements</td>
-<td>Truncation errors increase away from each expansion point; tails may be poorly represented</td>
-<td>More flexible than manually derived STTs but still requires careful order and component management</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>GMM–PCE</strong></td>
-<td>Reduces the effective nonlinearity experienced by each polynomial expansion</td>
-<td>Still inherits the dimensionality problem of PCE and the approximation error of the initial GMM</td>
-<td>Accuracy is bounded by the quality of the initial mixture decomposition</td>
-<td>Effective hybrid approach, but not a complete solution to high-dimensionality</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><strong>GMM–MF</strong></td>
-<td>Uses low-fidelity dynamics to efficiently propagate mixture components or important samples</td>
-<td>Accuracy depends on low-/high-fidelity correlation and the number of important samples</td>
-<td>Insufficient correction samples cannot capture all relevant uncertainty directions</td>
-<td>Offers excellent computational efficiency, but requires careful selection of fidelity models and correction basis</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>GMM–Moment Method</strong></td>
-<td>Efficiently propagates low-order statistics of individual Gaussian components</td>
-<td>Primarily limited to the information contained in the propagated moments</td>
-<td>Linearization or truncated Taylor approximations become inaccurate in regions of high curvature</td>
-<td>Computationally attractive, but accuracy decreases as component spread and nonlinear deformation increase</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><strong>Moment-Based Propagation in General</strong></td>
-<td>Much cheaper than full PDF propagation</td>
-<td>Higher-order and tail information may be discarded</td>
-<td>Different PDFs can share the same mean and covariance but have very different shapes</td>
-<td>Mean and covariance alone may be insufficient for conjunction assessment and rare-event collision probabilities</td>
-<td>—</td>
-<td>—</td>
-<td>—</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><strong>Moment-based propagation</strong></td>
+<td>Very low computational cost and simplicity</td>
+<td>Retains only low-order information</td>
+<td>Moment closure failure under nonlinear distribution deformation</td>
+<td>Mean and covariance alone are often insufficient once the distribution becomes curved, skewed, or multimodal.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="cross-cutting-limitations" class="level1">
-<h1>Cross-Cutting Limitations</h1>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 28%">
-<col style="width: 51%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>General Challenge</th>
-<th>Methods Most Affected</th>
-<th>Consequence</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Strong nonlinear dynamics</strong></td>
-<td>LinCov, UT, moment methods, low-order STT/DA</td>
-<td>Gaussian distributions deform into skewed, curved, or multimodal PDFs</td>
-</tr>
-<tr class="even">
-<td><strong>Long propagation duration</strong></td>
-<td>LinCov, UT, local STT, single-domain DA, single-domain PCE</td>
-<td>Local approximations progressively lose validity</td>
-</tr>
-<tr class="odd">
-<td><strong>High state dimensionality</strong></td>
-<td>PCE, STT, DA, GMM, FPE-based methods</td>
-<td>Computational and memory requirements grow rapidly</td>
-</tr>
-<tr class="even">
-<td><strong>Non-Gaussian uncertainty</strong></td>
-<td>LinCov, UT, low-order moment methods</td>
-<td>Important skewness, kurtosis, tails, and multimodality may be lost</td>
-</tr>
-<tr class="odd">
-<td><strong>Rare-event collision probability</strong></td>
-<td>MC, moment-based methods, Gaussian approximations</td>
-<td>Accurate estimation of very small P_C values becomes difficult</td>
-</tr>
-<tr class="even">
-<td><strong>Model uncertainty</strong></td>
-<td>All methods</td>
-<td>Propagating state uncertainty accurately does not compensate for an inaccurate force model</td>
-</tr>
-<tr class="odd">
-<td><strong>Initial uncertainty characterization</strong></td>
-<td>All methods</td>
-<td>A highly accurate propagator cannot produce a reliable final PDF from an incorrect initial PDF</td>
-</tr>
-<tr class="even">
-<td><strong>Discontinuous dynamics and maneuvers</strong></td>
-<td>STT, DA, PCE, derivative-based methods</td>
-<td>Taylor and polynomial representations may become invalid across discontinuities</td>
-</tr>
-<tr class="odd">
-<td><strong>Low-/high-fidelity model mismatch</strong></td>
-<td>Multi-fidelity methods</td>
-<td>The computational advantage can be lost or the propagated PDF can become biased</td>
-</tr>
-<tr class="even">
-<td><strong>Component proliferation</strong></td>
-<td>GMM and AEGIS-based methods</td>
-<td>Adaptive refinement may eventually become computationally comparable to direct sampling</td>
-</tr>
-<tr class="odd">
-<td><strong>Operational integration</strong></td>
-<td>Most advanced nonlinear methods</td>
-<td>Accurate PDFs are not automatically converted into reliable operational decisions such as collision alerts</td>
-</tr>
-</tbody>
-</table>
+<section id="method-by-method-discussion" class="level1">
+<h1>Method-by-Method Discussion</h1>
+<section id="monte-carlo" class="level2">
+<h2 class="anchored" data-anchor-id="monte-carlo">Monte Carlo</h2>
+<p>Monte Carlo simulation is the most general uncertainty propagation approach because it makes minimal assumptions about the dynamics or the distribution. Its weakness is cost. Every sample must be propagated through the full nonlinear model, so the method becomes expensive as the propagation horizon increases or as higher statistical confidence is required. This is especially restrictive in conjunction assessment, where the probability of collision may be a rare event and therefore require a very large number of samples.</p>
 </section>
-<section id="overall-assessment" class="level1">
-<h1>Overall Assessment</h1>
-<p>The central limitation of orbital uncertainty propagation is the <strong>accuracy–computational-cost trade-off</strong>. No single method simultaneously provides:</p>
-<ol type="1">
-<li>the generality of Monte Carlo,</li>
-<li>the computational efficiency of linear covariance propagation,</li>
-<li>the nonlinear accuracy of high-order Taylor or polynomial methods, and</li>
-<li>the full-PDF representation capability of adaptive GMM or density-based methods.</li>
-</ol>
+<section id="linearised-covariance" class="level2">
+<h2 class="anchored" data-anchor-id="linearised-covariance">Linearised covariance</h2>
+<p>Linearised covariance propagation is efficient because it replaces the nonlinear flow with a local first-order approximation. Its accuracy is acceptable only while the uncertainty remains close to the nominal trajectory and the dynamics are weakly nonlinear. Once the distribution stretches, folds, or rotates strongly, the linearised covariance matrix no longer describes the true propagated uncertainty well. In practice, this is one of the first methods to fail when propagation time becomes long.</p>
+</section>
+<section id="unscented-transform" class="level2">
+<h2 class="anchored" data-anchor-id="unscented-transform">Unscented transform</h2>
+<p>The UT improves on linearisation by propagating a small set of sigma points through the nonlinear dynamics. This gives a better approximation of the transformed mean and covariance than a first-order model, but it still assumes that low-order moments are enough to describe the distribution. For strongly non-Gaussian orbital uncertainty, that assumption breaks down. The UT is therefore useful as a middle-ground method, not as a universal solution.</p>
+</section>
+<section id="polynomial-chaos-expansion" class="level2">
+<h2 class="anchored" data-anchor-id="polynomial-chaos-expansion">Polynomial chaos expansion</h2>
+<p>PCE approximates the response as an orthogonal polynomial series in the uncertain inputs. When the dimension is modest and the response is smooth, this can be highly accurate. The problem is scaling. As the number of uncertain variables or the polynomial order increases, the basis size grows rapidly. This makes the method expensive to build, harder to fit robustly, and less practical for high-dimensional orbital dynamics.</p>
+<section id="non-intrusive-polynomial-chaos" class="level3">
+<h3 class="anchored" data-anchor-id="non-intrusive-polynomial-chaos">Non-intrusive polynomial chaos</h3>
+<p>NIPC avoids modifying the governing equations directly, which makes it attractive for existing orbit propagators. The trade-off is that it still requires many propagated model evaluations to estimate the coefficients. Like standard PCE, it becomes harder to use as the uncertainty dimension increases. It also performs poorly when the input-output map is not smooth, because global polynomial surrogates are not well suited to discontinuities or sharp nonlinear transitions.</p>
+</section>
+<section id="intrusive-polynomial-chaos" class="level3">
+<h3 class="anchored" data-anchor-id="intrusive-polynomial-chaos">Intrusive polynomial chaos</h3>
+<p>Intrusive PCE solves the uncertainty propagation problem by projecting the governing equations onto a polynomial basis. This can be elegant, but it is also restrictive. The original equations must be reformulated, the stochastic Galerkin system must be derived, and the implementation becomes strongly tied to the model structure. That makes the method less flexible than non-intrusive alternatives when the force model or state description changes.</p>
+</section>
+</section>
+<section id="state-transition-tensors" class="level2">
+<h2 class="anchored" data-anchor-id="state-transition-tensors">State transition tensors</h2>
+<p>STT extends the state transition matrix concept to higher orders, which makes it more capable than linear covariance methods in nonlinear regimes. The drawback is that the number of tensor terms grows quickly with expansion order and state dimension. STT is therefore powerful locally, but it is not cheap. It also requires smooth dynamics, so discontinuities, impulsive maneuvers, and other non-differentiable effects complicate its use.</p>
+</section>
+<section id="differential-algebra" class="level2">
+<h2 class="anchored" data-anchor-id="differential-algebra">Differential algebra</h2>
+<p>DA provides an automated way to compute high-order Taylor expansions. It is often more practical than hand-derived high-order tensor methods, but it remains a local approximation. Once the uncertainty region becomes too large, the truncated polynomial map loses accuracy. DA also has to manage the growth of polynomial order and memory usage, which becomes important in realistic orbital problems.</p>
+</section>
+<section id="multi-fidelity-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="multi-fidelity-propagation">Multi-fidelity propagation</h2>
+<p>Multi-fidelity methods reduce cost by combining a high-fidelity model with a cheaper low-fidelity surrogate. Their performance depends on how well the low-fidelity model captures the structure of the true dynamics. If the fidelity gap is too large, the correction step can struggle. In that case, the method may lose accuracy or require more correction information than originally expected.</p>
+</section>
+<section id="gmm-based-methods" class="level2">
+<h2 class="anchored" data-anchor-id="gmm-based-methods">GMM-based methods</h2>
+<p>GMMs are valuable because they can represent non-Gaussian and multimodal uncertainty by decomposing the distribution into Gaussian components. Their main limitation is operational complexity: the mixture must be split, merged, and propagated carefully. Too few components underfit the distribution, while too many components create excessive cost. This makes mixture management a central issue.</p>
+</section>
+<section id="hybrid-gmm-methods" class="level2">
+<h2 class="anchored" data-anchor-id="hybrid-gmm-methods">Hybrid GMM methods</h2>
+<p>Hybrid methods such as GMM–UT, GMM–STT, GMM–DA, and GMM–PCE combine local Gaussian decomposition with a nonlinear propagation mechanism. They are often more flexible than a single global approximation, but they inherit the limitations of both parts. If the mixture is too coarse, the distribution is poorly represented. If the inner method is too local or too low order, nonlinear deformation is still missed.</p>
+</section>
+<section id="aegis" class="level2">
+<h2 class="anchored" data-anchor-id="aegis">AEGIS</h2>
+<p>AEGIS introduces adaptive splitting based on entropy change, which helps it respond to nonlinear deformation. The limitation is that adaptive refinement can quickly increase the number of Gaussian components. Over long propagation intervals this may become expensive, and the benefit over simpler methods can diminish.</p>
+</section>
+<section id="moment-based-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="moment-based-propagation">Moment-based propagation</h2>
+<p>Moment-based methods are attractive because they are simple and computationally light. Their limitation is that they compress the full distribution into a small number of statistics. Once the propagated uncertainty becomes skewed, curved, or multimodal, the mean and covariance are no longer enough. This makes moment-based methods suitable for screening and approximate prediction, but not always for detailed collision-risk analysis.</p>
+</section>
+</section>
+<section id="overall-conclusion" class="level1">
+<h1>Overall conclusion</h1>
+<p>The limitations of orbital uncertainty propagation methods are shaped by the same underlying problem: nonlinear orbital motion transforms simple initial uncertainty into a distribution that is increasingly difficult to represent. Linear and moment-based methods are efficient but locally valid. Polynomial and tensor methods improve nonlinear fidelity but grow expensive. Monte Carlo is most general but least efficient. GMM and multi-fidelity methods sit in between, offering more flexibility at the cost of more complex model management.</p>
+<p>For practical space-situational-awareness problems, the most effective strategy is usually not to rely on a single method, but to choose a method whose assumptions match the propagation regime, the available computation budget, and the level of distributional detail required by the mission.</p>
 </section>
      </main>
 <!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">

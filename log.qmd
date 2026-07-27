@@ -3324,7 +3324,172 @@ For the specific orbital uncertainty propagation research documented in the log,
 The thesis comparison similarly shows that LinCov is fastest but becomes unsuitable when the final distribution is strongly non-Gaussian, while PCE and multi-fidelity methods provide better performance in such regimes. GMM methods remain sensitive to component representation, and AEGIS can become computationally inefficient for long propagations.
 
 
-# 25-07-26
+# 27-07-26
 
-## LinCov: Process Noise Covariance matrix Q
+## Discuss what section 1.1 of @fossa2024multifidelity says about the Orbit uncertainty propagation concept mind-map.
 
+Section 1.1 of @fossa2024multifidelity provides a detailed concept map on the topic of **Orbit Uncertainty propagation**. This taxonomy is fundamental for understanding how different methodologies balance computational efficiency and statistical accuracy in space situational awareness (SSA) applications.
+
+The map is divided into three primary pillars: **Linear Methods**, **Nonlinear Methods**, and **Coordinates Transformation**.
+
+### 1. Linear Methods
+These methods assume that a linearized dynamical model can capture the evolution of neighboring trajectories and that the uncertainty remains characterized by a multivariate Gaussian distribution.
+
+*   **Linear Covariance (LinCov):** Uses a first-order Taylor expansion to compute the time evolution of the covariance matrix.
+
+*   **CADET (Covariance Analysis Describing Function Technique):** A statistical linearization method.
+
+*   **Limitations:** These are computationally "light" but lose accuracy in highly nonlinear regimes, large initial uncertainties, or long propagation windows.
+
+### 2. Nonlinear Methods
+Nonlinear methods can be into three subcategories based on their fundamental approach to the UP problem.
+
+#### **A. Sample-based Methods**
+These techniques treat the underlying orbital dynamics as a **"black-box,"** which simplifies implementation because they do not require internal modifications to existing code.
+
+*   **Monte Carlo (MC):** The non-parametric benchmark. While accurate and able to handle any nonlinearity, it is often too computationally expensive for real-time applications.
+
+*   **Unscented Transform (UT) and Conjugate Unscented Transform (CUT):** Deterministic sampling methods that approximate the state pdf rather than the transformation itself by using "sigma points".
+
+*   **Non-intrusive Polynomial Chaos (PC):** Constructs a functional representation of the uncertainty by fitting spectral coefficients to transformed samples.
+
+*   **SC Multifidelity (Jones & Weisman):** A hybrid method included in the mind-map that uses stochastic collocation to correct low-fidelity samples with a small subset of high-fidelity runs.
+
+#### **B. Dynamics-based Methods**
+Unlike sample-based methods, these require complete mathematical knowledge of the system's governing equations.
+
+*   **Intrusive PC:** Transforms a stochastic differential equation into a higher-dimensional deterministic one using Galerkin projection.
+
+*   **State Transition Tensors (STT):** Captures nonlinear warpings by numerically integrating variational equations for higher-order partial derivatives.
+
+*   **Differential Algebra (DA):** Automates arbitrary-order Taylor expansions by replacing standard arithmetic with polynomial algebra. 
+
+*   **DA-LOADS Multifidelity (Fossà):** The mind-map explicitly labels the author's core contribution here—a multifidelity technique that leverages **Low-Order Automatic Domain Splitting (LOADS)** to adaptively manage nonlinearities.
+
+#### **C. Pdf-based Methods**
+These methods aim to provide a functional or analytical representation of the evolved probability density function.
+
+*   **Fokker-Planck Equation (FPE):** A partial differential equation (PDE) that provides a complete statistical description but suffers from the "curse of dimensionality".
+
+*   **Liouville's Equation:** A quasi-linear PDE used when the diffusion term (process noise) can be neglected.
+
+*   **Gaussian Mixture Models (GMM):** Approximates a non-Gaussian pdf as a weighted sum of Gaussian kernels, transforming one complex problem into several smaller sub-problems.
+
+### 3. Coordinates Transformation
+In his thesis, Fossa emphasizes that nonlinearity is not just an intrinsic system attribute but is **coupled with the mathematical representation** chosen. The mind-map categorizes these into:
+
+*   **Cartesian:** Popular for simplicity but highly nonlinear due to inverse-square gravity.
+
+*   **Orbital Elements:**
+    
+    *   **Classical (COEs):** Intuitive but contain singularities for circular or equatorial orbits.
+    
+    *   **Equinoctial (EqOEs, MEEs):** Non-singular sets suitable for computation and perturbation analysis.
+    
+    *   **Alternate Equinoctial (AEqOEs):** Elements that evolve linearly in time under unperturbed Keplerian motion, which is highly beneficial for UP.
+
+    *   **$J_2$-perturbed Equinoctial Elements:** A set of elements that account for the $J_2$ perturbation, which is significant for low Earth orbit (LEO) satellites.
+
+    *   **Generalized Equinoctial Elements (GEqOEs):** A more flexible set of elements that can be adapted to any perturbing force derived from a potential function, including $J_2$ and higher-order zonal harmonics.
+
+*   **Regularized Coordinates:** Redundant variables like the **Dromo** formulation or **Kustaanheimo-Stiefel (KS)** variables used to regularize dynamics.
+
+
+## Discuss what these sources say about Polynomial chaos expansion methods in the larger context of orbital uncertainty propagation. Discuss both intrusive and non-intrusive methodologies.
+
+In the rigorous domain of orbital uncertainty propagation (UP), **Polynomial Chaos Expansion (PCE)** represents a powerful spectral decomposition technique that characterizes the evolution of state uncertainties through highly nonlinear dynamical systems. Within the methodological landscape of Space Situational Awareness (SSA), PCE is distinguished by its ability to map input uncertainties to output responses using a surrogate modeling paradigm, capturing the increasingly non-Gaussian "banana-shaped" probability density functions (PDFs) characteristic of long-term orbital motion.
+
+### 1. Mathematical Foundations of PCE
+PCE models a stochastic response as a functional expansion of independent random variables using an orthogonal basis. The core objective is to decompose a random variable into its deterministic and stochastic contributions.
+
+#### The Stochastic Surrogate Formula
+The stochastic state output at a future time $t$ is approximated by the finite series expansion:
+$$\hat{\boldsymbol{X}}(t, \boldsymbol{\xi}) \approx \sum_{j=0}^{P} \boldsymbol{c}_j(t) \Psi_j(\boldsymbol{\xi})$$
+
+**Terms Definition:**
+*   $\hat{\boldsymbol{X}}(t, \boldsymbol{\xi})$: The approximated terminal orbital state vector.
+*   $\boldsymbol{\xi}$: A vector of $d$ independent standard random variables (the "germ") representing input uncertainties (e.g., initial state or drag coefficients).
+*   $\Psi_j(\boldsymbol{\xi})$: Multivariate orthonormal basis functions, typically formed as the product of univariate polynomials.
+*   $\boldsymbol{c}_j(t)$: Deterministic spectral coefficients (weights) that characterize the distribution's evolution.
+*   $P$: The truncation rank, determined by the polynomial order $p$ and input dimension $d$: $P+1 = \frac{(p+d)!}{p!d!}$.
+
+#### Orthogonality and the Wiener-Askey Scheme
+Basis functions are selected according to the **Wiener-Askey scheme** to ensure they are orthogonal relative to the input PDF, $\rho(\boldsymbol{\xi})$:
+$$\langle \Psi_\alpha, \Psi_\beta \rangle = \int_{\Gamma} \Psi_\alpha(\boldsymbol{\xi}) \Psi_\beta(\boldsymbol{\xi}) \rho(\boldsymbol{\xi}) d\boldsymbol{\xi} = \delta_{\alpha\beta}$$
+*   **Hermite Polynomials** are optimal for Gaussian (Normal) distributions.
+*   **Legendre Polynomials** are utilized for Uniform distributions.
+
+#### Analytical Moment Calculation
+A primary advantage of PCE is that the statistical moments of the propagated uncertainty can be computed analytically from the coefficients:
+*   **Mean ($\mu$):** Simply the first coefficient $c_0$.
+*   **Variance ($\sigma^2$):** $\sigma^2 = \sum_{j=1}^{P} c_j^2 \langle \Psi_j, \Psi_j \rangle$.
+
+---
+
+### 2. Non-Intrusive PCE Methodology (NIPC)
+Non-intrusive methods are favored in astrodynamics because they treat high-fidelity propagators as "black boxes," requiring no modification to existing legacy code.
+
+#### Methodology for Coefficient Estimation
+NIPC relies on a design of numerical experiments to estimate coefficients. Two primary approaches are utilized:
+1.  **Pseudo-Spectral Projection:** Exploits basis orthogonality by projecting model output onto each basis function using numerical integration (e.g., Gaussian quadrature or Smolyak sparse grids).
+2.  **Least-Squares (LS) Regression:** Also known as point collocation, this method minimizes the residual between the expansion and model evaluations at a set of sampled points (e.g., Latin Hypercube Sampling).
+
+**Flowchart: NIPC Algorithmic Workflow**
+```mermaid
+graph TD
+    A[Identify Uncertain Inputs & Distributions] --> B[Perform Isoprobabilistic Transform to Standard Space]
+    B --> C[Select Orthogonal Basis - Wiener-Askey Scheme]
+    C --> D[Generate Sample Nodes - Quadrature/LHS/Sparse Grids]
+    D --> E[Propagate Samples through Black-Box Orbital Propagator]
+    E --> F[Estimate Coefficients - Projection or Regression]
+    F --> G[Construct PCE Surrogate Model]
+    G --> H[Compute Analytical Moments & Conjunction Statistics]
+```
+
+
+
+### 3. Intrusive PCE Methodology (IPCE/ISP)
+Intrusive methods, or **Intrusive Spectral Projection (ISP)**, reformulate the original deterministic model equations into a larger system of coupled deterministic equations for the PC coefficients.
+
+#### Mathematical Framework: The Galerkin Projection
+The core of the intrusive method is the **Galerkin projection**, which ensures the approximation error is orthogonal to the functional space spanned by the basis. For an ODE system $\dot{\boldsymbol{x}} = \boldsymbol{f}(\boldsymbol{x}, t, \boldsymbol{\xi})$, the PCE is substituted directly:
+$$
+\sum_{j=0}^{P} \dot{\boldsymbol{c}}_j \Psi_j = \boldsymbol{f}\left( \sum_{j=0}^{P} \boldsymbol{c}_j \Psi_j, t, \boldsymbol{\xi} \right)
+$$
+
+Multiplying by $\Psi_k$ and taking the expectation $\langle \cdot \rangle$ yields a system of $(P+1) \times n$ coupled deterministic ODEs.
+
+#### Methodology for Intrusive Propagation
+Unlike NIPC, IPCE requires a complete "code rewrite" to implement polynomial algebra operators.
+
+**Flowchart: IPCE Algorithmic Workflow**
+```mermaid
+graph TD
+    A[Define Stochastic Governing Equations] --> B[Initialize Uncertain Variables as 1st Degree Polynomials]
+    B --> C[Apply Galerkin Projection to Equations of Motion]
+    C --> D[Reformulate Force Models via Polynomial Algebra]
+    D --> E[Solve Large Coupled System of Deterministic ODEs]
+    E --> F[Reconstruct Terminal PDF from Coefficients]
+```
+
+
+---
+
+### 4. Variations and Advanced Adaptations
+To overcome computational bottlenecks, several advanced variations of PCE have been developed:
+
+*   **Sparse PCE:** Exploits the "sparsity-of-effects" principle using algorithms like **Least Angle Regression (LARS)** or Compressive Sensing to retain only significant coefficients, drastically reducing the required model evaluations.
+*   **Polynomial Chaos-based Kriging (PCK):** A hybrid that uses PCE to capture the **global trend** and Kriging (Gaussian Process Regression) to manage **local variability**. PCK often requires an order of magnitude fewer training points than standard PCE.
+*   **hp-Refinement (GMM-PCE):** Combines **Gaussian Mixture Models (GMMs)** with PCE. The initial uncertainty is split into $N$ smaller kernels (h-refinement), and a lower-order PCE is applied to each (p-refinement). This is effective for highly eccentric orbits where global PCE fails to converge.
+*   **Active Subspace NIPC (AS-NIPC):** Identifies lower-dimensional directions in the input space that most influence output variability using gradient information, constructing the PCE only in that reduced "active" subspace.
+*   **Multifidelity PCE (MF-PCE):** Fuses a low-fidelity model (e.g., 2-body dynamics) with limited high-fidelity evaluations to resolve model discrepancies efficiently.
+
+---
+
+### 5. Limitations of PCE Methods
+Despite its spectral accuracy, PCE faces critical challenges in operational orbital mechanics:
+
+*   **The Curse of Dimensionality:** The number of expansion terms grows factorially with state dimension ($n$) and order ($p$). For $n > 10$, the computational cost for coefficient estimation becomes prohibitively expensive.
+*   **Low Stochastic Regularity (Gibbs Phenomenon):** PCE relies on smooth global basis functions. It performs poorly in systems with discontinuities (e.g., shadow entry/exit in solar radiation pressure), often exhibiting oscillatory errors.
+*   **Long-Term Temporal Instability:** As propagation time increases, nonlinear dynamics "stretch and fold" the phase space. A fixed-order PCE loses accuracy as the true PDF support shifts away from the initial basis.
+*   **Intrusive Barriers:** The intrusive method requires a fundamental reformulation of the propagator, making it difficult to apply to complex, high-fidelity industrial software.
