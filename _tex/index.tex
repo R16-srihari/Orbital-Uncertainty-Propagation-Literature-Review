@@ -483,12 +483,162 @@ process noise.
   discussed in this report.
 \end{itemize}
 
-The following sections provide a detailed overview of various methods of
-uncertainty propagation as well as frameworks that improve the accuracy
-amd modeling of the final uncertainty distribution, highlighting their
-mathematical and theoretical foundations, practical implementations and
-variations among them, an overview on the combinations with existing
-research the methods with
+\subsection{Concept Map of Orbital Uncertainty
+Propagation}\label{concept-map-of-orbital-uncertainty-propagation}
+
+Section 1.1 of Fossa et al. (2024) provides a detailed concept map on
+the topic of \textbf{Orbit Uncertainty propagation}. This taxonomy is
+fundamental for understanding how different methodologies balance
+computational efficiency and statistical accuracy in space situational
+awareness (SSA) applications.
+
+The map is divided into three primary pillars: \textbf{Linear Methods},
+\textbf{Nonlinear Methods}, and \textbf{Coordinates Transformation}.
+
+\subsubsection{1. Linear Methods}\label{linear-methods}
+
+These methods assume that a linearized dynamical model can capture the
+evolution of neighboring trajectories and that the uncertainty remains
+characterized by a multivariate Gaussian distribution.
+
+\begin{itemize}
+\item
+  \textbf{Linear Covariance (LinCov):} Uses a first-order Taylor
+  expansion to compute the time evolution of the covariance matrix.
+\item
+  \textbf{CADET (Covariance Analysis Describing Function Technique):} A
+  statistical linearization method.
+\item
+  \textbf{Limitations:} These are computationally ``light'' but lose
+  accuracy in highly nonlinear regimes, large initial uncertainties, or
+  long propagation windows.
+\end{itemize}
+
+\subsubsection{2. Nonlinear Methods}\label{nonlinear-methods}
+
+Nonlinear methods can be into three subcategories based on their
+fundamental approach to the UP problem.
+
+\paragraph{\texorpdfstring{\textbf{A. Sample-based
+Methods}}{A. Sample-based Methods}}\label{a.-sample-based-methods}
+
+These techniques treat the underlying orbital dynamics as a
+\textbf{``black-box,''} which simplifies implementation because they do
+not require internal modifications to existing code.
+
+\begin{itemize}
+\item
+  \textbf{Monte Carlo (MC):} The non-parametric benchmark. While
+  accurate and able to handle any nonlinearity, it is often too
+  computationally expensive for real-time applications.
+\item
+  \textbf{Unscented Transform (UT) and Conjugate Unscented Transform
+  (CUT):} Deterministic sampling methods that approximate the state pdf
+  rather than the transformation itself by using ``sigma points''.
+\item
+  \textbf{Non-intrusive Polynomial Chaos (PC):} Constructs a functional
+  representation of the uncertainty by fitting spectral coefficients to
+  transformed samples.
+\item
+  \textbf{SC Multifidelity (Jones \& Weisman):} A hybrid method included
+  in the mind-map that uses stochastic collocation to correct
+  low-fidelity samples with a small subset of high-fidelity runs.
+\end{itemize}
+
+\paragraph{\texorpdfstring{\textbf{B. Dynamics-based
+Methods}}{B. Dynamics-based Methods}}\label{b.-dynamics-based-methods}
+
+Unlike sample-based methods, these require complete mathematical
+knowledge of the system's governing equations.
+
+\begin{itemize}
+\item
+  \textbf{Intrusive PC:} Transforms a stochastic differential equation
+  into a higher-dimensional deterministic one using Galerkin projection.
+\item
+  \textbf{State Transition Tensors (STT):} Captures nonlinear warpings
+  by numerically integrating variational equations for higher-order
+  partial derivatives.
+\item
+  \textbf{Differential Algebra (DA):} Automates arbitrary-order Taylor
+  expansions by replacing standard arithmetic with polynomial algebra.
+\item
+  \textbf{DA-LOADS Multifidelity (Fossà):} The mind-map explicitly
+  labels the author's core contribution here---a multifidelity technique
+  that leverages \textbf{Low-Order Automatic Domain Splitting (LOADS)}
+  to adaptively manage nonlinearities.
+\end{itemize}
+
+\paragraph{\texorpdfstring{\textbf{C. Pdf-based
+Methods}}{C. Pdf-based Methods}}\label{c.-pdf-based-methods}
+
+These methods aim to provide a functional or analytical representation
+of the evolved probability density function.
+
+\begin{itemize}
+\item
+  \textbf{Fokker-Planck Equation (FPE):} A partial differential equation
+  (PDE) that provides a complete statistical description but suffers
+  from the ``curse of dimensionality''.
+\item
+  \textbf{Liouville's Equation:} A quasi-linear PDE used when the
+  diffusion term (process noise) can be neglected.
+\item
+  \textbf{Gaussian Mixture Models (GMM):} Approximates a non-Gaussian
+  pdf as a weighted sum of Gaussian kernels, transforming one complex
+  problem into several smaller sub-problems.
+\end{itemize}
+
+\subsubsection{3. Coordinates
+Transformation}\label{coordinates-transformation}
+
+In his thesis, Fossa emphasizes that nonlinearity is not just an
+intrinsic system attribute but is \textbf{coupled with the mathematical
+representation} chosen. In the context of UP, this fact can be leveraged
+to reduce the complexity of the problem by choosing a set of coordinates
+that minimizes the nonlinearity of the system at hand. In this case,
+linearized or lower-order UP methods could still provide a sufficient
+accuracy in the transformed state pdf while significantly improving the
+computational performance (Fossa et al. 2024). Uncertainty propagation
+methods were applied to the following coordinate sets in literature:
+
+\begin{itemize}
+\item
+  \textbf{Cartesian:} Popular for simplicity but highly nonlinear due to
+  inverse-square gravity.
+\item
+  \textbf{Orbital Elements:}
+
+  \begin{itemize}
+  \item
+    \textbf{Classical (COEs):} Intuitive but contain singularities for
+    circular or equatorial orbits.
+  \item
+    \textbf{Equinoctial (EqOEs, MEEs):} Non-singular sets suitable for
+    computation and perturbation analysis.
+  \item
+    \textbf{Alternate Equinoctial (AEqOEs):} Elements that evolve
+    linearly in time under unperturbed Keplerian motion, which is highly
+    beneficial for UP.
+  \item
+    \textbf{\(J_2\)-perturbed Equinoctial Elements:} A set of elements
+    that account for the \(J_2\) perturbation, which is significant for
+    low Earth orbit (LEO) satellites.
+  \item
+    \textbf{Generalized Equinoctial Elements (GEqOEs):} A more flexible
+    set of elements that can be adapted to any perturbing force derived
+    from a potential function, including \(J_2\) and higher-order zonal
+    harmonics.
+  \end{itemize}
+\item
+  \textbf{Regularized Coordinates:} Redundant variables like the
+  \textbf{Dromo} formulation or \textbf{Kustaanheimo-Stiefel (KS)}
+  variables used to regularize dynamics.
+\end{itemize}
+
+The following sections provide a detailed overview of the most widely
+used methods in the literature, highlighting their theoretical
+foundations, practical implementations, and performance characteristics.
 
 \section{The Sampling Baseline: Monte Carlo
 (MC)}\label{the-sampling-baseline-monte-carlo-mc}
@@ -762,10 +912,11 @@ initial condition \(\Phi(t_0, t_0) = \mathbf{I}\) (the identity matrix).
   \end{aligned}
   }\end{equation}
 
-  Where \(G(t)\) is the process noise input matrix and \(Q(t)\) is the
-  process noise covariance, which are used to account for force-model
-  mismodelling perturbation errors. Bos (2025) does not include process
-  noise in his LinCov implementation.
+  Where \(G(t)\) is the process noise input matrix (that characterize
+  the diffusion of a Brownian motion process) and \(Q(t)\) is the
+  process noise covariance, both of which are used to account for
+  force-model mismodelling perturbation errors. Bos (2025) does not
+  include process noise in his LinCov implementation.
 \item
   \textbf{Gaussian Assumption:} A defining characteristic of LinCov is
   the preservation of the distribution's functional form; it assumes
@@ -868,464 +1019,9 @@ forms of linearization:
   \textbf{Coordinate Frame Synergy:} The accuracy of linear methods is
   significantly enhanced when operating in \textbf{Generalized
   Equinoctial Orbital Elements (GEqOE)} or \textbf{Modified Equinoctial
-  Elements (MEE)}, which render the dynamics more nearly linear than
+  Elements (MEqOE)}, which render the dynamics more nearly linear than
   Cartesian coordinates.
 \end{itemize}
-
-\section{Gaussian Mixture Models (GMM)
-Framework}\label{gaussian-mixture-models-gmm-framework}
-
-In the larger landscape of \textbf{Uncertainty Propagation (UP)},
-\textbf{Gaussian Mixture Models (GMM)} serve as a versatile ``mixture
-model'' framework that bridges the gap between computationally efficient
-linear methods and the complex, non-Gaussian realities of orbital
-mechanics. The foundational principle of the GMM framework is the
-``universal approximator'' property, which asserts that any arbitrary
-probability density function (PDF) can be represented with sufficient
-accuracy as a weighted sum of multiple Gaussian kernels. This property
-allows GMMs to capture the intricate shapes of non-Gaussian
-distributions, such as the ``banana'' or ``kidney'' forms that emerge in
-long-term propagation through the highly nonlinear dynamics of orbital
-mechanics.
-
-\subsection{Mathematical Architecture of the GMM
-Framework}\label{mathematical-architecture-of-the-gmm-framework}
-
-The GMM framework represents a complex, non-Gaussian state
-\(\mathbf{x}\) as a linear combination of \(N_g\) multivariate Gaussian
-components.
-
-\subsubsection{The Joint GMM PDF}\label{the-joint-gmm-pdf}
-
-The non-Gaussian PDF of a state vector \(\mathbf{x}\) is defined as: \[
-p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x}}_i, \mathbf{P}_i)
-\]
-
-\textbf{Terms Defined:}
-
-\begin{itemize}
-\item
-  \(p(\mathbf{x})\): The total non-Gaussian probability density function
-  of the state.
-\item
-  \(L\): The total number of Gaussian mixture elements (GMEs).
-\item
-  \(\alpha_i\): The scalar weight of the \(i\)-th component, where
-  \(0 \le \alpha_i \le 1\) and \(\sum_{i=1}^{L} \alpha_i = 1\).
-\item
-  \(\mathbfcal{N}(\cdot)\): The \(i\)-th multivariate Gaussian kernel,
-  defined as: \[
-  \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x}}_i, \mathbf{P}_i) = \frac{1}{\sqrt{(2\pi)^n |\mathbf{P}_i|}} \exp \left( -\frac{1}{2} (\mathbf{x} - \hat{\mathbf{x}}_i)^T \mathbf{P}_i^{-1} (\mathbf{x} - \hat{\mathbf{x}}_i) \right)
-  \]
-
-  Where,
-
-  \begin{itemize}
-  \item
-    \(\hat{\mathbf{x}}_i\): The mean state vector of the \(i\)-th
-    Gaussian component.
-  \item
-    \(\mathbf{P}_i\): The covariance matrix of the \(i\)-th Gaussian
-    component.
-  \end{itemize}
-\end{itemize}
-
-\subsection{General Methodology for GMM
-Propagation}\label{general-methodology-for-gmm-propagation}
-
-The propagation of uncertainty via GMMs typically follows a three-stage
-``split-propagate-recombine'' paradigm.
-
-\begin{itemize}
-\item
-  \textbf{Initial Splitting:} An initial Gaussian distribution (often
-  from Orbit Determination) is replaced by \(L\) components. The
-  effectiveness of this stage is highly dependent on the choice of
-  splitting directions and the number of components, which are
-  influenced by the algorithms used to initialize and manage the mixture
-  components:
-
-  \begin{itemize}
-  \item
-    \textbf{Fixed vs.~Adaptive Splitting:}
-
-    \begin{itemize}
-    \item
-      \textbf{Static Splitting:} The number of components is fixed at
-      the initial epoch. This is common in the \textbf{Multidirectional
-      GMM (MGMM)} approach, where a regular grid is formed by
-      recursively applying the splitting library along multiple
-      nonlinear directions.
-    \item
-      \textbf{Adaptive Splitting (AEGIS/AGM):} Splits are triggered
-      online when a nonlinearity threshold is reached. The
-      \textbf{Adaptive Entropy-based GMM (AEGIS)} monitors the deviation
-      between linear and nonlinear differential entropy estimates to
-      trigger splits.
-    \end{itemize}
-  \item
-    \textbf{The Horwood Suboptimal Algorithm:} This specific technique
-    refines a multivariate Gaussian along a single direction, which is
-    computationally faster than multi-directional splitting without
-    significantly compromising accuracy.
-  \item
-    \textbf{Variance-Preserving (Homoscedastic) Splitting:} While
-    homoscedastic libraries often discard skewness, variance-preserving
-    libraries are optimized under the constraint of matching the first
-    two moments of the original distribution exactly. This ensures that
-    the global mean and covariance of the mixture are identical to the
-    original Gaussian before any nonlinear propagation occurs.
-  \item
-    \textbf{Multidirectional GMM (MGMM):} This approach recursively
-    applies the splitting library along multiple nonlinear directions,
-    forming a regular grid of components. While this can capture complex
-    non-Gaussian features, it is computationally expensive and may lead
-    to an exponential increase in the number of components.
-  \end{itemize}
-\item
-  \textbf{Coordinate Selection:} Splitting in Cartesian space is often
-  inefficient because nonlinearity acts in all six dimensions. Instead,
-  curvilinear coordinates (e.g., Equinoctial or Delaunay elements) are
-  used, as nonlinearity is primarily restricted to the mean longitude
-  direction, allowing for a 1D split that avoids the ``curse of
-  dimensionality''.
-\item
-  \textbf{Component-wise Propagation:} Each component
-  \((\hat{\mathbf{x}}_i, \mathbf{P}_i)\) is evolved independently
-  through the nonlinear dynamics using a chosen propagation method.
-\item
-  \textbf{Recombination:} At the target epoch, the weighted sum of
-  components provides the final non-Gaussian PDF for tasks like
-  Conjunction Assessment (CA).
-\end{itemize}
-
-\subsection{Algorithmic Methodology of Gaussian Mixture Modelling of
-uncertainty}\label{algorithmic-methodology-of-gaussian-mixture-modelling-of-uncertainty}
-
-The following flowchart illustrates the procedural logic for propagating
-orbital uncertainty using the GMM framework. Here we use the
-nonlinearity metric to pre-determine the splitting direction and the
-number of components to generate.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial Gaussian State \& Covariance] {-}{-}\textgreater{} B\{Select Coordinate System\}}
-\NormalTok{    B {-}{-} Cartesian {-}{-}\textgreater{} C[Calculate Nonlinearity Metric Stirling Interpolation]}
-\NormalTok{    B {-}{-} Equinoctial/MEqOE {-}{-}\textgreater{} D[Select Dominant Direction Mean Longitude]}
-\NormalTok{    C {-}{-}\textgreater{} E[Apply Splitting Library Rule 1/Homoscedastic]}
-\NormalTok{    D {-}{-}\textgreater{} E}
-\NormalTok{    E {-}{-}\textgreater{} F[Generate L Initial Gaussian Components]}
-\NormalTok{    F {-}{-}\textgreater{} G[Propagate Each Component independently]}
-\NormalTok{    G {-}{-} Using UT/STT/DA/PCE/MF {-}{-}\textgreater{} H[Sum Propagated Components via Weights]}
-\NormalTok{    H {-}{-}\textgreater{} I[Final Non{-}Gaussian Posterior PDF]}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Variations and Hybrid
-Architectures}\label{variations-and-hybrid-architectures}
-
-The GMM framework is frequently combined with other UP methods to
-optimize the speed-accuracy Pareto front.
-
-\subsubsection{GMM-UT (Unscented
-Transform)}\label{gmm-ut-unscented-transform}
-
-The most common implementation, where each kernel's statistics are
-propagated via \(2n+1\) sigma points.
-
-\begin{itemize}
-\item
-  \textbf{Methodology:} Each component is represented by \(2n+1\)
-  deterministic sigma points \(\chi_j\), which are propagated through
-  the full nonlinear dynamics to reconstruct component statistics.
-\item
-  \textbf{Limitation:} The cost scales linearly with the number of
-  components \(L\) and the state dimension \(n\), i.e.,
-  \(O(L \cdot n)\).
-\end{itemize}
-
-\subsubsection{GMM-MF (Multi-Fidelity)}\label{gmm-mf-multi-fidelity}
-
-A high-efficiency hybrid where the Multi-Fidelity method propagates the
-sigma points of the GMM kernels.
-
-\begin{itemize}
-\item
-  \textbf{Methodology:} The entire ensemble of sigma points from all
-  components is propagated via a computationally cheap low-fidelity (LF)
-  model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian
-  identifies a subset of ``important samples'' to be corrected by the HF
-  model via stochastic collocation. See Section~\ref{sec-mf-sc} for a
-  detailed discussion on the stochastic collocation multi-fidelity
-  method.
-\item
-  \textbf{Performance:} Achieves accuracy similar to GMM-UT but with an
-  \textbf{80\% reduction in computation time}.
-\end{itemize}
-
-\subsubsection{GMM-STT (State Transition
-Tensor)}\label{gmm-stt-state-transition-tensor}
-
-This method regards Gaussian distributions as a function space to
-express PDFs in closed form.
-
-\begin{itemize}
-\item
-  \textbf{Methodology:} Instead of solving separate ODEs for each mean
-  and covariance, the STT solution flow is reformulated as a matrix
-  function valid over all components.
-\item
-  \textbf{Mathematical Formula (State Deviation):} \[
-  \delta \hat{x}_{i}^k(t) \approx \sum_{p=1}^{m} \frac{1}{p!} \Phi^k_{j_1...j_p}(t, t_0) \delta \hat{x}_{0,i}^{j_1} \dots \delta \hat{x}_{0,i}^{j_p}
-  \]
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \(\delta \hat{x}_{i}^k(t)\) is the \(k\)-th state component of the
-    \(i\)-th component; \(\Phi^k_{j_1...j_p}\) is the \(p\)-th order
-    State Transition Tensor.
-  \end{itemize}
-\item
-  \textbf{Efficiency:} It becomes more efficient than individual
-  component propagation for \(L > 7\) components (using a 2nd-order
-  expansion).
-\end{itemize}
-
-\subsubsection{GMM-DA (Differential
-Algebra)}\label{gmm-da-differential-algebra}
-
-The core innovation of GMM-DA is that the high-order Taylor expansion of
-the solution flow is computed only once. The solution flow is expanded
-into a polynomial up to an arbitrary order \(k\) without manual
-derivation of variational equations. All individual Gaussian kernels are
-then evaluated through this single polynomial map, turning the
-propagation of thousands of components into a series of efficient
-algebraic evaluations
-
-\begin{itemize}
-\item
-  \textbf{Advantage:} Self-adaptive to any regular nonlinear system
-  without requiring manual derivation of derivatives.
-\item
-  \textbf{Variant (DA-LOADS):} Uses a \textbf{Nonlinearity Index (NLI)}
-  to trigger adaptive splitting only when the Taylor expansion's
-  truncation error exceeds a threshold.
-\end{itemize}
-
-\subsubsection{GMM-PCE (Polynomial Chaos
-Expansion)}\label{gmm-pce-polynomial-chaos-expansion}
-
-This approach is analogous to \textbf{hp-refinement} in Finite Element
-Methods.
-
-\begin{itemize}
-\item
-  \textbf{Methodology:} Splitting (h-refinement) reduces the domain of
-  approximation for each component, allowing for lower-order polynomials
-  (p-refinement) to be used effectively.
-\item
-  \textbf{Benefit:} It reduces the factorial growth of PCE terms in
-  high-dimensional states while maintaining the ability to capture full
-  shapes of non-Gaussian distributions.
-\end{itemize}
-
-\subsubsection{GMM-Moment Method}\label{gmm-moment-method}
-
-This semi-analytical framework propagates the first raw moment (mean)
-and the second central moment (variance) of each Gaussian component
-through a nonlinear system using the first/or second-order Taylor
-expansion of the explicit flow function of the dynamical system.
-Section~\ref{sec-moment-method} discusses the mathematical formulation
-and implementation of the moment method in detail.
-
-\subsection{Advanced Variations on the GMM
-Method}\label{advanced-variations-on-the-gmm-method}
-
-\subsubsection{Adaptive GMMs (AEGIS and
-MDAES)}\label{adaptive-gmms-aegis-and-mdaes}
-
-The \textbf{Adaptive Entropy-based Gaussian-mixture Information
-Synthesis (AEGIS)} method does not rely on a fixed number of components.
-
-\begin{itemize}
-\item
-  \textbf{Mechanism:} It monitors component nonlinearity by comparing
-  the linear evolution of its differential entropy against a nonlinear
-  estimate (e.g., via UKF).
-\item
-  \textbf{Directional Splitting:} To combat the ``curse of
-  dimensionality,'' GMM splitting is often restricted to the eigenvector
-  corresponding to the maximum eigenvalue (\(V_{max}\)) or directions
-  maximizing a nonlinearity metric.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{Trigger:} If the entropy deviation exceeds a threshold, the
-    component is split online to maintain linearity.
-  \end{itemize}
-\item
-  \textbf{Coordinate Frame Synergy:} Pairing GMMs with \textbf{Modified
-  Equinoctial Elements (MEqOE)} is highly efficient, as uncertainty in
-  MEqOE is dominated by a single dimension (true longitude), requiring
-  fewer kernels than Cartesian space.
-\item
-  \textbf{Variation:} \textbf{MDAES} combines initial multi-directional
-  splitting with AEGIS to prevent correlation buildup in highly deformed
-  distributions.
-\end{itemize}
-
-Despite its robustness, the sources highlight critical drawbacks:
-
-\begin{itemize}
-\item
-  \textbf{The ``Centred Collection'' Effect:} In Cartesian frames,
-  individual GMM components can end up clumping toward the center of the
-  distribution at terminal time, failing to capture the thin ``tails''
-  of the true non-Gaussian distribution.
-\item
-  \textbf{Combinatoric Growth:} The number of components in a batch GMM
-  can scale factorially with the number of measurements
-  (\(N_{\nu,0} \times \dots \times N_{\nu,L}\)), necessitating
-  aggressive pruning and merging techniques.
-\item
-  \textbf{Tail Sensitivity:} While GMMs improve upon single Gaussians,
-  they may still require an intractable number of kernels to accurately
-  resolve the \(10^{-5}\) or \(10^{-6}\) tail probabilities required for
-  actionable conjunction screening.
-\end{itemize}
-
-\subsubsection{Multidirectional GMM
-(MGMM)}\label{multidirectional-gmm-mgmm}
-
-Standard GMMs often split along a single axis. \textbf{MGMMs}
-recursively apply splitting libraries along multiple directions to form
-a regular grid in probability space.
-
-\begin{itemize}
-\item
-  \textbf{Nonlinearity Metric:} Directions are ranked using a
-  second-order divided difference (Stirling's interpolation) to identify
-  where splits provide the most accuracy gain. \[
-  \phi = \frac{f(\mathbf{m} + h\sigma \mathbf{a}) + f(\mathbf{m} - h\sigma \mathbf{a}) - 2f(\mathbf{m})}{2h^2}
-  \]
-\item
-  \textbf{Term Definitions:} \(\mathbf{a}\) is the splitting unit vector
-  and \(h = \sqrt{3}\) is the recommended step size.
-\end{itemize}
-
-\subsubsection{Gaussian Mixture Batch Processor
-(GMBP)}\label{gaussian-mixture-batch-processor-gmbp}
-
-Applied to \textbf{Initial Orbit Determination (IOD)}, the GMBP
-translates a batch of noisy measurements into a GMM-based PDF using
-Bayes' rule.
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Methodology:} It disperses linearization errors across an
-  ensemble of Gaussian components, allowing for accurate reconstruction
-  of ``crescent-shaped'' posteriors common in cislunar tracking.
-\end{itemize}
-
-\subsubsection{Role in Conjunction Assessment
-(CA)}\label{role-in-conjunction-assessment-ca}
-
-In the field of collision analysis, GMMs enable \textbf{all-on-all
-analysis}. Rather than evaluating millions of individual sample pairs as
-in Monte Carlo simulation, every Gaussian component of a primary object
-is evaluated against every component of a secondary object. This allows
-for the use of more advanced analytical or numerical collision
-probability (\(P_c\)) computation methods on each individual component
-pair.
-
-\subsection{Adaptive splitting in the Context of Gaussian Mixture Models
-(GMM)}\label{adaptive-splitting-in-the-context-of-gaussian-mixture-models-gmm}
-
-Bos's thesis (Bos 2025) defines Adaptive Entropy-based Gaussian-mixture
-Information Synthesis (AEGIS) as an advanced framework that utilizes
-automatic domain splitting to maintain an accurate representation of a
-probability density function (PDF) as its non-Gaussianity increases
-during propagation.
-
-While standard GMMs often approximate a non-Gaussian PDF by splitting an
-initial distribution into a fixed number of weighted components at the
-start of propagation (\(t_0\)), \textbf{AEGIS performs this splitting
-online}. The method treats the uncertainty as a sum of Gaussian
-``kernels'' that can be individually propagated using efficient
-techniques like the \textbf{Unscented Transform} or \textbf{Linearised
-Covariance}.
-
-The core philosophy of AEGIS is that by repeatedly splitting a Gaussian
-component into smaller sub-components when nonlinear effects become too
-high, the method reduces the local impact of those nonlinearities,
-allowing individual components to remain near-Gaussian for a longer
-duration.
-
-\subsubsection{Mechanics of Adaptive
-Splitting}\label{mechanics-of-adaptive-splitting}
-
-AEGIS triggers a split based on a comparison between \textbf{linear and
-nonlinear differential entropy}:
-
-\begin{itemize}
-\item
-  \textbf{Linear Entropy:} This is calculated by integrating the time
-  derivative of the differential entropy, which is a function of the
-  system's \textbf{Jacobian matrix} (the basis of the Linearized
-  Covariance method).
-\item
-  \textbf{Nonlinear Entropy:} This is calculated directly from the
-  covariance matrix after propagating the component using a nonlinear
-  technique, typically the \textbf{Unscented Transform}.
-\item
-  \textbf{The Splitting Threshold:} When the normalized difference
-  between these two entropy calculations exceeds a user-defined
-  threshold (\(\epsilon_{ent}\)), the propagation is paused, the
-  component is split into smaller Gaussians, and the entropies are
-  recalculated before propagation continues.
-\end{itemize}
-
-\subsubsection{Performance and Computational
-Challenges}\label{performance-and-computational-challenges}
-
-Despite its theoretical potential, the study highlight significant
-practical drawbacks to the AEGIS method in orbital scenarios:
-
-\begin{itemize}
-\item
-  \textbf{Extreme Computational Intensity:} AEGIS was found to be the
-  most computationally expensive method tested. Because it requires
-  propagating the State Transition Matrix (STM) and calculating
-  differential entropy at every time step, it is slower than a standard
-  UT even when \textbf{no splitting occurs}.
-\item
-  \textbf{Exponential Component Growth:} For long propagation horizons,
-  the number of components can increase exponentially as splits occur at
-  increasingly frequent intervals. This leads to \textbf{unreachable
-  computation times} or out-of-memory errors, making the method
-  impractical for scenarios spanning many orbital revolutions.
-\item
-  \textbf{Accuracy Decay:} While AEGIS approximates distributions well
-  for short durations (e.g., 2 revolutions), its accuracy decays sharply
-  in long-term Low Earth Orbit (LEO) cases. In these scenarios, it is
-  generally outperformed by the \textbf{Multi-Fidelity (MF)} and
-  \textbf{Polynomial Chaos Expansion (PCE)} methods.
-\end{itemize}
-
-\subsubsection{Impact of Coordinate
-Frames}\label{impact-of-coordinate-frames}
-
-The study notes that the poor performance of AEGIS was partly due to
-operating in \textbf{Cartesian coordinates}, where nonlinearity affects
-all dimensions. The sources suggest that combining AEGIS with
-\textbf{Modified Equinoctial Elements (MEqOE)} would be more effective;
-in MEqOE, the uncertainty primarily distributes along a single direction
-(true longitude), which would likely require far fewer splits and
-components to achieve high accuracy.
 
 \section{Moment Method}\label{sec-moment-method}
 
@@ -1736,7 +1432,7 @@ Filter:
 \end{Shaded}
 
 \subsection{Variations and Hybrid
-Architectures}\label{variations-and-hybrid-architectures-1}
+Architectures}\label{variations-and-hybrid-architectures}
 
 The sources identify several advanced iterations of the UT designed to
 overcome specific numerical or statistical limitations:
@@ -1929,7 +1625,8 @@ finite series expansion: \[
   representing input uncertainties.
 \item
   \(\Psi_j(\xi)\): Multivariate orthonormal basis functions, typically
-  formed as the product of univariate polynomials.
+  formed as the product of univariate polynomials, selected according to
+  the \textbf{Wiener-Askey scheme}.
 \item
   \(c_j(t)\): Deterministic spectral coefficients (weights) determined
   at the epoch of interest.
@@ -1983,39 +1680,84 @@ of the input uncertainties:
 
 \end{tcolorbox}
 
-\subsection{Procedural Logic: Non-Intrusive PCE
-Workflow}\label{procedural-logic-non-intrusive-pce-workflow}
+\subsection{Non-Intrusive PCE
+Methodology}\label{non-intrusive-pce-methodology}
 
-Non-intrusive PCE (NIPC) is favored in astrodynamics because it treats
-existing high-fidelity propagators as ``black boxes''. The two primary
-estimation methods for coefficients are:
+Non-intrusive methods are favored in astrodynamics because they treat
+high-fidelity propagators as ``black boxes,'' requiring no modification
+to existing legacy code.
+
+\subsubsection{Methodology for Coefficient
+Estimation}\label{methodology-for-coefficient-estimation}
+
+NIPC relies on a design of numerical experiments to estimate
+coefficients. Two primary approaches are utilized:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \textbf{Pseudo-Spectral Projection:} Exploits orthogonality by
-  projecting the model output onto each basis function using numerical
+  \textbf{Pseudo-Spectral Projection:} Exploits basis orthogonality by
+  projecting model output onto each basis function using numerical
   integration (e.g., Gaussian quadrature or Smolyak sparse grids).
 \item
-  \textbf{Least-Squares Regression:} Minimizes the residual between the
-  expansion and model evaluations at a set of sampled points (e.g.,
-  Latin Hypercube Sampling).
+  \textbf{Least-Squares (LS) Regression:} Also known as point
+  collocation, this method minimizes the residual between the expansion
+  and model evaluations at a set of sampled points (e.g., Latin
+  Hypercube Sampling).
 \end{enumerate}
+
+\textbf{Flowchart: NIPC Algorithmic Workflow}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{graph TD}
-\NormalTok{    A[Initial PDF: p\_xi] {-}{-}\textgreater{} B[Generate Inputs: xi realization via Rosenblatt or Cholesky]}
-\NormalTok{    B {-}{-}\textgreater{} C[Select Collocation Nodes via Quadrature or Sampling]}
-\NormalTok{    C {-}{-}\textgreater{} D[Propagate each Node through High{-}Fidelity ODEs]}
-\NormalTok{    D {-}{-}\textgreater{} E[Obtain Propagated Realizations: X\_ti]}
-\NormalTok{    E {-}{-}\textgreater{} F[Solve for Spectral Coefficients: c\_j]}
-\NormalTok{    F {-}{-}\textgreater{} G[Regression: Least{-}Squares Solution or Pseudo{-}Spectral Projection]}
-\NormalTok{    F {-}{-}\textgreater{} H[Spectral Projection: Numerical Integration]}
-\NormalTok{    G {-}{-}\textgreater{} I[Final PCE Surrogate: Analytic Response Surface]}
-\NormalTok{    H {-}{-}\textgreater{} I}
-\NormalTok{    I {-}{-}\textgreater{} J[Derive Moments / Sobol Indices Analytically]}
-\NormalTok{    I {-}{-}\textgreater{} K[Pc Calculation: Rapid Sampling of Surrogate]}
+\NormalTok{    A[Identify Uncertain Inputs \& Distributions] {-}{-}\textgreater{} B[Perform Isoprobabilistic Transform to Standard Space]}
+\NormalTok{    B {-}{-}\textgreater{} C[Select Orthogonal Basis {-} Wiener{-}Askey Scheme]}
+\NormalTok{    C {-}{-}\textgreater{} D[Generate Sample Nodes {-} Quadrature/LHS/Sparse Grids]}
+\NormalTok{    D {-}{-}\textgreater{} E[Propagate Samples through Black{-}Box Orbital Propagator]}
+\NormalTok{    E {-}{-}\textgreater{} F[Estimate Coefficients {-} Projection or Regression]}
+\NormalTok{    F {-}{-}\textgreater{} G[Construct PCE Surrogate Model]}
+\NormalTok{    G {-}{-}\textgreater{} H[Compute Analytical Moments \& Conjunction Statistics]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Intrusive PCE Methodology}\label{intrusive-pce-methodology}
+
+Intrusive methods, or \textbf{Intrusive Spectral Projection (ISP)},
+reformulate the original deterministic model equations into a larger
+system of coupled deterministic equations for the PC coefficients.
+
+\subsubsection{Mathematical Framework: The Galerkin
+Projection}\label{mathematical-framework-the-galerkin-projection}
+
+The core of the intrusive method is the \textbf{Galerkin projection},
+which ensures the approximation error is orthogonal to the functional
+space spanned by the basis. For an ODE system
+\(\dot{\boldsymbol{x}} = \boldsymbol{f}(\boldsymbol{x}, t, \boldsymbol{\xi})\),
+the PCE is substituted directly: \[
+\sum_{j=0}^{P} \dot{\boldsymbol{c}}_j \Psi_j = \boldsymbol{f}\left( \sum_{j=0}^{P} \boldsymbol{c}_j \Psi_j, t, \boldsymbol{\xi} \right)
+\]
+
+Multiplying by \(\Psi_k\) and taking the expectation
+\(\langle \cdot \rangle\) yields a system of \((P+1) \times n\) coupled
+deterministic ODEs.
+
+\subsubsection{Procedural Logic for Intrusive
+PCE}\label{procedural-logic-for-intrusive-pce}
+
+Unlike NIPC, IPCE requires a complete ``code rewrite'' to implement
+polynomial algebra operators.
+
+\textbf{Flowchart: IPCE Algorithmic Workflow}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Define Stochastic Governing Equations] {-}{-}\textgreater{} B[Initialize Uncertain Variables as 1st Degree Polynomials]}
+\NormalTok{    B {-}{-}\textgreater{} C[Apply Galerkin Projection to Equations of Motion]}
+\NormalTok{    C {-}{-}\textgreater{} D[Reformulate Force Models via Polynomial Algebra]}
+\NormalTok{    D {-}{-}\textgreater{} E[Solve Large Coupled System of Deterministic ODEs]}
+\NormalTok{    E {-}{-}\textgreater{} F[Reconstruct Terminal PDF from Coefficients]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2700,7 +2442,7 @@ uncertainty, it faces strict mathematical and implementation barriers:
 \end{itemize}
 
 \subsection{Role in Conjunction Assessment
-(CA)}\label{role-in-conjunction-assessment-ca-1}
+(CA)}\label{role-in-conjunction-assessment-ca}
 
 In the field of orbital mechanics, the STT method is frequently combined
 with the other uncertainty propagation architectures. The sources
@@ -2710,6 +2452,461 @@ propagate non-Gaussian uncertainties for conjunction analysis. This
 allows the GMM to break a large non-Gaussian problem into smaller
 Gaussian ``kernels,'' each of which is then non-linearly propagated
 using the semi-analytic STT method.
+
+\section{Gaussian Mixture Models (GMM)
+Framework}\label{gaussian-mixture-models-gmm-framework}
+
+In the larger landscape of \textbf{Uncertainty Propagation (UP)},
+\textbf{Gaussian Mixture Models (GMM)} serve as a versatile ``mixture
+model'' framework that bridges the gap between computationally efficient
+linear methods and the complex, non-Gaussian realities of orbital
+mechanics. The foundational principle of the GMM framework is the
+``universal approximator'' property, which asserts that any arbitrary
+probability density function (PDF) can be represented with sufficient
+accuracy as a weighted sum of multiple Gaussian kernels. This property
+allows GMMs to capture the intricate shapes of non-Gaussian
+distributions, such as the ``banana'' or ``kidney'' forms that emerge in
+long-term propagation through the highly nonlinear dynamics of orbital
+mechanics.
+
+\subsection{Mathematical Architecture of the GMM
+Framework}\label{mathematical-architecture-of-the-gmm-framework}
+
+The GMM framework represents a complex, non-Gaussian state
+\(\mathbf{x}\) as a linear combination of \(N_g\) multivariate Gaussian
+components.
+
+\subsubsection{The Joint GMM PDF}\label{the-joint-gmm-pdf}
+
+The non-Gaussian PDF of a state vector \(\mathbf{x}\) is defined as: \[
+p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x}}_i, \mathbf{P}_i)
+\]
+
+\textbf{Terms Defined:}
+
+\begin{itemize}
+\item
+  \(p(\mathbf{x})\): The total non-Gaussian probability density function
+  of the state.
+\item
+  \(L\): The total number of Gaussian mixture elements (GMEs).
+\item
+  \(\alpha_i\): The scalar weight of the \(i\)-th component, where
+  \(0 \le \alpha_i \le 1\) and \(\sum_{i=1}^{L} \alpha_i = 1\).
+\item
+  \(\mathbfcal{N}(\cdot)\): The \(i\)-th multivariate Gaussian kernel,
+  defined as: \[
+  \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x}}_i, \mathbf{P}_i) = \frac{1}{\sqrt{(2\pi)^n |\mathbf{P}_i|}} \exp \left( -\frac{1}{2} (\mathbf{x} - \hat{\mathbf{x}}_i)^T \mathbf{P}_i^{-1} (\mathbf{x} - \hat{\mathbf{x}}_i) \right)
+  \]
+
+  Where,
+
+  \begin{itemize}
+  \item
+    \(\hat{\mathbf{x}}_i\): The mean state vector of the \(i\)-th
+    Gaussian component.
+  \item
+    \(\mathbf{P}_i\): The covariance matrix of the \(i\)-th Gaussian
+    component.
+  \end{itemize}
+\end{itemize}
+
+\subsection{General Methodology for GMM
+Propagation}\label{general-methodology-for-gmm-propagation}
+
+The propagation of uncertainty via GMMs typically follows a three-stage
+``split-propagate-recombine'' paradigm.
+
+\begin{itemize}
+\item
+  \textbf{Initial Splitting:} An initial Gaussian distribution (often
+  from Orbit Determination) is replaced by \(L\) components. The
+  effectiveness of this stage is highly dependent on the choice of
+  splitting directions and the number of components, which are
+  influenced by the algorithms used to initialize and manage the mixture
+  components:
+
+  \begin{itemize}
+  \item
+    \textbf{Fixed vs.~Adaptive Splitting:}
+
+    \begin{itemize}
+    \item
+      \textbf{Static Splitting:} The number of components is fixed at
+      the initial epoch. This is common in the \textbf{Multidirectional
+      GMM (MGMM)} approach, where a regular grid is formed by
+      recursively applying the splitting library along multiple
+      nonlinear directions.
+    \item
+      \textbf{Adaptive Splitting (AEGIS/AGM):} Splits are triggered
+      online when a nonlinearity threshold is reached. The
+      \textbf{Adaptive Entropy-based GMM (AEGIS)} monitors the deviation
+      between linear and nonlinear differential entropy estimates to
+      trigger splits.
+    \end{itemize}
+  \item
+    \textbf{The Horwood Suboptimal Algorithm:} This specific technique
+    refines a multivariate Gaussian along a single direction, which is
+    computationally faster than multi-directional splitting without
+    significantly compromising accuracy.
+  \item
+    \textbf{Variance-Preserving (Homoscedastic) Splitting:} While
+    homoscedastic libraries often discard skewness, variance-preserving
+    libraries are optimized under the constraint of matching the first
+    two moments of the original distribution exactly. This ensures that
+    the global mean and covariance of the mixture are identical to the
+    original Gaussian before any nonlinear propagation occurs.
+  \item
+    \textbf{Multidirectional GMM (MGMM):} This approach recursively
+    applies the splitting library along multiple nonlinear directions,
+    forming a regular grid of components. While this can capture complex
+    non-Gaussian features, it is computationally expensive and may lead
+    to an exponential increase in the number of components.
+  \end{itemize}
+\item
+  \textbf{Coordinate Selection:} Splitting in Cartesian space is often
+  inefficient because nonlinearity acts in all six dimensions. Instead,
+  curvilinear coordinates (e.g., Equinoctial or Delaunay elements) are
+  used, as nonlinearity is primarily restricted to the mean longitude
+  direction, allowing for a 1D split that avoids the ``curse of
+  dimensionality''.
+\item
+  \textbf{Component-wise Propagation:} Each component
+  \((\hat{\mathbf{x}}_i, \mathbf{P}_i)\) is evolved independently
+  through the nonlinear dynamics using a chosen propagation method.
+\item
+  \textbf{Recombination:} At the target epoch, the weighted sum of
+  components provides the final non-Gaussian PDF for tasks like
+  Conjunction Assessment (CA).
+\end{itemize}
+
+\subsection{Algorithmic Methodology of Gaussian Mixture Modelling of
+uncertainty}\label{algorithmic-methodology-of-gaussian-mixture-modelling-of-uncertainty}
+
+The following flowchart illustrates the procedural logic for propagating
+orbital uncertainty using the GMM framework. Here we use the
+nonlinearity metric to pre-determine the splitting direction and the
+number of components to generate.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Initial Gaussian State \& Covariance] {-}{-}\textgreater{} B\{Select Coordinate System\}}
+\NormalTok{    B {-}{-} Cartesian {-}{-}\textgreater{} C[Calculate Nonlinearity Metric Stirling Interpolation]}
+\NormalTok{    B {-}{-} Equinoctial/MEqOE {-}{-}\textgreater{} D[Select Dominant Direction Mean Longitude]}
+\NormalTok{    C {-}{-}\textgreater{} E[Apply Splitting Library Rule 1/Homoscedastic]}
+\NormalTok{    D {-}{-}\textgreater{} E}
+\NormalTok{    E {-}{-}\textgreater{} F[Generate L Initial Gaussian Components]}
+\NormalTok{    F {-}{-}\textgreater{} G[Propagate Each Component independently]}
+\NormalTok{    G {-}{-} Using UT/STT/DA/PCE/MF {-}{-}\textgreater{} H[Sum Propagated Components via Weights]}
+\NormalTok{    H {-}{-}\textgreater{} I[Final Non{-}Gaussian Posterior PDF]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Variations and Hybrid
+Architectures}\label{variations-and-hybrid-architectures-1}
+
+The GMM framework is frequently combined with other UP methods to
+optimize the speed-accuracy Pareto front.
+
+\subsubsection{GMM-UT (Unscented
+Transform)}\label{gmm-ut-unscented-transform}
+
+The most common implementation, where each kernel's statistics are
+propagated via \(2n+1\) sigma points.
+
+\begin{itemize}
+\item
+  \textbf{Methodology:} Each component is represented by \(2n+1\)
+  deterministic sigma points \(\chi_j\), which are propagated through
+  the full nonlinear dynamics to reconstruct component statistics.
+\item
+  \textbf{Limitation:} The cost scales linearly with the number of
+  components \(L\) and the state dimension \(n\), i.e.,
+  \(O(L \cdot n)\).
+\end{itemize}
+
+\subsubsection{GMM-MF (Multi-Fidelity)}\label{gmm-mf-multi-fidelity}
+
+A high-efficiency hybrid where the Multi-Fidelity method propagates the
+sigma points of the GMM kernels.
+
+\begin{itemize}
+\item
+  \textbf{Methodology:} The entire ensemble of sigma points from all
+  components is propagated via a computationally cheap low-fidelity (LF)
+  model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian
+  identifies a subset of ``important samples'' to be corrected by the HF
+  model via stochastic collocation. See Section~\ref{sec-mf-sc} for a
+  detailed discussion on the stochastic collocation multi-fidelity
+  method.
+\item
+  \textbf{Performance:} Achieves accuracy similar to GMM-UT but with an
+  \textbf{80\% reduction in computation time}.
+\end{itemize}
+
+\subsubsection{GMM-STT (State Transition
+Tensor)}\label{gmm-stt-state-transition-tensor}
+
+This method regards Gaussian distributions as a function space to
+express PDFs in closed form.
+
+\begin{itemize}
+\item
+  \textbf{Methodology:} Instead of solving separate ODEs for each mean
+  and covariance, the STT solution flow is reformulated as a matrix
+  function valid over all components.
+\item
+  \textbf{Mathematical Formula (State Deviation):} \[
+  \delta \hat{x}_{i}^k(t) \approx \sum_{p=1}^{m} \frac{1}{p!} \Phi^k_{j_1...j_p}(t, t_0) \delta \hat{x}_{0,i}^{j_1} \dots \delta \hat{x}_{0,i}^{j_p}
+  \]
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\delta \hat{x}_{i}^k(t)\) is the \(k\)-th state component of the
+    \(i\)-th component; \(\Phi^k_{j_1...j_p}\) is the \(p\)-th order
+    State Transition Tensor.
+  \end{itemize}
+\item
+  \textbf{Efficiency:} It becomes more efficient than individual
+  component propagation for \(L > 7\) components (using a 2nd-order
+  expansion).
+\end{itemize}
+
+\subsubsection{GMM-DA (Differential
+Algebra)}\label{gmm-da-differential-algebra}
+
+The core innovation of GMM-DA is that the high-order Taylor expansion of
+the solution flow is computed only once. The solution flow is expanded
+into a polynomial up to an arbitrary order \(k\) without manual
+derivation of variational equations. All individual Gaussian kernels are
+then evaluated through this single polynomial map, turning the
+propagation of thousands of components into a series of efficient
+algebraic evaluations
+
+\begin{itemize}
+\item
+  \textbf{Advantage:} Self-adaptive to any regular nonlinear system
+  without requiring manual derivation of derivatives.
+\item
+  \textbf{Variant (DA-LOADS):} Uses a \textbf{Nonlinearity Index (NLI)}
+  to trigger adaptive splitting only when the Taylor expansion's
+  truncation error exceeds a threshold.
+\end{itemize}
+
+\subsubsection{GMM-PCE (Polynomial Chaos
+Expansion)}\label{gmm-pce-polynomial-chaos-expansion}
+
+This approach is analogous to \textbf{hp-refinement} in Finite Element
+Methods.
+
+\begin{itemize}
+\item
+  \textbf{Methodology:} Splitting (h-refinement) reduces the domain of
+  approximation for each component, allowing for lower-order polynomials
+  (p-refinement) to be used effectively.
+\item
+  \textbf{Benefit:} It reduces the factorial growth of PCE terms in
+  high-dimensional states while maintaining the ability to capture full
+  shapes of non-Gaussian distributions.
+\end{itemize}
+
+\subsubsection{GMM-Moment Method}\label{gmm-moment-method}
+
+This semi-analytical framework propagates the first raw moment (mean)
+and the second central moment (variance) of each Gaussian component
+through a nonlinear system using the first/or second-order Taylor
+expansion of the explicit flow function of the dynamical system.
+Section~\ref{sec-moment-method} discusses the mathematical formulation
+and implementation of the moment method in detail.
+
+\subsection{Advanced Variations on the GMM
+Method}\label{advanced-variations-on-the-gmm-method}
+
+\subsubsection{Adaptive GMMs (AEGIS and
+MDAES)}\label{adaptive-gmms-aegis-and-mdaes}
+
+The \textbf{Adaptive Entropy-based Gaussian-mixture Information
+Synthesis (AEGIS)} method does not rely on a fixed number of components.
+
+\begin{itemize}
+\item
+  \textbf{Mechanism:} It monitors component nonlinearity by comparing
+  the linear evolution of its differential entropy against a nonlinear
+  estimate (e.g., via UKF).
+\item
+  \textbf{Directional Splitting:} To combat the ``curse of
+  dimensionality,'' GMM splitting is often restricted to the eigenvector
+  corresponding to the maximum eigenvalue (\(V_{max}\)) or directions
+  maximizing a nonlinearity metric.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Trigger:} If the entropy deviation exceeds a threshold, the
+    component is split online to maintain linearity.
+  \end{itemize}
+\item
+  \textbf{Coordinate Frame Synergy:} Pairing GMMs with \textbf{Modified
+  Equinoctial Elements (MEqOE)} is highly efficient, as uncertainty in
+  MEqOE is dominated by a single dimension (true longitude), requiring
+  fewer kernels than Cartesian space.
+\item
+  \textbf{Variation:} \textbf{MDAES} combines initial multi-directional
+  splitting with AEGIS to prevent correlation buildup in highly deformed
+  distributions.
+\end{itemize}
+
+Despite its robustness, the sources highlight critical drawbacks:
+
+\begin{itemize}
+\item
+  \textbf{The ``Centred Collection'' Effect:} In Cartesian frames,
+  individual GMM components can end up clumping toward the center of the
+  distribution at terminal time, failing to capture the thin ``tails''
+  of the true non-Gaussian distribution.
+\item
+  \textbf{Combinatoric Growth:} The number of components in a batch GMM
+  can scale factorially with the number of measurements
+  (\(N_{\nu,0} \times \dots \times N_{\nu,L}\)), necessitating
+  aggressive pruning and merging techniques.
+\item
+  \textbf{Tail Sensitivity:} While GMMs improve upon single Gaussians,
+  they may still require an intractable number of kernels to accurately
+  resolve the \(10^{-5}\) or \(10^{-6}\) tail probabilities required for
+  actionable conjunction screening.
+\end{itemize}
+
+\subsubsection{Multidirectional GMM
+(MGMM)}\label{multidirectional-gmm-mgmm}
+
+Standard GMMs often split along a single axis. \textbf{MGMMs}
+recursively apply splitting libraries along multiple directions to form
+a regular grid in probability space.
+
+\begin{itemize}
+\item
+  \textbf{Nonlinearity Metric:} Directions are ranked using a
+  second-order divided difference (Stirling's interpolation) to identify
+  where splits provide the most accuracy gain. \[
+  \phi = \frac{f(\mathbf{m} + h\sigma \mathbf{a}) + f(\mathbf{m} - h\sigma \mathbf{a}) - 2f(\mathbf{m})}{2h^2}
+  \]
+\item
+  \textbf{Term Definitions:} \(\mathbf{a}\) is the splitting unit vector
+  and \(h = \sqrt{3}\) is the recommended step size.
+\end{itemize}
+
+\subsubsection{Gaussian Mixture Batch Processor
+(GMBP)}\label{gaussian-mixture-batch-processor-gmbp}
+
+Applied to \textbf{Initial Orbit Determination (IOD)}, the GMBP
+translates a batch of noisy measurements into a GMM-based PDF using
+Bayes' rule.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Methodology:} It disperses linearization errors across an
+  ensemble of Gaussian components, allowing for accurate reconstruction
+  of ``crescent-shaped'' posteriors common in cislunar tracking.
+\end{itemize}
+
+\subsubsection{Role in Conjunction Assessment
+(CA)}\label{role-in-conjunction-assessment-ca-1}
+
+In the field of collision analysis, GMMs enable \textbf{all-on-all
+analysis}. Rather than evaluating millions of individual sample pairs as
+in Monte Carlo simulation, every Gaussian component of a primary object
+is evaluated against every component of a secondary object. This allows
+for the use of more advanced analytical or numerical collision
+probability (\(P_c\)) computation methods on each individual component
+pair.
+
+\subsection{Adaptive splitting in the Context of Gaussian Mixture Models
+(GMM)}\label{adaptive-splitting-in-the-context-of-gaussian-mixture-models-gmm}
+
+Bos's thesis (Bos 2025) defines Adaptive Entropy-based Gaussian-mixture
+Information Synthesis (AEGIS) as an advanced framework that utilizes
+automatic domain splitting to maintain an accurate representation of a
+probability density function (PDF) as its non-Gaussianity increases
+during propagation.
+
+While standard GMMs often approximate a non-Gaussian PDF by splitting an
+initial distribution into a fixed number of weighted components at the
+start of propagation (\(t_0\)), \textbf{AEGIS performs this splitting
+online}. The method treats the uncertainty as a sum of Gaussian
+``kernels'' that can be individually propagated using efficient
+techniques like the \textbf{Unscented Transform} or \textbf{Linearised
+Covariance}.
+
+The core philosophy of AEGIS is that by repeatedly splitting a Gaussian
+component into smaller sub-components when nonlinear effects become too
+high, the method reduces the local impact of those nonlinearities,
+allowing individual components to remain near-Gaussian for a longer
+duration.
+
+\subsubsection{Mechanics of Adaptive
+Splitting}\label{mechanics-of-adaptive-splitting}
+
+AEGIS triggers a split based on a comparison between \textbf{linear and
+nonlinear differential entropy}:
+
+\begin{itemize}
+\item
+  \textbf{Linear Entropy:} This is calculated by integrating the time
+  derivative of the differential entropy, which is a function of the
+  system's \textbf{Jacobian matrix} (the basis of the Linearized
+  Covariance method).
+\item
+  \textbf{Nonlinear Entropy:} This is calculated directly from the
+  covariance matrix after propagating the component using a nonlinear
+  technique, typically the \textbf{Unscented Transform}.
+\item
+  \textbf{The Splitting Threshold:} When the normalized difference
+  between these two entropy calculations exceeds a user-defined
+  threshold (\(\epsilon_{ent}\)), the propagation is paused, the
+  component is split into smaller Gaussians, and the entropies are
+  recalculated before propagation continues.
+\end{itemize}
+
+\subsubsection{Performance and Computational
+Challenges}\label{performance-and-computational-challenges}
+
+Despite its theoretical potential, the study highlight significant
+practical drawbacks to the AEGIS method in orbital scenarios:
+
+\begin{itemize}
+\item
+  \textbf{Extreme Computational Intensity:} AEGIS was found to be the
+  most computationally expensive method tested. Because it requires
+  propagating the State Transition Matrix (STM) and calculating
+  differential entropy at every time step, it is slower than a standard
+  UT even when \textbf{no splitting occurs}.
+\item
+  \textbf{Exponential Component Growth:} For long propagation horizons,
+  the number of components can increase exponentially as splits occur at
+  increasingly frequent intervals. This leads to \textbf{unreachable
+  computation times} or out-of-memory errors, making the method
+  impractical for scenarios spanning many orbital revolutions.
+\item
+  \textbf{Accuracy Decay:} While AEGIS approximates distributions well
+  for short durations (e.g., 2 revolutions), its accuracy decays sharply
+  in long-term Low Earth Orbit (LEO) cases. In these scenarios, it is
+  generally outperformed by the \textbf{Multi-Fidelity (MF)} and
+  \textbf{Polynomial Chaos Expansion (PCE)} methods.
+\end{itemize}
+
+\subsubsection{Impact of Coordinate
+Frames}\label{impact-of-coordinate-frames}
+
+The study notes that the poor performance of AEGIS was partly due to
+operating in \textbf{Cartesian coordinates}, where nonlinearity affects
+all dimensions. The sources suggest that combining AEGIS with
+\textbf{Modified Equinoctial Elements (MEqOE)} would be more effective;
+in MEqOE, the uncertainty primarily distributes along a single direction
+(true longitude), which would likely require far fewer splits and
+components to achieve high accuracy.
 
 \section{Multi-Fidelity (MF) Method of Uncertainty
 Propagation}\label{multi-fidelity-mf-method-of-uncertainty-propagation}
@@ -2872,9 +3069,9 @@ Flowchart}}{Algorithmic Flowchart}}\label{algorithmic-flowchart}
 \subsubsection{Method 2: Differential Algebra (DA) and Adaptive GMM
 Multi-Fidelity}\label{method-2-differential-algebra-da-and-adaptive-gmm-multi-fidelity}
 
-Developed by Fossà et al., this method combines the local accuracy of
-Taylor expansions with the global flexibility of Gaussian Mixture Models
-(GMMs).
+Developed by Fossà et al.(Fossa et al. 2024), this method combines the
+local accuracy of Taylor expansions with the global flexibility of
+Gaussian Mixture Models (GMMs).
 
 \begin{itemize}
 \item
@@ -3127,275 +3324,6 @@ Propagator}\label{algorithm-the-taylor-diffusion-propagator}
 \end{Highlighting}
 \end{Shaded}
 
-\section{Limitations of Orbital Uncertainty Propagation
-Methods}\label{limitations-of-orbital-uncertainty-propagation-methods}
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0845}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2128}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2179}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2213}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2635}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Method / Framework
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Principal Strength
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Major Limitations
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Failure Mechanism / Critical Issue
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Implication for Orbital Uncertainty Propagation
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\textbf{Monte Carlo (MC)} & Provides the most direct and general
-representation of the propagated PDF; minimal assumptions on the
-dynamics or distribution & Extremely computationally expensive; slow
-statistical convergence; inefficient for rare-event probability
-estimation & Statistical error decreases only as (\(1/\sqrt{N}\));
-high-fidelity dynamics must be integrated for every sample & Excellent
-as a reference or validation method, but often unsuitable for real-time
-or large-scale operational conjunction assessment \\
-\textbf{Linearised Covariance (LinCov)} & Very high computational
-efficiency; simple and suitable for onboard implementation & Assumes
-local linearity and usually Gaussian uncertainty; cannot capture
-higher-order distributional deformation & The linearized state
-transition model becomes inaccurate as uncertainty grows or the dynamics
-become strongly nonlinear & Effective for short propagation times and
-small uncertainties; unreliable for long-term propagation, highly
-elliptical orbits, and non-Gaussian PDFs \\
-\textbf{Unscented Transform (UT)} & Captures nonlinear effects more
-accurately than first-order linearization with relatively few propagated
-points & Primarily represents only low-order statistics; generally
-assumes that mean and covariance sufficiently describe the distribution
-& A finite sigma-point set cannot reproduce strongly skewed, multimodal,
-or highly deformed PDFs & Efficient for moderate nonlinearities and
-Gaussian-like uncertainties, but inadequate as a standalone method for
-strongly non-Gaussian long-term propagation \\
-\textbf{Polynomial Chaos Expansion (PCE)} & Can represent nonlinear
-input-output mappings and highly non-Gaussian propagated distributions
-with high accuracy & Suffers from the curse of dimensionality;
-computational cost rises rapidly with polynomial order and state
-dimension & Number of polynomial basis terms increases combinatorially;
-regression or projection may become ill-conditioned or fail to converge
-& Powerful for low- to moderate-dimensional problems, but difficult to
-scale to high-dimensional orbital uncertainty spaces \\
-\textbf{PCE --- discontinuous/non-smooth dynamics} & Flexible surrogate
-representation & Poor performance near discontinuities or non-smooth
-force-model transitions & Global polynomial approximation can exhibit
-Gibbs-type oscillations and local approximation errors & Requires domain
-decomposition, multi-element PCE, or other adaptive techniques when
-discontinuities are present \\
-\textbf{PCE --- long-duration propagation} & Maintains high accuracy
-when a suitable expansion remains valid & A single global polynomial may
-become inaccurate over large propagated uncertainty domains & Increasing
-nonlinearity causes the surrogate to lose accuracy and may require
-domain splitting & Long-term orbital propagation generally requires
-adaptive or multi-element formulations \\
-\textbf{State Transition Tensors (STT)} & Extends the STM concept to
-higher-order nonlinear mappings; can directly propagate higher-order
-statistics & High computational and derivational complexity; requires
-high-order derivatives or variational equations & Number of tensor terms
-grows rapidly with state dimension and expansion order & Attractive for
-high-accuracy local nonlinear propagation, but difficult to implement
-for high-fidelity, high-dimensional dynamics \\
-\textbf{STT --- local validity} & Provides a high-order local Taylor
-representation & Limited radius of convergence & The Taylor expansion
-may become inaccurate or diverge when the uncertainty region extends far
-from the nominal trajectory & Large initial uncertainties and strongly
-nonlinear orbital regimes may require domain splitting or multiple local
-expansions \\
-\textbf{STT --- discontinuities and maneuvers} & Effective for smooth
-nonlinear dynamics & Difficult to apply directly to discontinuous
-dynamics, impulsive events, and piecewise force models &
-Derivative-based expansion is not naturally compatible with state jumps
-or non-differentiable transitions & Maneuver segmentation and special
-transition mappings are required \\
-\textbf{Differential Algebra (DA)} & Automates high-order Taylor
-expansion and avoids manual derivation of high-order derivatives &
-Expansion order, memory, and number of polynomial terms can become large
-& High-dimensional high-order polynomial representations create
-computational and memory overhead & More practical than manually derived
-STTs, but still subject to local expansion and truncation limitations \\
-\textbf{DA with automatic domain splitting} & Extends the region over
-which polynomial representations remain accurate & Requires additional
-splitting logic and repeated local representations & Excessive splitting
-can create a large number of domains or polynomial maps & Accuracy can
-be maintained at the cost of increasing computational and memory
-requirements \\
-\textbf{DA --- finite PDF representation} & Can calculate high-order
-statistical information & The propagated uncertainty is still
-represented through a finite-dimensional polynomial approximation & The
-polynomial representation is not an exact arbitrary PDF & May not
-accurately reproduce complex tails or highly multimodal distributions
-without additional decomposition \\
-\textbf{Stochastic Collocation (SC) Multi-Fidelity} & Reduces the number
-of expensive high-fidelity simulations by exploiting a cheap
-low-fidelity model & Accuracy depends strongly on the relationship
-between low- and high-fidelity dynamics & Poor correlation between
-fidelity levels produces inaccurate corrections or surrogates & Highly
-effective when the low-fidelity model captures the dominant dynamics;
-unreliable when model discrepancy is large \\
-\textbf{SC Multi-Fidelity --- rank limitation} & Uses a small number of
-important high-fidelity samples & The number of independent correction
-directions can be limited by the rank/dimensionality of the
-approximation & A small number of basis directions may be insufficient
-to represent complex propagated PDFs & Efficiency is high, but
-representational capacity can be limited for highly complex
-distributions \\
-\textbf{SC Multi-Fidelity --- tolerance sensitivity} & Allows control of
-computational effort and approximation accuracy & Results depend on
-low-fidelity and surrogate tolerances & Poor tolerance selection can
-either waste computation or produce inaccurate uncertainty distributions
-& Requires careful parameter tuning and problem-specific calibration \\
-\textbf{DA / LOADS-type adaptive MF methods} & Detect nonlinear regions
-and refine the representation adaptively & Adaptive splitting can
-generate many local models & Strong nonlinearities lead to domain
-proliferation and increased computational cost & Improves robustness but
-may reduce the computational advantage of the original surrogate \\
-\textbf{PLASMA / stochastic moment-based MF approaches} & Efficiently
-propagates statistical information using low-order moments & Accuracy
-depends on the adequacy of the selected moment order and approximation &
-Higher-order nonlinear effects may not be represented by a limited
-moment set & Suitable when the distribution remains sufficiently
-regular; less reliable for strongly non-Gaussian PDFs \\
-\textbf{AEGIS} & Adaptively splits Gaussian components based on detected
-nonlinear deformation & Computational cost can grow rapidly as the
-number of mixture components increases & Repeated splitting causes
-component proliferation; delayed splitting can lose information about
-accumulated nonlinear deformation & Can represent nonlinear deformation,
-but may become impractical for long propagation times and strongly
-nonlinear regimes \\
-\textbf{AEGIS --- correlation buildup} & Adaptive entropy-based
-refinement & Component correlations can become increasingly complex &
-Components may spread across irrelevant directions or deviate from the
-true distribution & Requires improved splitting strategies such as
-multidirectional or hybrid adaptive methods \\
-\textbf{Gaussian Mixture Models (GMMs)} & Can represent non-Gaussian and
-multimodal PDFs using a mixture of Gaussian components & Accuracy
-depends on the number, placement, covariance, and weights of components
-& Insufficient components fail to capture tails, skewness,
-multimodality, or sharp deformation & Flexible but computationally
-sensitive; component management becomes a central problem \\
-\textbf{GMM--UT} & Combines distribution decomposition with efficient
-sigma-point propagation & Accuracy depends on both the initial mixture
-representation and the UT approximation & Each Gaussian component is
-still propagated using a low-order statistical approximation & More
-capable than a single UT, but may still poorly represent extreme tails
-of highly non-Gaussian distributions \\
-\textbf{GMM--STT} & Combines local Gaussian decomposition with
-high-order nonlinear mapping & High-order tensor calculations become
-expensive for many components & Computational complexity increases with
-mixture size, state dimension, and tensor order & Accurate for suitable
-local regions, but scalability is a major limitation \\
-\textbf{GMM--DA} & Uses automatic polynomial mappings for each mixture
-component & Polynomial order and mixture size can produce substantial
-memory and processing requirements & Truncation errors increase away
-from each expansion point; tails may be poorly represented & More
-flexible than manually derived STTs but still requires careful order and
-component management \\
-\textbf{GMM--PCE} & Reduces the effective nonlinearity experienced by
-each polynomial expansion & Still inherits the dimensionality problem of
-PCE and the approximation error of the initial GMM & Accuracy is bounded
-by the quality of the initial mixture decomposition & Effective hybrid
-approach, but not a complete solution to high-dimensionality \\
-\textbf{GMM--MF} & Uses low-fidelity dynamics to efficiently propagate
-mixture components or important samples & Accuracy depends on
-low-/high-fidelity correlation and the number of important samples &
-Insufficient correction samples cannot capture all relevant uncertainty
-directions & Offers excellent computational efficiency, but requires
-careful selection of fidelity models and correction basis \\
-\textbf{GMM--Moment Method} & Efficiently propagates low-order
-statistics of individual Gaussian components & Primarily limited to the
-information contained in the propagated moments & Linearization or
-truncated Taylor approximations become inaccurate in regions of high
-curvature & Computationally attractive, but accuracy decreases as
-component spread and nonlinear deformation increase \\
-\textbf{Moment-Based Propagation in General} & Much cheaper than full
-PDF propagation & Higher-order and tail information may be discarded &
-Different PDFs can share the same mean and covariance but have very
-different shapes & Mean and covariance alone may be insufficient for
-conjunction assessment and rare-event collision probabilities \\
-\end{longtable}
-}
-
-\subsection{Cross-Cutting Limitations}\label{cross-cutting-limitations}
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1961}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2843}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.5196}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-General Challenge
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Methods Most Affected
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Consequence
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\textbf{Strong nonlinear dynamics} & LinCov, UT, moment methods,
-low-order STT/DA & Gaussian distributions deform into skewed, curved, or
-multimodal PDFs \\
-\textbf{Long propagation duration} & LinCov, UT, local STT,
-single-domain DA, single-domain PCE & Local approximations progressively
-lose validity \\
-\textbf{High state dimensionality} & PCE, STT, DA, GMM, FPE-based
-methods & Computational and memory requirements grow rapidly \\
-\textbf{Non-Gaussian uncertainty} & LinCov, UT, low-order moment methods
-& Important skewness, kurtosis, tails, and multimodality may be lost \\
-\textbf{Rare-event collision probability} & MC, moment-based methods,
-Gaussian approximations & Accurate estimation of very small (P\_C)
-values becomes difficult \\
-\textbf{Model uncertainty} & All methods & Propagating state uncertainty
-accurately does not compensate for an inaccurate force model \\
-\textbf{Initial uncertainty characterization} & All methods & A highly
-accurate propagator cannot produce a reliable final PDF from an
-incorrect initial PDF \\
-\textbf{Discontinuous dynamics and maneuvers} & STT, DA, PCE,
-derivative-based methods & Taylor and polynomial representations may
-become invalid across discontinuities \\
-\textbf{Low-/high-fidelity model mismatch} & Multi-fidelity methods &
-The computational advantage can be lost or the propagated PDF can become
-biased \\
-\textbf{Component proliferation} & GMM and AEGIS-based methods &
-Adaptive refinement may eventually become computationally comparable to
-direct sampling \\
-\textbf{Operational integration} & Most advanced nonlinear methods &
-Accurate PDFs are not automatically converted into reliable operational
-decisions such as collision alerts \\
-\end{longtable}
-}
-
-\subsubsection{Overall Assessment}\label{overall-assessment}
-
-The central limitation of orbital uncertainty propagation is the
-\textbf{accuracy--computational-cost trade-off}. No single method
-simultaneously provides:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  the generality of Monte Carlo,
-\item
-  the computational efficiency of linear covariance propagation,
-\item
-  the nonlinear accuracy of high-order Taylor or polynomial methods, and
-\item
-  the full-PDF representation capability of adaptive GMM or
-  density-based methods.
-\end{enumerate}
-
 \section{Appendix}\label{appendix}
 
 \section{A: Pivoted Cholesky Decomposition for Multi-Fidelity Node
@@ -3545,10 +3473,17 @@ for Uncertainty Propagation Within the PUZZLE Software.''}
 \emph{Advances in Space Research} 75 (10): 7226--41.
 https://doi.org/\url{https://doi.org/10.1016/j.asr.2025.03.026}.
 
+\bibitem[\citeproctext]{ref-fossa2024multifidelity}
+Fossa, Alberto, Daniel Alazard, Emmanuel Delande, and Roberto Armellin.
+2024. {``Multifidelity Orbit Uncertainty Propagation in the Presence of
+Stochastic Accelerations.''} PhD thesis, Ph. D. Thesis, Inst.
+Sup{é}rieur de l'A{é}ronautique et de l'Espace, Toulouse~\ldots.
+\url{https://depozit.isae.fr/theses/2024/2024_Fossa_Alberto.pdf}.
+
 \bibitem[\citeproctext]{ref-fossa2024propagation}
 Fossà, Alberto. 2024. {``Propagation Multi-Fid{é}lit{é} d'incertitude
 Orbitale En Pr{é}sence d'acc{é}l{é}rations Stochastiques.''} PhD thesis,
-The University of Texas at Austin.
+Inst. Sup{é}rieur de l'A{é}ronautique et de l'Espace, Toulouse.
 
 \bibitem[\citeproctext]{ref-JONES2019406}
 Jones, Brandon A., and Ryan Weisman. 2019. {``Multi-Fidelity Orbit

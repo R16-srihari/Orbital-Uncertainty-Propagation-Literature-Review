@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.9.37">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+    <title>Limitations of Orbital Uncertainty Propagation Methods</title>
+    <style>
+      /* Default styles provided by pandoc.
+      ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+      */
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+    </style>
+
+    <style>
+      body.hypothesis-enabled #quarto-embed-header {
+        padding-right: 36px;
+      }
+
+      #quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
+
+      #quarto-embed-header h6 {
+        font-size: 1.1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 400;
+      }
+
+      #quarto-embed-header a.quarto-back-link,
+      #quarto-embed-header a.quarto-download-embed {
+        font-size: 0.8em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      .quarto-back-container {
+        padding-left: 0.5em;
+        display: flex;
+      }
+
+      .headroom {
+          will-change: transform;
+          transition: transform 200ms linear;
+      }
+
+      .headroom--pinned {
+          transform: translateY(0%);
+      }
+
+      .headroom--unpinned {
+          transform: translateY(-100%);
+      }      
+    </style>
+
+    <script>
+    window.document.addEventListener("DOMContentLoaded", function () {
+
+      var header = window.document.querySelector("#quarto-embed-header");
+      const titleBannerEl = window.document.querySelector("body > #title-block-header");
+      if (titleBannerEl) {
+        titleBannerEl.style.paddingTop = header.clientHeight + "px";
+      }
+      const contentEl = window.document.getElementById('quarto-content');
+      for (const child of contentEl.children) {
+        child.style.paddingTop = header.clientHeight + "px";
+        child.style.marginTop = "1em";
+      }
+
+      // Use the article root if the `back` call doesn't work. This isn't perfect
+      // but should typically work
+      window.quartoBackToArticle = () => {
+        var currentUrl = window.location.href;
+        window.history.back();
+        setTimeout(() => {
+            // if location was not changed in 100 ms, then there is no history back
+            if(currentUrl === window.location.href){              
+                // redirect to site root
+                window.location.href = "index.html";
+            }
+        }, 100);
+      }
+
+      const headroom = new window.Headroom(header, {
+        tolerance: 5,
+        onPin: function () {
+        },
+        onUnpin: function () {
+        },
+      });
+      headroom.init();
+    });
+    </script>
+
+    
+<script src="site_libs/manuscript-notebook/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-67270d1595a62d14f123c043d4fb2f18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+     <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>  
+      </head>
+
+  <body class="quarto-notebook quarto-light">
+    <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
+      
+      <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
+      <h6><i class="bi bi-journal-code"></i> Limitations of Orbital Uncertainty Propagation Methods</h6>
+
+            <a href="./up_methods_comparison.qmd" class="btn btn-primary quarto-download-embed" download="up_methods_comparison.qmd">Download Source</a>
+          </div>
+
+     <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Limitations of Orbital Uncertainty Propagation Methods</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+        
+        <div class="quarto-title-meta">
+
+                
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      </div>
+    </div>
+
+
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#summary-table" id="toc-summary-table" class="nav-link active" data-scroll-target="#summary-table">Summary Table</a></li>
+  <li><a href="#method-by-method-discussion" id="toc-method-by-method-discussion" class="nav-link" data-scroll-target="#method-by-method-discussion">Method-by-Method Discussion</a>
+  <ul class="collapse">
+  <li><a href="#monte-carlo" id="toc-monte-carlo" class="nav-link" data-scroll-target="#monte-carlo">Monte Carlo</a></li>
+  <li><a href="#linearised-covariance" id="toc-linearised-covariance" class="nav-link" data-scroll-target="#linearised-covariance">Linearised covariance</a></li>
+  <li><a href="#unscented-transform" id="toc-unscented-transform" class="nav-link" data-scroll-target="#unscented-transform">Unscented transform</a></li>
+  <li><a href="#polynomial-chaos-expansion" id="toc-polynomial-chaos-expansion" class="nav-link" data-scroll-target="#polynomial-chaos-expansion">Polynomial chaos expansion</a>
+  <ul class="collapse">
+  <li><a href="#non-intrusive-polynomial-chaos" id="toc-non-intrusive-polynomial-chaos" class="nav-link" data-scroll-target="#non-intrusive-polynomial-chaos">Non-intrusive polynomial chaos</a></li>
+  <li><a href="#intrusive-polynomial-chaos" id="toc-intrusive-polynomial-chaos" class="nav-link" data-scroll-target="#intrusive-polynomial-chaos">Intrusive polynomial chaos</a></li>
+  </ul></li>
+  <li><a href="#state-transition-tensors" id="toc-state-transition-tensors" class="nav-link" data-scroll-target="#state-transition-tensors">State transition tensors</a></li>
+  <li><a href="#differential-algebra" id="toc-differential-algebra" class="nav-link" data-scroll-target="#differential-algebra">Differential algebra</a></li>
+  <li><a href="#multi-fidelity-propagation" id="toc-multi-fidelity-propagation" class="nav-link" data-scroll-target="#multi-fidelity-propagation">Multi-fidelity propagation</a></li>
+  <li><a href="#gmm-based-methods" id="toc-gmm-based-methods" class="nav-link" data-scroll-target="#gmm-based-methods">GMM-based methods</a></li>
+  <li><a href="#hybrid-gmm-methods" id="toc-hybrid-gmm-methods" class="nav-link" data-scroll-target="#hybrid-gmm-methods">Hybrid GMM methods</a></li>
+  <li><a href="#aegis" id="toc-aegis" class="nav-link" data-scroll-target="#aegis">AEGIS</a></li>
+  <li><a href="#moment-based-propagation" id="toc-moment-based-propagation" class="nav-link" data-scroll-target="#moment-based-propagation">Moment-based propagation</a></li>
+  </ul></li>
+  <li><a href="#overall-conclusion" id="toc-overall-conclusion" class="nav-link" data-scroll-target="#overall-conclusion">Overall conclusion</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">      
+
+       <p>Orbital uncertainty propagation methods differ mainly in how they balance three competing objectives: computational efficiency, fidelity to nonlinear dynamics, and the ability to represent non-Gaussian probability distributions. No single method is optimal in all regimes. Methods that are fast are usually based on local linearity or low-order statistics, while methods that can represent strongly distorted probability densities are usually more expensive or more difficult to scale.</p>
+<section id="summary-table" class="level1">
+<h1>Summary Table</h1>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 39%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method / framework</th>
+<th>Principal strength</th>
+<th>Main limitation</th>
+<th>Failure mechanism / critical issue</th>
+<th>Why the limitation matters</th>
+<th>Dynamics Intrusiveness</th>
+<th>Open source Implementation</th>
+<th>Result Accuracy and Computational cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Monte Carlo (MC)</strong></td>
+<td>Asymptotically exact and distribution-agnostic</td>
+<td>Computationally expensive and slow to converge</td>
+<td>Poor convergence in rare-event regimes and long propagation horizons</td>
+<td>It provides the most direct baseline, but the number of samples required for accurate statistics becomes very large, especially for long propagation times and rare-event probabilities.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="even">
+<td><strong>Linearised covariance (LinCov / STM)</strong></td>
+<td>Extremely efficient first-order propagation</td>
+<td>Relies on local linearity and a Gaussian description of uncertainty</td>
+<td>Breakdown of linear approximation under nonlinear orbital dynamics (e.g., stretching, folding)</td>
+<td>As orbital dynamics become nonlinear, the propagated distribution departs from an ellipse and LinCov can no longer represent the true uncertainty accurately.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="odd">
+<td><strong>Unscented Transform (UT)</strong></td>
+<td>Captures nonlinear effects up to second-order moments with few samples</td>
+<td>Captures only low-order moments and depends on a small sigma-point set</td>
+<td>Moment closure failure for skewed or multimodal distributions</td>
+<td>UT improves on linearisation, but it still cannot fully describe strongly skewed, multimodal, or highly stretched distributions.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="even">
+<td><strong>Polynomial Chaos Expansion (PCE)</strong></td>
+<td>Spectral accuracy for smooth stochastic systems</td>
+<td>Suffers from the curse of dimensionality</td>
+<td>Exponential growth of basis size with dimension/order</td>
+<td>The number of basis terms grows rapidly with dimension and polynomial order, which makes the method difficult to scale to realistic orbital problems.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="odd">
+<td><strong>Non-intrusive PCE (NIPC)</strong></td>
+<td>Black-box compatibility with existing propagators</td>
+<td>Needs many model evaluations and struggles with low smoothness</td>
+<td>Regression instability and sampling inefficiency in high dimensions</td>
+<td>It is attractive because it treats the dynamics as a black box, but it becomes costly in high dimension and less reliable when the response surface is not smooth.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="even">
+<td><strong>Intrusive PCE</strong></td>
+<td>High efficiency once governing equations are reformulated</td>
+<td>Requires reformulation of the governing equations</td>
+<td>Structural rigidity and implementation complexity of stochastic Galerkin system</td>
+<td>The Galerkin system must be derived and solved directly, which increases implementation effort and makes the method less flexible for complex force models.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="odd">
+<td><strong>State Transition Tensors (STT)</strong></td>
+<td>High-order nonlinear state mapping accuracy</td>
+<td>High derivational and computational complexity</td>
+<td>Tensor order explosion with state dimension and truncation error accumulation</td>
+<td>Higher-order tensors improve nonlinear fidelity, but the method becomes expensive quickly as state dimension and expansion order increase.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="even">
+<td><strong>Differential Algebra (DA)</strong></td>
+<td>Automated high-order Taylor expansion of dynamics</td>
+<td>Local and truncated polynomial representation</td>
+<td>Loss of validity outside local expansion region</td>
+<td>DA can propagate high-order nonlinear effects efficiently, but the approximation remains local and can lose accuracy when the uncertainty region becomes large.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="odd">
+<td><strong>Multi-fidelity (MF) propagation</strong></td>
+<td>Reduces cost via surrogate correction</td>
+<td>Depends on the quality of the low-fidelity model</td>
+<td>Model mismatch leading to biased correction updates</td>
+<td>If the low-fidelity dynamics do not capture the dominant structure of the true motion, the correction strategy can become inaccurate or inefficient.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="even">
+<td><strong>Gaussian Mixture Models (GMMs)</strong></td>
+<td>Flexible representation of multimodal distributions</td>
+<td>Component management is difficult</td>
+<td>Component explosion or poor tail representation due to improper splitting/merging</td>
+<td>GMMs can represent complex distributions, but they require careful splitting, merging, and weighting to avoid excessive cost or poor tail approximation.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="odd">
+<td><strong>GMM–UT / GMM–STT / GMM–DA / GMM–PCE</strong></td>
+<td>Combines local Gaussian decomposition with nonlinear propagation</td>
+<td>Inherit limitations of both mixture and propagator</td>
+<td>Compounded approximation error and mixture proliferation</td>
+<td>These hybrid methods are more flexible, but they still suffer from component proliferation, local approximation error, or dimensionality growth.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="even">
+<td><strong>AEGIS</strong></td>
+<td>Adaptive entropy-based refinement of distribution</td>
+<td>Adaptive splitting can become computationally heavy</td>
+<td>Rapid growth in number of Gaussian components over time</td>
+<td>It improves PDF representation, but repeated splitting increases the number of components and can make long-term propagation expensive.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+<tr class="odd">
+<td><strong>Moment-based propagation</strong></td>
+<td>Very low computational cost and simplicity</td>
+<td>Retains only low-order information</td>
+<td>Moment closure failure under nonlinear distribution deformation</td>
+<td>Mean and covariance alone are often insufficient once the distribution becomes curved, skewed, or multimodal.</td>
+<td>TBD</td>
+<td>TBD</td>
+<td>TBD</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="method-by-method-discussion" class="level1">
+<h1>Method-by-Method Discussion</h1>
+<section id="monte-carlo" class="level2">
+<h2 class="anchored" data-anchor-id="monte-carlo">Monte Carlo</h2>
+<p>Monte Carlo simulation is the most general uncertainty propagation approach because it makes minimal assumptions about the dynamics or the distribution. Its weakness is cost. Every sample must be propagated through the full nonlinear model, so the method becomes expensive as the propagation horizon increases or as higher statistical confidence is required. This is especially restrictive in conjunction assessment, where the probability of collision may be a rare event and therefore require a very large number of samples.</p>
+</section>
+<section id="linearised-covariance" class="level2">
+<h2 class="anchored" data-anchor-id="linearised-covariance">Linearised covariance</h2>
+<p>Linearised covariance propagation is efficient because it replaces the nonlinear flow with a local first-order approximation. Its accuracy is acceptable only while the uncertainty remains close to the nominal trajectory and the dynamics are weakly nonlinear. Once the distribution stretches, folds, or rotates strongly, the linearised covariance matrix no longer describes the true propagated uncertainty well. In practice, this is one of the first methods to fail when propagation time becomes long.</p>
+</section>
+<section id="unscented-transform" class="level2">
+<h2 class="anchored" data-anchor-id="unscented-transform">Unscented transform</h2>
+<p>The UT improves on linearisation by propagating a small set of sigma points through the nonlinear dynamics. This gives a better approximation of the transformed mean and covariance than a first-order model, but it still assumes that low-order moments are enough to describe the distribution. For strongly non-Gaussian orbital uncertainty, that assumption breaks down. The UT is therefore useful as a middle-ground method, not as a universal solution.</p>
+</section>
+<section id="polynomial-chaos-expansion" class="level2">
+<h2 class="anchored" data-anchor-id="polynomial-chaos-expansion">Polynomial chaos expansion</h2>
+<p>PCE approximates the response as an orthogonal polynomial series in the uncertain inputs. When the dimension is modest and the response is smooth, this can be highly accurate. The problem is scaling. As the number of uncertain variables or the polynomial order increases, the basis size grows rapidly. This makes the method expensive to build, harder to fit robustly, and less practical for high-dimensional orbital dynamics.</p>
+<section id="non-intrusive-polynomial-chaos" class="level3">
+<h3 class="anchored" data-anchor-id="non-intrusive-polynomial-chaos">Non-intrusive polynomial chaos</h3>
+<p>NIPC avoids modifying the governing equations directly, which makes it attractive for existing orbit propagators. The trade-off is that it still requires many propagated model evaluations to estimate the coefficients. Like standard PCE, it becomes harder to use as the uncertainty dimension increases. It also performs poorly when the input-output map is not smooth, because global polynomial surrogates are not well suited to discontinuities or sharp nonlinear transitions.</p>
+</section>
+<section id="intrusive-polynomial-chaos" class="level3">
+<h3 class="anchored" data-anchor-id="intrusive-polynomial-chaos">Intrusive polynomial chaos</h3>
+<p>Intrusive PCE solves the uncertainty propagation problem by projecting the governing equations onto a polynomial basis. This can be elegant, but it is also restrictive. The original equations must be reformulated, the stochastic Galerkin system must be derived, and the implementation becomes strongly tied to the model structure. That makes the method less flexible than non-intrusive alternatives when the force model or state description changes.</p>
+</section>
+</section>
+<section id="state-transition-tensors" class="level2">
+<h2 class="anchored" data-anchor-id="state-transition-tensors">State transition tensors</h2>
+<p>STT extends the state transition matrix concept to higher orders, which makes it more capable than linear covariance methods in nonlinear regimes. The drawback is that the number of tensor terms grows quickly with expansion order and state dimension. STT is therefore powerful locally, but it is not cheap. It also requires smooth dynamics, so discontinuities, impulsive maneuvers, and other non-differentiable effects complicate its use.</p>
+</section>
+<section id="differential-algebra" class="level2">
+<h2 class="anchored" data-anchor-id="differential-algebra">Differential algebra</h2>
+<p>DA provides an automated way to compute high-order Taylor expansions. It is often more practical than hand-derived high-order tensor methods, but it remains a local approximation. Once the uncertainty region becomes too large, the truncated polynomial map loses accuracy. DA also has to manage the growth of polynomial order and memory usage, which becomes important in realistic orbital problems.</p>
+</section>
+<section id="multi-fidelity-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="multi-fidelity-propagation">Multi-fidelity propagation</h2>
+<p>Multi-fidelity methods reduce cost by combining a high-fidelity model with a cheaper low-fidelity surrogate. Their performance depends on how well the low-fidelity model captures the structure of the true dynamics. If the fidelity gap is too large, the correction step can struggle. In that case, the method may lose accuracy or require more correction information than originally expected.</p>
+</section>
+<section id="gmm-based-methods" class="level2">
+<h2 class="anchored" data-anchor-id="gmm-based-methods">GMM-based methods</h2>
+<p>GMMs are valuable because they can represent non-Gaussian and multimodal uncertainty by decomposing the distribution into Gaussian components. Their main limitation is operational complexity: the mixture must be split, merged, and propagated carefully. Too few components underfit the distribution, while too many components create excessive cost. This makes mixture management a central issue.</p>
+</section>
+<section id="hybrid-gmm-methods" class="level2">
+<h2 class="anchored" data-anchor-id="hybrid-gmm-methods">Hybrid GMM methods</h2>
+<p>Hybrid methods such as GMM–UT, GMM–STT, GMM–DA, and GMM–PCE combine local Gaussian decomposition with a nonlinear propagation mechanism. They are often more flexible than a single global approximation, but they inherit the limitations of both parts. If the mixture is too coarse, the distribution is poorly represented. If the inner method is too local or too low order, nonlinear deformation is still missed.</p>
+</section>
+<section id="aegis" class="level2">
+<h2 class="anchored" data-anchor-id="aegis">AEGIS</h2>
+<p>AEGIS introduces adaptive splitting based on entropy change, which helps it respond to nonlinear deformation. The limitation is that adaptive refinement can quickly increase the number of Gaussian components. Over long propagation intervals this may become expensive, and the benefit over simpler methods can diminish.</p>
+</section>
+<section id="moment-based-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="moment-based-propagation">Moment-based propagation</h2>
+<p>Moment-based methods are attractive because they are simple and computationally light. Their limitation is that they compress the full distribution into a small number of statistics. Once the propagated uncertainty becomes skewed, curved, or multimodal, the mean and covariance are no longer enough. This makes moment-based methods suitable for screening and approximate prediction, but not always for detailed collision-risk analysis.</p>
+</section>
+</section>
+<section id="overall-conclusion" class="level1">
+<h1>Overall conclusion</h1>
+<p>The limitations of orbital uncertainty propagation methods are shaped by the same underlying problem: nonlinear orbital motion transforms simple initial uncertainty into a distribution that is increasingly difficult to represent. Linear and moment-based methods are efficient but locally valid. Polynomial and tensor methods improve nonlinear fidelity but grow expensive. Monte Carlo is most general but least efficient. GMM and multi-fidelity methods sit in between, offering more flexibility at the cost of more complex model management.</p>
+<p>For practical space-situational-awareness problems, the most effective strategy is usually not to rely on a single method, but to choose a method whose assumptions match the propagation regime, the available computation budget, and the level of distributional detail required by the mission.</p>
+</section>
+     </main>
+<!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/r16-srihari\.github\.io\/Orbital-Uncertainty-Propagation-Literature-Review\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>  </div> <!-- /content --> 
+  
+</body></html>
