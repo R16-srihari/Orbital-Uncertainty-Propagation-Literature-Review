@@ -1208,7 +1208,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 </ul>
 </section>
 </section>
-<section id="sec-stt" class="level1">
+<section id="sec-stt" class="level1 page-columns page-full">
 <h1>State Transition Tensors (STT)</h1>
 <p>In the rigorous taxonomy of orbital uncertainty quantification (UQ), <strong>State Transition Tensors (STT)</strong> represent a high-fidelity <strong>semi-analytic expansion method</strong>. Situated between first-order linear approximations like LinCov and non-intrusive surrogate models like PCE, STTs facilitate the nonlinear propagation of uncertainties by applying higher-order Taylor series expansions to the deviation of a system’s state from a nominal trajectory.</p>
 <section id="core-mechanics-and-relationship-to-linear-approximation" class="level2">
@@ -1249,7 +1249,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 </ul>
 </section>
 </section>
-<section id="methodology-moment-propagation-via-algebraic-mapping" class="level2">
+<section id="methodology-moment-propagation-via-algebraic-mapping" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="methodology-moment-propagation-via-algebraic-mapping">Methodology: Moment Propagation via Algebraic Mapping</h2>
 <p>Unlike sampling methods that propagate individual points, STT-based uncertainty propagation maps the initial statistical moments directly to the terminal state through simple algebraic operations.</p>
 <ol type="1">
@@ -1260,7 +1260,23 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 \]</span></p></li>
 <li><p><strong>Gaussian Moment Property:</strong> If the initial distribution is Gaussian, higher-order moments are analytically linked to the covariance via <strong>Isserlis’ Theorem</strong> (or Wick’s formula), allowing for precise reconstruction of non-Gaussian terminal shapes using only the initial mean and covariance.</p></li>
 </ol>
-</section>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>For a <strong>zero-mean</strong> multivariate normal random vector <span class="math inline">\(\mathbf{x}\)</span>, <strong>Isserlis’ Theorem</strong> provides a specific formula for the expectation of the product of its components.</p>
+<ol type="1">
+<li><p><strong>Odd Orders:</strong> If the total number of components <span class="math inline">\(k\)</span> is odd, the <span class="math inline">\(k\)</span>th-order central moment is <strong>zero</strong>.</p></li>
+<li><p><strong>Even Orders:</strong> If <span class="math inline">\(k\)</span> is even, the expectation is equal to the sum of the products of the covariances of all possible unordered pairings of the components: <span class="math display">\[E[x_{k_1} x_{k_2} \dots x_{k_n}] = \sum_{p \in \Pi} \prod_{\{i,j\} \in p} \sigma_{ij}\]</span> <em>Where:</em></p>
+<ul>
+<li><p><span class="math inline">\(\Pi\)</span>: The set of all partitions of <span class="math inline">\(\{1, \dots, k\}\)</span> into <span class="math inline">\(k/2\)</span> pairs.</p></li>
+<li><p><span class="math inline">\(\sigma_{ij}\)</span>: The covariance between components <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>.</p></li>
+</ul></li>
+</ol>
+<p>For example, the <strong>fourth-order moment</strong> of a zero-mean Gaussian distribution is computed as:</p>
+<p><span class="math display">\[
+E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
+\]</span></p>
+<p><em>(Source:<span class="citation" data-cites="park-scheeres:10.2514/1.20177">Park and Scheeres (<a href="#ref-park-scheeres:10.2514/1.20177" role="doc-biblioref">2006</a>)</span>)</em></p>
+</div></div></section>
 <section id="algorithm-the-stt-uncertainty-pipeline" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-the-stt-uncertainty-pipeline">Algorithm: The STT Uncertainty Pipeline</h2>
 <p>The following flowchart delineates the procedural execution of an STT-based uncertainty propagation campaign.</p>

@@ -2309,6 +2309,45 @@ the terminal state through simple algebraic operations.
   using only the initial mean and covariance.
 \end{enumerate}
 
+\marginnote{\begin{footnotesize}
+
+For a \textbf{zero-mean} multivariate normal random vector
+\(\mathbf{x}\), \textbf{Isserlis' Theorem} provides a specific formula
+for the expectation of the product of its components.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Odd Orders:} If the total number of components \(k\) is odd,
+  the \(k\)th-order central moment is \textbf{zero}.
+\item
+  \textbf{Even Orders:} If \(k\) is even, the expectation is equal to
+  the sum of the products of the covariances of all possible unordered
+  pairings of the components:
+  \[E[x_{k_1} x_{k_2} \dots x_{k_n}] = \sum_{p \in \Pi} \prod_{\{i,j\} \in p} \sigma_{ij}\]
+  \emph{Where:}
+
+  \begin{itemize}
+  \item
+    \(\Pi\): The set of all partitions of \(\{1, \dots, k\}\) into
+    \(k/2\) pairs.
+  \item
+    \(\sigma_{ij}\): The covariance between components \(x_i\) and
+    \(x_j\).
+  \end{itemize}
+\end{enumerate}
+
+For example, the \textbf{fourth-order moment} of a zero-mean Gaussian
+distribution is computed as:
+
+\[
+E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
+\]
+
+\emph{(Source:Park and Scheeres (2006))}
+
+\end{footnotesize}}
+
 \subsection{Algorithm: The STT Uncertainty
 Pipeline}\label{algorithm-the-stt-uncertainty-pipeline}
 
