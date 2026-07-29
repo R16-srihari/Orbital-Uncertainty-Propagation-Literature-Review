@@ -11,6 +11,8 @@ manuscript:
   notebooks: 
     - up_methods_comparison.qmd
 
+bibliography: references.bib
+
 website: 
   title: "State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)"
   site-url: https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/
