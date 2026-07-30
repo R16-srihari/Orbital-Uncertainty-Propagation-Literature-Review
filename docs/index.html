@@ -1267,6 +1267,7 @@ x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\par
 </div>
 <div class="callout-body-container callout-body">
 <p><span class="math inline">\(\Phi_{i,k_1 \dots k_p}\)</span> is the <span class="math inline">\(p\)</span>-th order <strong>State Transition Tensor</strong>, defined as the <span class="math inline">\(p\)</span>-th partial derivative of the solution flow with respect to initial conditions: <span class="math inline">\(\frac{\partial^p x_i}{\partial x_{0,k_1} \dots \partial x_{0,k_p}}\)</span>.</p>
+<p>The set {k_1, k_2, …, k_n} is a re-labelling of the original state components {1, 2, …, n} with one-to-one mapping. This notation allows the flexibility to choose k_j such that it reflects a specific ordering or a subset of state components of interest for the expansion, while still maintaining the generality of the tensor representation.</p>
 </div>
 </div>
 <p>The zeroth-order term <span class="math inline">\(\phi_i(t; \mathbf{x}_0, t_0)\)</span> (the nominal trajectory) cancels out, leaving only the sum of the higher-order partial derivatives.</p></li>
@@ -1316,11 +1317,39 @@ x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\par
 <h2 class="anchored" data-anchor-id="methodology-moment-propagation-via-algebraic-mapping">Methodology: Moment Propagation via Algebraic Mapping</h2>
 <p>Unlike sampling methods that propagate individual points, STT-based uncertainty propagation maps the initial statistical moments directly to the terminal state through simple algebraic operations.</p>
 <ol type="1">
-<li><p><strong>Reference Integration:</strong> Solve the ODEs for the nominal state <span class="math inline">\(\mathbf{x}(t)\)</span> and the tensors <span class="math inline">\(\phi\)</span> up to order <span class="math inline">\(P\)</span>.</p></li>
-<li><p><strong>Initial Moment Characterization:</strong> Compute the raw moments of the initial PDF (e.g., using the moment-generating function for a Gaussian or uniform distribution).</p></li>
+<li><strong>Reference Integration:</strong> Solve the ODEs for the nominal state <span class="math inline">\(\mathbf{x}(t)\)</span> and the tensors <span class="math inline">\(\phi\)</span> up to order <span class="math inline">\(P\)</span>. The value of <span class="math inline">\(P\)</span> is chosen based on the nonlinearity index taken from the propagation of the deviation <span class="math inline">\(\delta \mathbf{x}(t)\)</span>.</li>
+</ol>
+<div id="tip-nonlinearity-index" class="callout callout-style-default callout-tip callout-titled" title="Local Nonlinearity Index for STT Order Selection">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;1: Local Nonlinearity Index for STT Order Selection
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Formula: <span class="math display">\[
+\eta_m(t,t_0)=\sup_{i=1,\ldots,n}\sup_{k=1,\ldots,N}\frac{\left|\Delta x_i^{(m)}-\Delta\bar x_i\right|}{\left|\Delta\bar x_i\right|}
+\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(\Delta x_i^{(m)}\)</span> = ith component predicted by an mth-order STT,</li>
+<li><span class="math inline">\(\Delta\bar x_i\)</span> = ith component obtained by direct nonlinear numerical integration,</li>
+<li><span class="math inline">\(N\)</span> = sampled initial conditions,</li>
+<li><span class="math inline">\(n\)</span> = state dimension.</li>
+</ul>
+</div>
+</div>
+<ol start="2" type="1">
+<li><p><strong>Initial Moment Characterization:</strong> Compute the raw moments of the initial PDF.</p></li>
 <li><p><strong>Statistical Mapping:</strong> Use the Taylor expansion and the linearity of the expectation operator to compute the terminal mean (<span class="math inline">\(\hat{\mu}\)</span>) and covariance (<span class="math inline">\(\hat{\mathbf{P}}\)</span>): <span class="math display">\[
 \delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
-\]</span></p></li>
+\]</span></p>
+<p><span class="math display">\[
+P_{ij}(t)=\sum_{p=1}^{m}\sum_{q=1}^{m}\frac1{p!q!}\Phi_{i;k_1\cdots k_p}\Phi_{j;l_1\cdots l_q}E[\tilde x_{k_1}\cdots\tilde x_{k_p}\tilde x_{l_1}\cdots\tilde x_{l_q}]-\delta \mu_i\delta \mu_j
+\]</span></p>
+<p>where <span class="math inline">\(\delta \mu_i\)</span> is the <span class="math inline">\(i\)</span>-th component of the terminal mean vector and <span class="math inline">\(P_{ij}\)</span> is the <span class="math inline">\((i,j)\)</span>-th component of the terminal covariance matrix.</p></li>
 <li><p><strong>Gaussian Moment Property:</strong> If the initial distribution is Gaussian, higher-order moments are analytically linked to the covariance via <strong>Isserlis’ Theorem</strong> (or Wick’s formula), allowing for precise reconstruction of non-Gaussian terminal shapes using only the initial mean and covariance.</p></li>
 </ol>
 <div id="note-isserlis" class="callout callout-style-default callout-note callout-titled" title="Isserlis' Theorem for Gaussian Moments">
@@ -1879,7 +1908,7 @@ w_t = w_t - C_{h(t,n)}^2
 <li>differentiating <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> with respect to time (<a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>), and</li>
 <li><strong>equating coefficients of equal powers of the initial deviation</strong> <span class="math inline">\(\delta x_0\)</span>.</li>
 </ol>
-<p>Below is the detailed derivation.</p>
+<p>Below is the detailed derivation as described in <span class="citation" data-cites="park-scheeres:10.2514/1.20177">Park and Scheeres (<a href="#ref-park-scheeres:10.2514/1.20177" role="doc-biblioref">2006</a>)</span>.</p>
 <hr>
 
 
