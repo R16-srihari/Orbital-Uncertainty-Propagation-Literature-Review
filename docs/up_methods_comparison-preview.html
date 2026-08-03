@@ -264,7 +264,7 @@
 <td>Suffers from the curse of dimensionality</td>
 <td>Exponential growth of basis size with dimension/order</td>
 <td>The number of basis terms grows rapidly with dimension and polynomial order, which makes the method difficult to scale to realistic orbital problems.</td>
-<td>TBD</td>
+<td>Both non-intrusive and intrusive methods exist</td>
 <td>TBD</td>
 <td>TBD</td>
 </tr>
@@ -274,7 +274,7 @@
 <td>Needs many model evaluations and struggles with low smoothness</td>
 <td>Regression instability and sampling inefficiency in high dimensions</td>
 <td>It is attractive because it treats the dynamics as a black box, but it becomes costly in high dimension and less reliable when the response surface is not smooth.</td>
-<td>TBD</td>
+<td>Non-intrusive</td>
 <td>TBD</td>
 <td>TBD</td>
 </tr>
@@ -284,21 +284,31 @@
 <td>Requires reformulation of the governing equations</td>
 <td>Structural rigidity and implementation complexity of stochastic Galerkin system</td>
 <td>The Galerkin system must be derived and solved directly, which increases implementation effort and makes the method less flexible for complex force models.</td>
-<td>TBD</td>
-<td>TBD</td>
-<td>TBD</td>
+<td>Need access to dynamics source code to perform the Galerkin</td>
+<td></td>
+<td></td>
 </tr>
 <tr class="odd">
+<td>projection of the governing dynamics onto a subspace to transform a stochastic ordinary differential equation (SODE) in low-dimension into an equivalent deterministic ordinary differential equation (ODE) in higher dimension</td>
+<td>TBD</td>
+<td>TBD</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
 <td><strong>State Transition Tensors (STT)</strong></td>
 <td>High-order nonlinear state mapping accuracy</td>
 <td>High derivational and computational complexity</td>
 <td>Tensor order explosion with state dimension and truncation error accumulation</td>
 <td>Higher-order tensors improve nonlinear fidelity, but the method becomes expensive quickly as state dimension and expansion order increase.</td>
-<td>TBD</td>
+<td>Require nominal trajectory solution derivatives to compute the State transition tensors.</td>
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Differential Algebra (DA)</strong></td>
 <td>Automated high-order Taylor expansion of dynamics</td>
 <td>Local and truncated polynomial representation</td>
@@ -308,7 +318,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Multi-fidelity (MF) propagation</strong></td>
 <td>Reduces cost via surrogate correction</td>
 <td>Depends on the quality of the low-fidelity model</td>
@@ -318,7 +328,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Gaussian Mixture Models (GMMs)</strong></td>
 <td>Flexible representation of multimodal distributions</td>
 <td>Component management is difficult</td>
@@ -328,7 +338,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>GMM–UT / GMM–STT / GMM–DA / GMM–PCE</strong></td>
 <td>Combines local Gaussian decomposition with nonlinear propagation</td>
 <td>Inherit limitations of both mixture and propagator</td>
@@ -338,7 +348,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>AEGIS</strong></td>
 <td>Adaptive entropy-based refinement of distribution</td>
 <td>Adaptive splitting can become computationally heavy</td>
@@ -348,7 +358,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Moment-based propagation</strong></td>
 <td>Very low computational cost and simplicity</td>
 <td>Retains only low-order information</td>

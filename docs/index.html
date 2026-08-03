@@ -1477,7 +1477,7 @@ E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{i
 <p>Within the larger context of orbital uncertainty propagation, <strong>Directional State Transition Tensors (DSTT)</strong> represent a specialized dimensionality-reduction framework derived from the high-order <strong>State Transition Tensor (STT)</strong> method, developed primarily by <span class="citation" data-cites="boone-mcmahon:10.2514/1.G006910">Boone and McMahon (<a href="#ref-boone-mcmahon:10.2514/1.G006910" role="doc-biblioref">2023</a>)</span>. While STTs provide superior precision over linearized models by capturing localized nonlinear motion through Taylor series expansions of the solution flow, they are fundamentally constrained by the “curse of dimensionality,” where the number of variables to be integrated grows exponentially with the expansion order. DSTTs mitigate this by leveraging the physical observation that system nonlinearity is often concentrated along a few “sensitive” or unstable directions.</p>
 <section id="theoretical-framework-and-methodology" class="level2">
 <h2 class="anchored" data-anchor-id="theoretical-framework-and-methodology">Theoretical Framework and Methodology</h2>
-<p>The DSTT method reformulates the standard STT expansion by performing an orthogonal transformation of the initial state space, allowing derivatives to be taken with respect to a rotated basis that isolates directions of maximum instability.</p>
+<p>The DSTT method reformulates the standard STT expansion by performing an orthogonal transformation of the initial state space, allowing derivatives to be taken with respect to a rotated basis that isolates directions of maximum instability. These STTs can be rotated such that the derivatives are taken with respect to an alternative basis <span class="math inline">\(y\in R^n\)</span> with no loss in information as long as <span class="math inline">\(y\)</span> constitutes an orthogonal basis that spans <span class="math inline">\(R^n\)</span>. Thesebases are related through the transformation <span class="math inline">\(y = Rx\)</span>, where <span class="math inline">\(R\)</span> corresponds to a linear transformation matrix.</p>
 <section id="the-polynomial-approximation" class="level3">
 <h3 class="anchored" data-anchor-id="the-polynomial-approximation">The Polynomial Approximation</h3>
 <p>The state deviation at a future time <span class="math inline">\(t_f\)</span> is approximated using the DSTT mapping: <span class="math display">\[
@@ -1494,7 +1494,27 @@ E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{i
 </section>
 <section id="methodology-of-the-transformation" class="level3">
 <h3 class="anchored" data-anchor-id="methodology-of-the-transformation">Methodology of the Transformation</h3>
-<p>The construction of the DSTT relies on a linear transformation matrix <span class="math inline">\(R \in \mathbb{R}^{m \times n}\)</span>, where <span class="math inline">\(m\)</span> is the number of sensitive directions (typically <span class="math inline">\(m \ll n\)</span>). Each row of <span class="math inline">\(R\)</span> corresponds to a sensitive direction, often identified using the eigenvectors of the <strong>Cauchy-Green Tensor (CGT)</strong>, defined as <span class="math inline">\(C = \Phi^T \Phi\)</span>.</p>
+<p>The construction of the DSTT relies on a linear transformation matrix <span class="math inline">\(R \in \mathbb{R}^{m \times n}\)</span>, where <span class="math inline">\(m\)</span> is the number of sensitive directions (typically <span class="math inline">\(m \ll n\)</span>). Each row of <span class="math inline">\(R\)</span> corresponds to a sensitive direction, identified using the eigenvectors of the <strong>Cauchy-Green Tensor (CGT)</strong>.</p>
+<div id="note-cgt" class="callout callout-style-default callout-note callout-titled" title="Cauchy-Green Tensor (CGT)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Cauchy-Green Tensor (CGT)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Cauchy-Green Tensor is a symmetric, positive-definite matrix that characterizes the local deformation of a flow. It is computed as the product of the transpose of the State Transition Matrix (STM) and the STM itself: <span class="math display">\[
+C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
+\]</span></p>
+<p>where <span class="math inline">\(t_f\)</span> is the final time and <span class="math inline">\(t_0\)</span> is the initial time. The eigenvalues of the CGT indicate the amount of stretching along each eigenvector direction, with larger eigenvalues corresponding to more sensitive directions. From <a href="#eq-lincov-propagation" class="quarto-xref">Equation&nbsp;5</a>, we understand the STM (<span class="math inline">\(\Phi\)</span>) is a linear mapping of the final perturbation vector <span class="math inline">\(\delta x(t_f)\)</span> to the initial perturbation vector <span class="math inline">\(\delta x(t_0)\)</span>. The CGT is a squaring operation that returns the relationship between the initial and final distance from the nominal motion.</p>
+<p><span class="math display">\[
+||\delta x(t_f)||^2 = \delta x(t_0)^T C(t_f,t_0) \delta x(t_0)
+\]</span></p>
+<p>The distance <span class="math inline">\(||\delta x(t_f)||^2\)</span> reveals the growth or the decay of the initial vector perturbation. Furthermore, the eigendecomposition of the CGT allows identification of the principal directions of expansion for the dynamical flow, including those that are locally associated with the largest and smallest stretching.</p>
+</div>
+</div>
 <p>The <span class="math inline">\(p\)</span>-th order DSTT elements are obtained by rotating the full STT (<span class="math inline">\(\phi\)</span>) onto this basis: <span class="math display">\[
 \varphi_{i, \gamma_1 \dots \gamma_p} = \phi_{i, k_1 \dots k_p} R_{\gamma_1, k_1} \dots R_{\gamma_p, k_p}
 \]</span></p>

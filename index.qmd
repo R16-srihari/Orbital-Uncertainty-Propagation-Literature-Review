@@ -1211,13 +1211,14 @@ Complexity is further compounded by the need to compute high-order derivatives o
 
 ## Theoretical Framework and Methodology
 
-The DSTT method reformulates the standard STT expansion by performing an orthogonal transformation of the initial state space, allowing derivatives to be taken with respect to a rotated basis that isolates directions of maximum instability.
+The DSTT method reformulates the standard STT expansion by performing an orthogonal transformation of the initial state space, allowing derivatives to be taken with respect to a rotated basis that isolates directions of maximum instability. These STTs can be rotated such that the derivatives are taken with respect to an alternative basis $y\in R^n$ with no loss in information as long as $y$ constitutes an orthogonal basis that spans $R^n$. Thesebases are related through the transformation $y = Rx$, where $R$ corresponds to a linear transformation matrix.
 
 ### The Polynomial Approximation
 The state deviation at a future time $t_f$ is approximated using the DSTT mapping:
 $$
 \delta x_i(t_f) \approx \phi_{i, \kappa_1} \delta x_{\kappa_1 0} + \sum_{p=2}^{P} \frac{1}{p!} \varphi_{i, \gamma_1 \dots \gamma_p}(t_f, t_0) \delta y_{\gamma_1 0} \dots \delta y_{\gamma_p 0}
 $$
+
 
 **Term Definitions:**
 
@@ -1232,7 +1233,25 @@ $$
 *   $P$: The maximum truncation order of the Taylor series.
 
 ### Methodology of the Transformation
-The construction of the DSTT relies on a linear transformation matrix $R \in \mathbb{R}^{m \times n}$, where $m$ is the number of sensitive directions (typically $m \ll n$). Each row of $R$ corresponds to a sensitive direction, often identified using the eigenvectors of the **Cauchy-Green Tensor (CGT)**, defined as $C = \Phi^T \Phi$.
+The construction of the DSTT relies on a linear transformation matrix $R \in \mathbb{R}^{m \times n}$, where $m$ is the number of sensitive directions (typically $m \ll n$). Each row of $R$ corresponds to a sensitive direction, identified using the eigenvectors of the **Cauchy-Green Tensor (CGT)**.
+
+:::{.callout-note title="Cauchy-Green Tensor (CGT)" #note-cgt}
+The Cauchy-Green Tensor is a symmetric, positive-definite matrix that characterizes the local deformation of a flow. It is computed as the product of the transpose of the State Transition Matrix (STM) and the STM itself:
+$$
+C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
+$$
+
+where $t_f$ is the final time and $t_0$ is the initial time. The eigenvalues of the CGT indicate the amount of stretching along each eigenvector direction, with larger eigenvalues corresponding to more sensitive directions. From @eq-lincov-propagation, we understand the STM ($\Phi$) is a linear mapping of the final perturbation vector $\delta x(t_f)$ to the initial perturbation vector $\delta x(t_0)$. The CGT is a squaring operation that returns the relationship between the initial and final distance from the nominal motion.
+
+$$
+||\delta x(t_f)||^2 = \delta x(t_0)^T C(t_f,t_0) \delta x(t_0)
+$$
+
+The distance $||\delta x(t_f)||^2$ reveals the growth or the decay of the initial vector perturbation. Furthermore,
+the eigendecomposition of the CGT allows identification of the principal directions of expansion for the
+dynamical flow, including those that are locally associated with the largest and smallest stretching.
+:::
+
 
 The $p$-th order DSTT elements are obtained by rotating the full STT ($\phi$) onto this basis:
 $$
@@ -1240,6 +1259,8 @@ $$
 $$
 
 By choosing the eigenvector $\xi_1$ associated with the largest eigenvalue $\lambda_1$ of the CGT, the DSTT captures the "direction of maximum stretch". This ensures that the terms which contribute most significantly to the final state deviation are preserved, while stable directions are ignored.
+
+
 
 ---
 
