@@ -4211,3 +4211,111 @@ GMMs address this limitation through a "divide and conquer" approach:
 | **Nonlinear Distortion** | Multi-directional splitting along unstable directions. | Captures "banana-shaped" deformations accurately. |
 | **Infinite Tails** | Compact domain representation via mixture components. | Prevents expansion failure at the tails of the distribution. |
 | **Computational Burden** | Propagating all components via a single nominal STT. | High accuracy at a fraction of the cost of higher-order full STTs. |
+
+# 04-08-26
+
+## Explain TDSTT in the larger context of DSTT
+
+The **Time-Varying Directional State Transition Tensor (TDSTT)** represents a significant methodological evolution of the **Directional State Transition Tensor (DSTT)** framework. While the DSTT revolutionized the efficiency of high-order uncertainty propagation by isolating sensitive nonlinear directions, it remained constrained by a "fixed epoch" limitation. The TDSTT addresses this by treating the sensitive directions as dynamic, time-dependent variables integrated simultaneously with the solution flow.
+
+### 1. Contextual Methodology: From STT to DSTT
+To understand the TDSTT, one must first establish the context of the **State Transition Tensor (STT)** and its first-order derivative, the DSTT.
+
+*   **State Transition Tensors (STTs):** These are partial derivatives of the solution flow $\phi$ with respect to initial conditions $\mathbf{x}_0$. For an $n$-dimensional state, the $p$-th order STT contains $n^{p+1}$ elements, leading to exponential growth in computational and storage costs.
+*   **The DSTT Solution:** The DSTT reduces this complexity by aligning the Taylor expansion with $m$ sensitive directions (where $m < n$) identified by the **Cauchy-Green Tensor (CGT)**.
+*   **The Fixed-Epoch Limitation:** The standard DSTT methodology assumes that the transformation matrix $\mathbf{R}$ (built from eigenvectors of the CGT) is constant during integration. Consequently, the DSTT terms are only valid at a predefined final epoch $t_f$. If an analyst requires uncertainty information at an intermediate point $t'$, a new DSTT must be re-integrated from $t_0$.
+
+---
+
+### 2. Theoretical Foundation of the TDSTT
+The TDSTT framework enhances the DSTT by integrating the eigenvalues and eigenvectors of the CGT as time-varying quantities along the nominal orbit.
+
+#### A. Governing Mathematical Formulae
+The state deviation at any epoch $t$ in the TDSTT framework is predicted as:
+$$\delta x_i \approx \phi_{i,k_1} \delta x_{k_1 0} + \sum_{p=2}^P \frac{1}{p!} \varphi_{i, p_1 \dots p_p}(t, t_0) \delta y_{p_1 0} \dots \delta y_{p_p 0}$$
+
+**Term Definitions:**
+*   $\delta x_i$: The $i$-th component of the predicted state deviation at time $t$.
+*   $\phi_{i,k_1}$: The first-order STT (State Transition Matrix).
+*   $\varphi_{i, p_1 \dots p_p}$: The $p$-th order TDSTT.
+*   $\delta y_{p_j 0}$: The initial state deviation projected onto the time-varying basis $\mathbf{y} = \mathbf{R}(t)\mathbf{x}$.
+
+#### B. Derivatives of Eigenvalue-Eigenvector Pairs
+The integration of TDSTT requires calculating the time evolution of the sensitive basis. The derivative of the $k$-th eigenvalue $\lambda_k$ of the CGT is derived as:
+$$
+\dot{\lambda}_k = (\dot{\mathbf{C}} \xi_k, \xi_k)
+$$
+
+**Term Definitions:**
+
+*   $\dot{\lambda}_k$: The time derivative of the $k$-th eigenvalue.
+
+*   $\dot{\mathbf{C}}$: The time derivative of the Cauchy-Green Tensor.
+
+*   $\xi_k$: The $k$-th eigenvector of the CGT.
+
+The derivative of the $k$-th eigenvector $\xi_k$ is represented linearly as:
+$$
+\dot{\xi}_k = \sum_{p \neq k} B_{k,p} \xi_p
+$$
+
+**Term Definitions:**
+
+*   $B_{k,p}$: The coefficients of the eigenvector derivative, where $B_{k,p} = \frac{1}{\lambda_p - \lambda_k} (\dot{\mathbf{C}} \xi_k, \xi_p)$.
+
+---
+
+### 3. Methodology of TDSTT Integration
+The TDSTT's primary advantage is its ability to perform uncertainty analysis on a **dense time grid** without re-integration.
+
+*   **Warm Start Strategy:** At the initial epoch $t_0$, the CGT is an identity matrix with repeated eigenvalues, causing singularity in the derivative equations. The methodology employs a "warm start" by integrating the full STT for a very small step (e.g., $1/100,000$ of the period) to obtain a non-singular CGT and its associated sensitive basis.
+
+*   **Augmented ODE System:** The TDSTT methodology integrates the nominal state, the STM, the eigenvalues/eigenvectors, and the high-order TDSTT terms simultaneously.
+
+*   **Complexity Reduction:** By utilizing the orthogonality of the sensitive directions, the complexity of computing the second-order TDSTT derivative is reduced from $O(n^4m^2)$ to $O(m)$.
+
+#### Derivative of the Second-Order TDSTT:
+$$\dot{\varphi}_{i, p_1 p_2} = A_{i,\alpha} \varphi_{\alpha, p_1 p_2} + A_{i,\alpha\beta} \varphi_{\alpha,p_1} \varphi_{\beta,p_2} + \varphi_{i,\gamma_1 p_2} B_{p_1, \gamma_1} + \varphi_{i, p_1 \gamma_2} B_{p_2, \gamma_2}$$
+
+**Term Definitions:**
+*   $\dot{\varphi}_{i, p_1 p_2}$: The time derivative of the second-order TDSTT.
+*   $A_{i,\alpha}, A_{i,\alpha\beta}$: The first- and second-order local Jacobi/dynamics tensors (Jacobian and Hessian).
+*   $B_{p_j, \gamma_j}$: The coefficients of the eigenvector derivatives accounting for basis rotation.
+
+---
+
+### 4. Variations on High-Order Propagation
+The sources describe several variations of Taylor-series methods in the context of UP:
+
+*   **Standard STT:** The baseline method. It is highly accurate but computationally expensive due to exponential scaling ($n^{p+1}$).
+*   **Reduced STT (RSTT):** Approximates STTs by retaining only **secular terms** ($t^p$). While efficient, it is primarily restricted to two-body, periodic dynamics.
+*   **Directional STT (DSTT):** The static predecessor to TDSTT. It aligns with stable/unstable directions at a single epoch. It is ideal for onboard applications with limited memory.
+*   **TDSTT:** The time-varying extension of DSTT. It maintains nearly the same accuracy as full STTs but is roughly **94% faster** for third-order expansions in highly nonlinear systems (e.g., Jupiter capture orbits or NRHOs).
+
+---
+
+### 5. Algorithm Flowchart for TDSTT Propagation
+
+```mermaid
+graph TD
+    A[Start: Define Initial Nominal State x0] --> B[Warm Start: Integrate full STT for small step t']
+    B --> C[Compute CGT at t': C = STM^T * STM]
+    C --> D[Eigendecomposition: Find initial sensitive basis R]
+    D --> E[Integrate ODE System: Nominal State, STM, and TDSTT terms]
+    E --> F[Simultaneously Integrate Eigenvalues and Eigenvectors]
+    F --> G[Update Basis Rotation Coefficients B_kj]
+    G --> H[Check Convergence at Current Time t]
+    H --> I[Output: Predict State Deviation via Eq 20 at any Epoch]
+    I --> J{Final Time Reached?}
+    J -- No --> E
+    J -- Yes --> K[End: High-Accuracy Uncertainty History]
+```
+
+
+### 6. Computational Advantage Summary
+| Feature | Full STT | DSTT | TDSTT |
+| :--- | :--- | :--- | :--- |
+| **Complexity Scaling** | Exponential ($n^{p+1}$) | Polynomial ($nm^p$) | Polynomial ($nm^p$) |
+| **Variable Count ($n=6, P=2, m=1$)** | 256 | 90 | 55 |
+| **Epoch Applicability** | Any point | Predefined final epoch | Any point |
+| **Speed Benefit** | Baseline | ~94% faster than STT | ~94% faster than STT |

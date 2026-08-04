@@ -1051,7 +1051,7 @@ $$ {#eq-stt-taylor-map}
 
 *   $P$: The truncation order of the expansion (typically $P=2$ or $3$).
 
-Using similar logic, we can also derive the Taylor expansion for the equations of motion (EOM) for the perturbed state, which is essential for propagating the STTs through time:
+Using similar logic, we can also derive the Taylor expansion for the equations of motion (EOM) from @eq-stt-eom for the perturbed state, which is essential for propagating the STTs through time:
 
 $$
 \dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
@@ -1071,7 +1071,7 @@ $$
 $$ {#eq-stt-taylor-map-time-derivative}
 
 ### Differential Equations for Tensor Propagation
-STTs are obtained by integrating a set of coupled ordinary differential equations (ODEs) obtained by substituting @eq-stt-taylor-map and @eq-stt-taylor-map-time-derivative into RHS and LHS of @eq-stt-eom-taylor-map each (Derivation is provided in @sec-appendix-stt). For example, the second-order STT(i.e, $P=2$) evolves according to the following ODE:
+STTs are obtained by integrating a set of coupled ordinary differential equations (ODEs) obtained by substituting @eq-stt-taylor-map and @eq-stt-taylor-map-time-derivative into RHS and LHS of @eq-stt-eom-taylor-map each. (Derivation is provided in @sec-appendix-stt). For example, the second-order STT(i.e, $P=2$) evolves according to the following ODE:
 
 $$
 \dot{\Phi}_{i,ab} = f_{i,\alpha}^\star \Phi_{\alpha,ab} + f_{i,\alpha\beta}^\star \Phi_{\alpha,a} \Phi_{\beta,b}
@@ -1282,6 +1282,42 @@ By choosing the eigenvector $\xi_1$ associated with the largest eigenvalue $\lam
 
 ###  Time-Varying Directional STT (TDSTT)
 A major limitation of the standard DSTT is that it assumes sensitive directions are constant and is only valid at a predefined final epoch $t_f$. The **TDSTT** \[@zhou2024timevaryingdirectionalstatetransition\] improves this by simultaneously integrating the nominal orbit, the Taylor expansion, and the time-varying eigenvalue-eigenvector pairs. This allows for uncertainty analysis at any point along the trajectory (on a dense time grid), which is critical for **conjunction assessment** where the time of closest approach (TCA) is not known *a priori*.
+
+#### **Methodology**
+
+The TDSTT's primary advantage is its ability to perform uncertainty analysis on a **dense time grid** without re-integration.
+
+*   **Warm Start Strategy:** At the initial epoch $t_0$, the CGT is an identity matrix with repeated eigenvalues, causing singularity in the derivative equations. The methodology employs a "warm start" by integrating the full STT for a very small step (e.g., $1/100,000$ of the period) to obtain a non-singular CGT and its associated sensitive basis.
+
+*   **Augmented ODE System:** The TDSTT methodology integrates the nominal state, the STM, the eigenvalues/eigenvectors, and the high-order TDSTT terms simultaneously.
+
+*   **Complexity Reduction:** By utilizing the orthogonality of the sensitive directions, the complexity of computing the second-order TDSTT derivative is reduced from $O(n^4m^2)$ to $O(m)$.
+
+#### **Derivatives of Eigenvalue-Eigenvector Pairs**
+
+The integration of TDSTT requires calculating the time evolution of the sensitive basis. The derivative of the $k$-th eigenvalue $\lambda_k$ of the CGT is derived as:
+$$
+\dot{\lambda}_k = (\dot{\mathbf{C}} \xi_k, \xi_k)
+$$
+
+**Term Definitions:**
+
+*   $\dot{\lambda}_k$: The time derivative of the $k$-th eigenvalue.
+
+*   $\dot{\mathbf{C}}$: The time derivative of the Cauchy-Green Tensor.
+
+*   $\xi_k$: The $k$-th eigenvector of the CGT.
+
+The derivative of the $k$-th eigenvector $\xi_k$ is represented linearly as:
+$$
+\dot{\xi}_k = \sum_{p \neq k} B_{k,p} \xi_p
+$$
+
+**Term Definitions:**
+
+*   $B_{k,p}$: The coefficients of the eigenvector derivative, where $B_{k,p} = \frac{1}{\lambda_p - \lambda_k} (\dot{\mathbf{C}} \xi_k, \xi_p)$.
+
+#### **Derivation of the TDSTT ODEs**
 
 The governing ODE for a second-order TDSTT includes rotation terms ($B$) representing the time derivative of the eigenvectors:
 $$

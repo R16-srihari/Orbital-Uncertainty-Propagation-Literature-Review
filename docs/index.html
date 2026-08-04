@@ -1326,7 +1326,7 @@ x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\par
 <li><p><span class="math inline">\(\delta x_{0,k_j}\)</span>: The <span class="math inline">\(k_j\)</span>-th component of the initial state deviation.</p></li>
 <li><p><span class="math inline">\(P\)</span>: The truncation order of the expansion (typically <span class="math inline">\(P=2\)</span> or <span class="math inline">\(3\)</span>).</p></li>
 </ul>
-<p>Using similar logic, we can also derive the Taylor expansion for the equations of motion (EOM) for the perturbed state, which is essential for propagating the STTs through time:</p>
+<p>Using similar logic, we can also derive the Taylor expansion for the equations of motion (EOM) from <a href="#eq-stt-eom" class="quarto-xref">Equation&nbsp;9</a> for the perturbed state, which is essential for propagating the STTs through time:</p>
 <p><span id="eq-stt-eom-taylor-map"><span class="math display">\[
 \dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
 \tag{11}\]</span></span></p>
@@ -1342,7 +1342,7 @@ x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\par
 </section>
 <section id="differential-equations-for-tensor-propagation" class="level3">
 <h3 class="anchored" data-anchor-id="differential-equations-for-tensor-propagation">Differential Equations for Tensor Propagation</h3>
-<p>STTs are obtained by integrating a set of coupled ordinary differential equations (ODEs) obtained by substituting <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> and <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> into RHS and LHS of <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> each (Derivation is provided in <a href="#sec-appendix-stt" class="quarto-xref">Section&nbsp;16</a>). For example, the second-order STT(i.e, <span class="math inline">\(P=2\)</span>) evolves according to the following ODE:</p>
+<p>STTs are obtained by integrating a set of coupled ordinary differential equations (ODEs) obtained by substituting <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> and <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> into RHS and LHS of <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> each. (Derivation is provided in <a href="#sec-appendix-stt" class="quarto-xref">Section&nbsp;16</a>). For example, the second-order STT(i.e, <span class="math inline">\(P=2\)</span>) evolves according to the following ODE:</p>
 <p><span class="math display">\[
 \dot{\Phi}_{i,ab} = f_{i,\alpha}^\star \Phi_{\alpha,ab} + f_{i,\alpha\beta}^\star \Phi_{\alpha,a} \Phi_{\beta,b}
 \]</span></p>
@@ -1538,6 +1538,36 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 <section id="time-varying-directional-stt-tdstt" class="level3">
 <h3 class="anchored" data-anchor-id="time-varying-directional-stt-tdstt">Time-Varying Directional STT (TDSTT)</h3>
 <p>A major limitation of the standard DSTT is that it assumes sensitive directions are constant and is only valid at a predefined final epoch <span class="math inline">\(t_f\)</span>. The <strong>TDSTT</strong> [<span class="citation" data-cites="zhou2024timevaryingdirectionalstatetransition">Zhou et al. (<a href="#ref-zhou2024timevaryingdirectionalstatetransition" role="doc-biblioref">2024</a>)</span>] improves this by simultaneously integrating the nominal orbit, the Taylor expansion, and the time-varying eigenvalue-eigenvector pairs. This allows for uncertainty analysis at any point along the trajectory (on a dense time grid), which is critical for <strong>conjunction assessment</strong> where the time of closest approach (TCA) is not known <em>a priori</em>.</p>
+<section id="methodology" class="level4">
+<h4 class="anchored" data-anchor-id="methodology"><strong>Methodology</strong></h4>
+<p>The TDSTT’s primary advantage is its ability to perform uncertainty analysis on a <strong>dense time grid</strong> without re-integration.</p>
+<ul>
+<li><p><strong>Warm Start Strategy:</strong> At the initial epoch <span class="math inline">\(t_0\)</span>, the CGT is an identity matrix with repeated eigenvalues, causing singularity in the derivative equations. The methodology employs a “warm start” by integrating the full STT for a very small step (e.g., <span class="math inline">\(1/100,000\)</span> of the period) to obtain a non-singular CGT and its associated sensitive basis.</p></li>
+<li><p><strong>Augmented ODE System:</strong> The TDSTT methodology integrates the nominal state, the STM, the eigenvalues/eigenvectors, and the high-order TDSTT terms simultaneously.</p></li>
+<li><p><strong>Complexity Reduction:</strong> By utilizing the orthogonality of the sensitive directions, the complexity of computing the second-order TDSTT derivative is reduced from <span class="math inline">\(O(n^4m^2)\)</span> to <span class="math inline">\(O(m)\)</span>.</p></li>
+</ul>
+</section>
+<section id="derivatives-of-eigenvalue-eigenvector-pairs" class="level4">
+<h4 class="anchored" data-anchor-id="derivatives-of-eigenvalue-eigenvector-pairs"><strong>Derivatives of Eigenvalue-Eigenvector Pairs</strong></h4>
+<p>The integration of TDSTT requires calculating the time evolution of the sensitive basis. The derivative of the <span class="math inline">\(k\)</span>-th eigenvalue <span class="math inline">\(\lambda_k\)</span> of the CGT is derived as: <span class="math display">\[
+\dot{\lambda}_k = (\dot{\mathbf{C}} \xi_k, \xi_k)
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\dot{\lambda}_k\)</span>: The time derivative of the <span class="math inline">\(k\)</span>-th eigenvalue.</p></li>
+<li><p><span class="math inline">\(\dot{\mathbf{C}}\)</span>: The time derivative of the Cauchy-Green Tensor.</p></li>
+<li><p><span class="math inline">\(\xi_k\)</span>: The <span class="math inline">\(k\)</span>-th eigenvector of the CGT.</p></li>
+</ul>
+<p>The derivative of the <span class="math inline">\(k\)</span>-th eigenvector <span class="math inline">\(\xi_k\)</span> is represented linearly as: <span class="math display">\[
+\dot{\xi}_k = \sum_{p \neq k} B_{k,p} \xi_p
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><span class="math inline">\(B_{k,p}\)</span>: The coefficients of the eigenvector derivative, where <span class="math inline">\(B_{k,p} = \frac{1}{\lambda_p - \lambda_k} (\dot{\mathbf{C}} \xi_k, \xi_p)\)</span>.</li>
+</ul>
+</section>
+<section id="derivation-of-the-tdstt-odes" class="level4">
+<h4 class="anchored" data-anchor-id="derivation-of-the-tdstt-odes"><strong>Derivation of the TDSTT ODEs</strong></h4>
 <p>The governing ODE for a second-order TDSTT includes rotation terms (<span class="math inline">\(B\)</span>) representing the time derivative of the eigenvectors: <span class="math display">\[
 \dot{\varphi}_{i, p_1 p_2} = A_{i, \alpha} \varphi_{\alpha, p_1 p_2} + A_{i, \alpha \beta} \varphi_{\alpha, p_1} \varphi_{\beta, p_2} + \varphi_{i, \gamma_1 p_2} B_{p_1, \gamma_1} + \varphi_{i, p_1 \gamma_2} B_{p_2, \gamma_2}
 \]</span></p>
@@ -1546,6 +1576,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 <li><p><span class="math inline">\(A_{i, \alpha}, A_{i, \alpha \beta}\)</span>: Local dynamics tensors (Jacobian and Hessian).</p></li>
 <li><p><span class="math inline">\(B_{p_j, \gamma_j}\)</span>: Coefficients derived from eigenvector derivatives.</p></li>
 </ul>
+</section>
 </section>
 <section id="multi-directional-selection" class="level3">
 <h3 class="anchored" data-anchor-id="multi-directional-selection">Multi-Directional Selection</h3>
