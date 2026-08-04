@@ -244,6 +244,8 @@
 \@ifpackageloaded{sidenotes}{}{\usepackage{sidenotes}}
 \@ifpackageloaded{marginnote}{}{\usepackage{marginnote}}
 \makeatother
+\newcounter{quartocallouttipno}
+\newcommand{\quartocallouttip}[1]{\refstepcounter{quartocallouttipno}\label{#1}}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -2228,13 +2230,96 @@ The fundamental premise of the STT method is that the state deviation
 of the initial deviation \(\delta \mathbf{x}_0\) using a \(P\)-order
 Taylor series expansion about a nominal trajectory \(\mathbf{x}^*(t)\).
 
+\subsubsection{Nonlinear State
+Deviation}\label{nonlinear-state-deviation}
+
+Equation~\ref{eq-stt-deviation} defines the deviation of a current state
+from a nominal trajectory as the difference between two solution flows
+of the system's equations of motion, which are of the form
+\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)\).
+
+\begin{equation}\protect\phantomsection\label{eq-stt-deviation}{
+\delta \mathbf{x}(t) = \phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0) - \phi(t; \mathbf{x}_0, t_0)
+}\end{equation}
+
+\textbf{Term Definitions:}
+
+\begin{itemize}
+\item
+  \(\delta \mathbf{x}(t)\): The vector of state deviations at time
+  \(t\).
+\item
+  \(\phi(t; \mathbf{x}_0, t_0)\): The \textbf{solution flow},
+  representing the mapping of the state from the initial epoch \(t_0\)
+  to a future time \(t\).
+\item
+  \(\mathbf{x}_0\): The nominal initial state.
+\item
+  \(\delta \mathbf{x}_0\): The initial deviation or perturbation from
+  the nominal state.
+\end{itemize}
+
+The above deviation follows the dynamics of the system, which can be
+expressed as a differential equation for the deviation:
+\begin{equation}\protect\phantomsection\label{eq-stt-eom}{
+\dot{\delta \mathbf{x}}(t) = \mathbf{f}[\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0), t] - \mathbf{f}[\phi(t; \mathbf{x}_0, t_0), t]
+}\end{equation}
+
+\subsubsection{Taylor Expansion of the Solution
+Flow}\label{taylor-expansion-of-the-solution-flow}
+
+To arrive at Equation~\ref{eq-stt-taylor-map}, we perform a multivariate
+Taylor series expansion of the perturbed solution flow
+\(\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0)\) about the nominal
+initial conditions \(\mathbf{x}_0\).
+
+\begin{itemize}
+\item
+  \textbf{Step 1: Scalar Component Expansion} The \(i\)-th component of
+  the perturbed state at time \(t\) can be expressed as a function of
+  the initial state components: \[
+  x_i(t) = \phi_i(t; x_{0,1} + \delta x_{0,1}, \dots, x_{0,n} + \delta x_{0,n}, t_0)
+  \]
+\item
+  \textbf{Step 2: Multivariate Taylor Series Application} Expanding this
+  function about the nominal initial state \(x_{0,j}\) yields: \[
+  x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x_{0,k_1}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} + \frac{1}{2!} \left. \frac{\partial^2 \phi_i}{\partial x_{0,k_1} \partial x_{0,k_2}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} \delta x_{0,k_2} + \dots
+  \]
+\item
+  \textbf{Step 3: Subtraction of the Nominal Flow} Substituting this
+  expanded form back into Equation~\ref{eq-stt-deviation}: \[
+  \delta x_i(t) = \left[ \phi_i(t; \mathbf{x}_0, t_0) + \sum_{p=1}^P \frac{1}{p!} \Phi_{i,k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p} \right] - \phi_i(t; \mathbf{x}_0, t_0)
+  \]
+
+  \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{State Transition Tensor Definition}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+  \(\Phi_{i,k_1 \dots k_p}\) is the \(p\)-th order \textbf{State
+  Transition Tensor}, defined as the \(p\)-th partial derivative of the
+  solution flow with respect to initial conditions:
+  \(\frac{\partial^p x_i}{\partial x_{0,k_1} \dots \partial x_{0,k_p}}\).
+
+  The set \{k\_1, k\_2, \ldots, k\_n\} is a re-labelling of the original
+  state components \{1, 2, \ldots, n\} with one-to-one mapping. This
+  notation allows the flexibility to choose k\_j such that it reflects a
+  specific ordering or a subset of state components of interest for the
+  expansion, while still maintaining the generality of the tensor
+  representation.
+
+  \end{tcolorbox}
+
+  The zeroth-order term \(\phi_i(t; \mathbf{x}_0, t_0)\) (the nominal
+  trajectory) cancels out, leaving only the sum of the higher-order
+  partial derivatives.
+\end{itemize}
+
 \subsubsection{The High-Order Taylor
 Map}\label{the-high-order-taylor-map}
 
-The \(i\)-th component of the state deviation at a future time \(t\) is
-approximated as: \[
+The final expression relates initial deviations to future deviations
+through a sum of tensors:
+\begin{equation}\protect\phantomsection\label{eq-stt-taylor-map}{
 \delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
-\]
+}\end{equation}
 
 \textbf{Term Definitions:}
 
@@ -2244,9 +2329,7 @@ approximated as: \[
   time \(t\).
 \item
   \(\Phi_{i,k_1 \dots k_p}\): The \(p\)-th order \textbf{State
-  Transition Tensor}, defined as the \(p\)-th partial derivative of the
-  solution flow with respect to initial conditions:
-  \(\frac{\partial^p x_i}{\partial x_{0,k_1} \dots \partial x_{0,k_p}}\).
+  Transition Tensor}, see the note above.
 \item
   \(\delta x_{0,k_j}\): The \(k_j\)-th component of the initial state
   deviation.
@@ -2255,13 +2338,44 @@ approximated as: \[
   \(3\)).
 \end{itemize}
 
+Using similar logic, we can also derive the Taylor expansion for the
+equations of motion (EOM) from Equation~\ref{eq-stt-eom} for the
+perturbed state, which is essential for propagating the STTs through
+time:
+
+\begin{equation}\protect\phantomsection\label{eq-stt-eom-taylor-map}{
+\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+}\end{equation}
+
+\marginnote{\begin{footnotesize}
+
+\[
+\mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) = \left. \frac{\partial^p f_i}{\partial x_{k_1} \dots \partial x_{k_p}} \right|_{\mathbf{x}^*(t)}
+\]
+
+where the superscript \(^*\) indicates evaluation along the nominal
+trajectory \(\mathbf{x}^*(t)\).
+
+\end{footnotesize}}
+
+We can also find \(\dot{x}_i(t)\) by differentiating
+Equation~\ref{eq-stt-taylor-map} with respect to time, which yields:
+\begin{equation}\protect\phantomsection\label{eq-stt-taylor-map-time-derivative}{
+\dot{x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+}\end{equation}
+
 \subsubsection{Differential Equations for Tensor
 Propagation}\label{differential-equations-for-tensor-propagation}
 
 STTs are obtained by integrating a set of coupled ordinary differential
-equations (ODEs) derived from the system dynamics
-\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)\). For example, the
-second-order STT evolves according to: \[
+equations (ODEs) obtained by substituting
+Equation~\ref{eq-stt-taylor-map} and
+Equation~\ref{eq-stt-taylor-map-time-derivative} into RHS and LHS of
+Equation~\ref{eq-stt-eom-taylor-map} each. (Derivation is provided in
+Section~\ref{sec-appendix-stt}). For example, the second-order STT(i.e,
+\(P=2\)) evolves according to the following ODE:
+
+\[
 \dot{\Phi}_{i,ab} = f_{i,\alpha}^\star \Phi_{\alpha,ab} + f_{i,\alpha\beta}^\star \Phi_{\alpha,a} \Phi_{\beta,b}
 \]
 
@@ -2288,19 +2402,81 @@ the terminal state through simple algebraic operations.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
   \textbf{Reference Integration:} Solve the ODEs for the nominal state
-  \(\mathbf{x}(t)\) and the tensors \(\phi\) up to order \(P\).
+  \(\mathbf{x}(t)\) and the tensors \(\phi\) up to order \(P\). The
+  value of \(P\) is chosen based on the nonlinearity index taken from
+  the propagation of the deviation \(\delta \mathbf{x}(t)\).
+\end{enumerate}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Tip \ref*{tip-nonlinearity-index}: Local Nonlinearity Index for STT Order Selection}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+\quartocallouttip{tip-nonlinearity-index} 
+
+Formula: \[
+\eta_m(t,t_0)=\sup_{i=1,\ldots,n}\sup_{k=1,\ldots,N}\frac{\left|\Delta x_i^{(m)}-\Delta\bar x_i\right|}{\left|\Delta\bar x_i\right|}
+\]
+
+where
+
+\begin{itemize}
+\tightlist
+\item
+  \(\Delta x_i^{(m)}\) = ith component predicted by an mth-order STT,
+\item
+  \(\Delta\bar x_i\) = ith component obtained by direct nonlinear
+  numerical integration,
+\item
+  \(N\) = sampled initial conditions,
+\item
+  \(n\) = state dimension.
+\end{itemize}
+
+\end{tcolorbox}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
 \item
   \textbf{Initial Moment Characterization:} Compute the raw moments of
-  the initial PDF (e.g., using the moment-generating function for a
-  Gaussian or uniform distribution).
+  the initial PDF.
 \item
-  \textbf{Statistical Mapping:} Use the Taylor expansion and the
-  linearity of the expectation operator to compute the terminal mean
+  \textbf{Statistical Mapping:} Use Equation~\ref{eq-stt-taylor-map} and
+  the linearity of the expectation operator to compute the terminal mean
   (\(\hat{\mu}\)) and covariance (\(\hat{\mathbf{P}}\)): \[
-  \delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
+  \delta \mu_i(t) =E[\delta x_i(t)]= \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
   \]
+
+  \[
+  P_{ij}(t)=E[\delta x_i \delta x_j]-\delta \mu_i\delta \mu_j=\sum_{p=1}^{m}\sum_{q=1}^{m}\frac1{p!q!}\Phi_{i;k_1\cdots k_p}\Phi_{j;l_1\cdots l_q}E[\delta x_{k_1}\cdots\delta x_{k_p}\delta x_{l_1}\cdots\delta x_{l_q}]-\delta \mu_i\delta \mu_j
+  \]
+
+  where \(\delta \mu_i\) is the \(i\)-th component of the terminal mean
+  vector and \(\mathbf{P}_{ij}\) is the \((i,j)\)-th component of the
+  terminal covariance matrix.
+\end{enumerate}
+
+\marginnote{\begin{footnotesize}
+
+\begin{itemize}
+\item
+  Expectation of a random variable \(x(t)\) is defined as: \[
+  \mu=E[x(t)]
+  \]
+\item
+  Covariance of two random variables \(x(t)\) and \(y(t)\) is defined
+  as: \[
+  P_{xy}=E[(x(t)-\mu_x)(y(t)-\mu_y)]= E[xy]-\mu_x\mu_y
+  \]
+\end{itemize}
+
+\end{footnotesize}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
 \item
   \textbf{Gaussian Moment Property:} If the initial distribution is
   Gaussian, higher-order moments are analytically linked to the
@@ -2309,7 +2485,7 @@ the terminal state through simple algebraic operations.
   using only the initial mean and covariance.
 \end{enumerate}
 
-\marginnote{\begin{footnotesize}
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Isserlis' Theorem for Gaussian Moments}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 For a \textbf{zero-mean} multivariate normal random vector
 \(\mathbf{x}\), \textbf{Isserlis' Theorem} provides a specific formula
@@ -2346,7 +2522,7 @@ E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{i
 
 \emph{(Source:Park and Scheeres (2006))}
 
-\end{footnotesize}}
+\end{tcolorbox}
 
 \subsection{Algorithm: The STT Uncertainty
 Pipeline}\label{algorithm-the-stt-uncertainty-pipeline}
@@ -2413,11 +2589,309 @@ advanced STT variants have been developed.
   calculate initial expectations.
 \end{itemize}
 
-\subsection{STT in the Spectrum of Surrogate
-Methods}\label{stt-in-the-spectrum-of-surrogate-methods}
+\subsection{Contextual Limitations of STTs in Uncertainty
+Propagation}\label{contextual-limitations-of-stts-in-uncertainty-propagation}
 
-Within the broader category of surrogate methods, STTs are defined by
-distinct trade-offs regarding differentiability and dimensionality.
+Despite their accuracy, STTs are bounded by specific constraints within
+the larger UP landscape:
+
+\begin{itemize}
+\item
+  \textbf{Local Validity:} STTs are localized approximations valid only
+  within the \textbf{Radius of Convergence} of the Taylor series; if
+  uncertainties are too large, the expansion fails to reconstruct the
+  dynamics.
+\item
+  \textbf{Differentiability:} The method requires the underlying
+  dynamics to be continuous and differentiable to compute Local Dynamics
+  Tensors (LDTs).
+\item
+  \textbf{Complexity:} Although the algebraic evaluation of the final
+  state is fast, the method is described as \textbf{computationally
+  intensive} during the initial phase because of the difficulty involved
+  in deriving and integrating the high-order tensors for high-fidelity
+  models (including \(J_2\), SRP, and drag).
+\end{itemize}
+
+The primary takeaway is that STTs provide a \textbf{local higher-order
+approximation} of the flow manifold. While they accurately capture the
+``banana-shaped'' warping caused by \(1/r^2\) gravitational
+nonlinearities, they are strictly limited to the \textbf{radius of
+convergence} of the Taylor expansion. If the initial uncertainty is too
+large, the expansion fails, necessitating hybrid methods such as
+\textbf{GMM-STT}, which partition the state space into smaller, locally
+linear Gaussian kernels.
+
+Complexity is further compounded by the need to compute high-order
+derivatives of the dynamics, which can be prohibitive for high-fidelity
+models. Variations like \textbf{Directional STTs} and \textbf{Reduced
+STTs} have been developed to mitigate these challenges, but they still
+require careful consideration of the trade-offs between accuracy and
+computational efficiency.
+
+\section{Directional State Transition Tensors
+(DSTT)}\label{directional-state-transition-tensors-dstt}
+
+Within the larger context of orbital uncertainty propagation,
+\textbf{Directional State Transition Tensors (DSTT)} represent a
+specialized dimensionality-reduction framework derived from the
+high-order \textbf{State Transition Tensor (STT)} method, developed
+primarily by Boone and McMahon (2023). While STTs provide superior
+precision over linearized models by capturing localized nonlinear motion
+through Taylor series expansions of the solution flow, they are
+fundamentally constrained by the ``curse of dimensionality,'' where the
+number of variables to be integrated grows exponentially with the
+expansion order. DSTTs mitigate this by leveraging the physical
+observation that system nonlinearity is often concentrated along a few
+``sensitive'' or unstable directions.
+
+\subsection{Theoretical Framework and
+Methodology}\label{theoretical-framework-and-methodology}
+
+The DSTT method reformulates the standard STT expansion by performing an
+orthogonal transformation of the initial state space, allowing
+derivatives to be taken with respect to a rotated basis that isolates
+directions of maximum instability. These STTs can be rotated such that
+the derivatives are taken with respect to an alternative basis
+\(y\in R^n\) with no loss in information as long as \(y\) constitutes an
+orthogonal basis that spans \(R^n\). Thesebases are related through the
+transformation \(y = Rx\), where \(R\) corresponds to a linear
+transformation matrix.
+
+\subsubsection{The Polynomial
+Approximation}\label{the-polynomial-approximation}
+
+The state deviation at a future time \(t_f\) is approximated using the
+DSTT mapping: \[
+\delta x_i(t_f) \approx \phi_{i, \kappa_1} \delta x_{\kappa_1 0} + \sum_{p=2}^{P} \frac{1}{p!} \varphi_{i, \gamma_1 \dots \gamma_p}(t_f, t_0) \delta y_{\gamma_1 0} \dots \delta y_{\gamma_p 0}
+\]
+
+\textbf{Term Definitions:}
+
+\begin{itemize}
+\item
+  \(\delta x_i\): The \(i\)-th component of the final state deviation.
+\item
+  \(\phi_{i, \kappa_1}\): The first-order State Transition Matrix (STM).
+\item
+  \(\varphi_{i, \gamma_1 \dots \gamma_p}\): The \(p\)-th order DSTT
+  elements.
+\item
+  \(\delta y_{\gamma_j 0}\): The initial state deviation projected onto
+  the rotated basis \(y = Rx\).
+\item
+  \(P\): The maximum truncation order of the Taylor series.
+\end{itemize}
+
+\subsubsection{Methodology of the
+Transformation}\label{methodology-of-the-transformation}
+
+The construction of the DSTT relies on a linear transformation matrix
+\(R \in \mathbb{R}^{m \times n}\), where \(m\) is the number of
+sensitive directions (typically \(m \ll n\)). Each row of \(R\)
+corresponds to a sensitive direction, identified using the eigenvectors
+of the \textbf{Cauchy-Green Tensor (CGT)}.
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Cauchy-Green Tensor (CGT)}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+The Cauchy-Green Tensor is a symmetric, positive-definite matrix that
+characterizes the local deformation of a flow. It is computed as the
+product of the transpose of the State Transition Matrix (STM) and the
+STM itself: \[
+C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
+\]
+
+where \(t_f\) is the final time and \(t_0\) is the initial time. The
+eigenvalues of the CGT indicate the amount of stretching along each
+eigenvector direction, with larger eigenvalues corresponding to more
+sensitive directions. From Equation~\ref{eq-lincov-propagation}, we
+understand the STM (\(\Phi\)) is a linear mapping of the final
+perturbation vector \(\delta x(t_f)\) to the initial perturbation vector
+\(\delta x(t_0)\). The CGT is a squaring operation that returns the
+relationship between the initial and final distance from the nominal
+motion.
+
+\[
+||\delta x(t_f)||^2 = \delta x(t_0)^T C(t_f,t_0) \delta x(t_0)
+\]
+
+The distance \(||\delta x(t_f)||^2\) reveals the growth or the decay of
+the initial vector perturbation. Furthermore, the eigendecomposition of
+the CGT allows identification of the principal directions of expansion
+for the dynamical flow, including those that are locally associated with
+the largest and smallest stretching.
+
+\end{tcolorbox}
+
+The \(p\)-th order DSTT elements are obtained by rotating the full STT
+(\(\phi\)) onto this basis: \[
+\varphi_{i, \gamma_1 \dots \gamma_p} = \phi_{i, k_1 \dots k_p} R_{\gamma_1, k_1} \dots R_{\gamma_p, k_p}
+\]
+
+By choosing the eigenvector \(\xi_1\) associated with the largest
+eigenvalue \(\lambda_1\) of the CGT, the DSTT captures the ``direction
+of maximum stretch''. This ensures that the terms which contribute most
+significantly to the final state deviation are preserved, while stable
+directions are ignored.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Advantages over the Standard STT
+Method}\label{advantages-over-the-standard-stt-method}
+
+\begin{itemize}
+\item
+  \textbf{Polynomial Complexity Growth:} A full \(p\)-th order STT
+  contains \(n^{p+1}\) elements, resulting in a total integration burden
+  of \(\sum_{p=1}^P n^{p+1}\) variables. In contrast, the DSTT reduces
+  this to \(n + n^2 + \sum_{p=2}^P n m^p\) variables.
+\item
+  \textbf{Numerical Efficiency:} For a standard 6-dimensional orbital
+  state (\(n=6\)) with one sensitive direction (\(m=1\)) at second order
+  (\(P=2\)), the STT requires integrating 258 variables, whereas the
+  DSTT requires only 48.
+\item
+  \textbf{Computational Speedup:} Numerical studies indicate that DSTTs
+  can achieve up to \textbf{1000× speed improvements} in nonlinear
+  uncertainty propagation compared to full STTs.
+\item
+  \textbf{Reduced Storage:} Because only the elements along unstable
+  directions are stored, the method is significantly more suitable for
+  real-time applications on on-board spacecraft computers with limited
+  resources.
+\item
+  \textbf{Analytical Tractability:} DSTTs allow for the derivation of
+  simplified, closed-form equations for propagated mean and covariance,
+  bypassing the hundreds of terms required by Isserlis' theorem in full
+  higher-order covariance propagation.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Variations and
+Enhancements}\label{variations-and-enhancements}
+
+\subsubsection{Time-Varying Directional STT
+(TDSTT)}\label{time-varying-directional-stt-tdstt}
+
+A major limitation of the standard DSTT is that it assumes sensitive
+directions are constant and is only valid at a predefined final epoch
+\(t_f\). The \textbf{TDSTT} {[}Zhou et al. (2024){]} improves this by
+simultaneously integrating the nominal orbit, the Taylor expansion, and
+the time-varying eigenvalue-eigenvector pairs. This allows for
+uncertainty analysis at any point along the trajectory (on a dense time
+grid), which is critical for \textbf{conjunction assessment} where the
+time of closest approach (TCA) is not known \emph{a priori}.
+
+\paragraph{\texorpdfstring{\textbf{Methodology}}{Methodology}}\label{methodology}
+
+The TDSTT's primary advantage is its ability to perform uncertainty
+analysis on a \textbf{dense time grid} without re-integration.
+
+\begin{itemize}
+\item
+  \textbf{Warm Start Strategy:} At the initial epoch \(t_0\), the CGT is
+  an identity matrix with repeated eigenvalues, causing singularity in
+  the derivative equations. The methodology employs a ``warm start'' by
+  integrating the full STT for a very small step (e.g., \(1/100,000\) of
+  the period) to obtain a non-singular CGT and its associated sensitive
+  basis.
+\item
+  \textbf{Augmented ODE System:} The TDSTT methodology integrates the
+  nominal state, the STM, the eigenvalues/eigenvectors, and the
+  high-order TDSTT terms simultaneously.
+\item
+  \textbf{Complexity Reduction:} By utilizing the orthogonality of the
+  sensitive directions, the complexity of computing the second-order
+  TDSTT derivative is reduced from \(O(n^4m^2)\) to \(O(m)\).
+\end{itemize}
+
+\paragraph{\texorpdfstring{\textbf{Derivatives of Eigenvalue-Eigenvector
+Pairs}}{Derivatives of Eigenvalue-Eigenvector Pairs}}\label{derivatives-of-eigenvalue-eigenvector-pairs}
+
+The integration of TDSTT requires calculating the time evolution of the
+sensitive basis. The derivative of the \(k\)-th eigenvalue \(\lambda_k\)
+of the CGT is derived as: \[
+\dot{\lambda}_k = (\dot{\mathbf{C}} \xi_k, \xi_k)
+\]
+
+\textbf{Term Definitions:}
+
+\begin{itemize}
+\item
+  \(\dot{\lambda}_k\): The time derivative of the \(k\)-th eigenvalue.
+\item
+  \(\dot{\mathbf{C}}\): The time derivative of the Cauchy-Green Tensor.
+\item
+  \(\xi_k\): The \(k\)-th eigenvector of the CGT.
+\end{itemize}
+
+The derivative of the \(k\)-th eigenvector \(\xi_k\) is represented
+linearly as: \[
+\dot{\xi}_k = \sum_{p \neq k} B_{k,p} \xi_p
+\]
+
+\textbf{Term Definitions:}
+
+\begin{itemize}
+\tightlist
+\item
+  \(B_{k,p}\): The coefficients of the eigenvector derivative, where
+  \(B_{k,p} = \frac{1}{\lambda_p - \lambda_k} (\dot{\mathbf{C}} \xi_k, \xi_p)\).
+\end{itemize}
+
+\paragraph{\texorpdfstring{\textbf{Derivation of the TDSTT
+ODEs}}{Derivation of the TDSTT ODEs}}\label{derivation-of-the-tdstt-odes}
+
+The governing ODE for a second-order TDSTT includes rotation terms
+(\(B\)) representing the time derivative of the eigenvectors: \[
+\dot{\varphi}_{i, p_1 p_2} = A_{i, \alpha} \varphi_{\alpha, p_1 p_2} + A_{i, \alpha \beta} \varphi_{\alpha, p_1} \varphi_{\beta, p_2} + \varphi_{i, \gamma_1 p_2} B_{p_1, \gamma_1} + \varphi_{i, p_1 \gamma_2} B_{p_2, \gamma_2}
+\]
+
+\textbf{Term Definitions:}
+
+\begin{itemize}
+\item
+  \(A_{i, \alpha}, A_{i, \alpha \beta}\): Local dynamics tensors
+  (Jacobian and Hessian).
+\item
+  \(B_{p_j, \gamma_j}\): Coefficients derived from eigenvector
+  derivatives.
+\end{itemize}
+
+\subsubsection{Multi-Directional
+Selection}\label{multi-directional-selection}
+
+While many applications use only the primary sensitive direction
+(\(m=1\)), some scenarios involve complex dynamics where multiple
+directions are unstable. The DSTT framework supports \(R\) matrices
+built from the first \(k\) eigenvectors, balancing the tradeoff between
+accuracy and computational cost.
+
+\subsection{Algorithm Flowchart for DSTT/TDSTT
+Implementation}\label{algorithm-flowchart-for-dstttdstt-implementation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Start: Initial State x0 and Covariance P0] {-}{-}\textgreater{} B[Warm Start: Integrate full STT for small step t\textquotesingle{}]}
+\NormalTok{    B {-}{-}\textgreater{} C[Compute CGT at t\textquotesingle{}: C = STM\^{}T * STM]}
+\NormalTok{    C {-}{-}\textgreater{} D[Eigendecomposition: Find sensitive basis R]}
+\NormalTok{    D {-}{-}\textgreater{} E[Integrate State, STM, and DSTT/TDSTT ODEs]}
+\NormalTok{    E {-}{-}\textgreater{} F\{Dense Time Grid Output Required?\}}
+\NormalTok{    F {-}{-} Yes (TDSTT) {-}{-}\textgreater{} G[Integrate Eigenvector Derivatives B simultaneously]}
+\NormalTok{    F {-}{-} No (DSTT) {-}{-}\textgreater{} H[Keep Basis R Fixed]}
+\NormalTok{    G {-}{-}\textgreater{} I[Output: Time{-}history of Reduced Taylor Maps]}
+\NormalTok{    H {-}{-}\textgreater{} I}
+\NormalTok{    I {-}{-}\textgreater{} J[Map Uncertainty: Algebraic calculation of Mean/Covariance]}
+\NormalTok{    J {-}{-}\textgreater{} K[End: Nonlinearly Propagated Statistics]}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{(Ref: Boone and McMahon (2023) )}
+
+\subsection{Summary Table: Contextual
+Positioning}\label{summary-table-contextual-positioning}
 
 {\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
@@ -2431,66 +2905,232 @@ Feature
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 State Transition Tensors (STT)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Differential Algebra (DA)
+Directional STT (DSTT)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Polynomial Chaos (PCE)
+Time-Varying DSTT (TDSTT)
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\textbf{Expansion Type} & Semi-Analytic Taylor Series & Automated Taylor
-Polynomials & Non-Intrusive Spectral Basis \\
-\textbf{Dynamics Requirement} & Continuous \& Differentiable &
-Continuous \& Differentiable & Black-Box (Non-Differentiable) \\
-\textbf{Input Dependence} & Distribution Agnostic & Distribution
-Agnostic & Distribution Matched (Wiener-Askey) \\
-\textbf{Complexity Growth} & Exponential/Factorial with Order &
-Controlled via Automated Eval & Factorial (Curse of Dimensionality) \\
-\textbf{Main Advantage} & Analytic moment propagation & Automated
-derivative extraction & Exponential convergence for smooth systems \\
+\textbf{Expansion Basis} & Cartesian coordinates & Fixed unstable
+direction(s) & Dynamic unstable direction(s) \\
+\textbf{Complexity (\(n=6, P=2\))} & 258 variables & 48 variables & 55
+variables \\
+\textbf{Epoch Flexibility} & Valid at all points & Predefined epoch only
+& Valid at all points \\
+\textbf{Best Use Case} & Low-dimensional systems & Known orbits
+(NRHO/Halo) & New targets / Conjunctions \\
 \end{longtable}
 }
 
-The primary takeaway is that STTs provide a \textbf{local higher-order
-approximation} of the flow manifold. While they accurately capture the
-``banana-shaped'' warping caused by \(1/r^2\) gravitational
-nonlinearities, they are strictly limited to the \textbf{radius of
-convergence} of the Taylor expansion. If the initial uncertainty is too
-large, the expansion fails, necessitating hybrid methods such as
-\textbf{GMM-STT}, which partition the state space into smaller, locally
-linear Gaussian kernels.
+\section{Reduced State Transition Tensors
+(RSTT)}\label{reduced-state-transition-tensors-rstt}
 
-\subsection{Performance and
-Requirements}\label{performance-and-requirements}
+The \textbf{Reduced State Transition Tensors (RSTT)} method, primarily
+developed by Roa and Park (2021), serves as a strategic
+complexity-reduction technique. While standard \textbf{State Transition
+Tensors (STTs)} provide superior precision over linear models by
+capturing localized nonlinear motion through Taylor series expansions,
+they suffer from an exponential growth in computational burden as the
+expansion order increases. RSTT addresses this by isolating and
+capturing the \textbf{dominant secular terms} responsible for the growth
+of relative separation between neighboring trajectories.
 
-While STT is characterized as highly efficient for evaluating the final
-uncertainty, it faces strict mathematical and implementation barriers:
+\subsection{Theoretical Foundation: Stabilizing the Solution
+Flow}\label{theoretical-foundation-stabilizing-the-solution-flow}
+
+The fundamental methodology of RSTT is built on the premise that the
+primary instability in orbital motion---the Lyapunov instability---is
+relegated to the time domain, specifically the phasing of the spacecraft
+along its orbit.
 
 \begin{itemize}
 \item
-  \textbf{Differentiability:} Similar to DA and LinCov, STT requires the
-  underlying physical dynamics of the system to be \textbf{continuous
-  and differentiable}.
+  \textbf{Sundman Transformation:} To isolate secular trends, RSTT
+  employs a time transformation (specifically a Sundman transformation
+  of order \(\beta=2\)) to switch the independent variable from physical
+  time \(t\) to the true anomaly increment \(\theta\):
+  \[\frac{d\theta}{dt} \equiv \gamma(\mathbf{x}, t) = \frac{h}{r^2}\]
+  \textbf{Term Definitions:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\theta\): The true anomaly increment from the initial epoch
+    \(t_0\).
+  \item
+    \(\gamma\): The angular frequency of the motion.
+  \item
+    \(h\): The magnitude of the specific angular momentum.
+  \item
+    \(r\): The magnitude of the spacecraft position vector.
+  \end{itemize}
 \item
-  \textbf{Complexity Trade-off:} Although the algebraic evaluation of
-  the final state is fast, the method is described as
-  \textbf{computationally intensive} during the initial phase because of
-  the difficulty involved in deriving and integrating the high-order
-  tensors.
+  \textbf{Decomposition of the Integral Flow:} By transcribing the
+  solution into the \(\theta\) domain, the state vector at a future time
+  can be expressed as a stabilized solution \(G(\theta; \mathbf{x}_0)\)
+  corrected by a time-phasing term \(\Theta(t; \mathbf{x}_0)\): \[
+  \mathbf{x}(t) = \mathbf{F}(t; \mathbf{x}_0) = \mathbf{G}(\Theta(t; \mathbf{x}_0); \mathbf{x}_0)
+  \]
+
+  This decomposition allows the partial derivatives of the flow (the
+  tensors) to be split into a stabilized component and a secular
+  correction component.
 \end{itemize}
 
-\subsection{Role in Conjunction Assessment
-(CA)}\label{role-in-conjunction-assessment-ca}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-In the field of orbital mechanics, the STT method is frequently combined
-with the other uncertainty propagation architectures. The sources
-specifically mention the development of hybrid frameworks that pair
-\textbf{Gaussian Mixture Models (GMMs) with STT} to efficiently
-propagate non-Gaussian uncertainties for conjunction analysis. This
-allows the GMM to break a large non-Gaussian problem into smaller
-Gaussian ``kernels,'' each of which is then non-linearly propagated
-using the semi-analytic STT method.
+\subsection{Methodology for RSTT
+Approximation}\label{methodology-for-rstt-approximation}
+
+The RSTT methodology reduces complexity by retaining only the
+highest-order secular terms (those growing like \(t^p\) for a \(p\)-th
+order tensor) while neglecting periodic and lower-order secular
+components.
+
+\subsubsection{1. First-Order Correction (The Secular
+STM)}\label{first-order-correction-the-secular-stm}
+
+The standard State Transition Matrix (STM) \(\Phi\) can be decomposed
+into a stabilized derivative and a first-order secular correction: \[
+\Phi_{i;j} = \frac{\partial G_i}{\partial x_{0,j}} \bigg|_\theta + \Gamma_j \frac{\partial G_i}{\partial \theta}
+\]
+
+\textbf{Term Definitions:}
+
+\begin{itemize}
+\item
+  \(\Gamma_j\): The partial derivative of the time transformation
+  \(\Theta\) with respect to initial conditions
+  \(\partial \Theta / \partial x_{0,j}\).
+\item
+  \(\partial G_i / \partial \theta\): The tangent vector to the orbit
+  (related to velocity).
+\end{itemize}
+
+\subsubsection{2. The Second-Order RSTT
+Approximation}\label{the-second-order-rstt-approximation}
+
+The core ``reduction'' occurs at the second order. Instead of
+integrating 216 individual elements for an \(n=6\) state, the
+second-order RSTT is approximated as:
+\[\Phi_{i;jk} \approx \frac{r^4}{h^2} \Gamma_j \Gamma_k \frac{\partial^2 F_i}{\partial t^2}
+\]
+
+\textbf{Term Definitions:}
+
+\begin{itemize}
+\item
+  \(\Phi_{i;jk}\): The components of the second-order STT.
+\item
+  \(\Gamma_j, \Gamma_k\): Sensitivities of the true anomaly to initial
+  state variations.
+\item
+  \(\partial^2 F_i / \partial t^2\): The time derivative of the dynamics
+  (the acceleration/force function).
+\end{itemize}
+
+\subsubsection{3. Generalization to Higher
+Orders}\label{generalization-to-higher-orders}
+
+Higher-order STTs (\(p \ge 3\)) are similarly reduced to a product of
+\(\Gamma\) vectors and higher-order time derivatives of the flow,
+growing like \(t^p\):
+\[\Phi_{i;k_1 \dots k_p} \approx \frac{1}{\gamma^p} \Gamma_{k_1} \dots \Gamma_{k_p} \frac{\partial^p F_i}{\partial t^p}\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Algorithm for RSTT-Based Uncertainty
+Propagation}\label{algorithm-for-rstt-based-uncertainty-propagation}
+
+The following flowchart illustrates the implementation of RSTT for
+nonlinear covariance propagation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{graph TD}
+\NormalTok{    A[Start: Initial Mean m0 and Covariance P0] {-}{-}\textgreater{} B[Initialize Nominal State and STM]}
+\NormalTok{    B {-}{-}\textgreater{} C[Integrate Dynamics and Variational Equations: dx/dt, dSTM/dt]}
+\NormalTok{    C {-}{-}\textgreater{} D[Integrate Time{-}Sensitivity Equations: dGamma/dt]}
+\NormalTok{    D {-}{-}\textgreater{} E[Obtain Time{-}Phasing Gradient Gamma at tf]}
+\NormalTok{    E {-}{-}\textgreater{} F[Construct RSTT Coefficients via Secular Approximation: Eq. 31]}
+\NormalTok{    F {-}{-}\textgreater{} G[Map Statistics: Algebraic Summation for Mean and Covariance]}
+\NormalTok{    G {-}{-}\textgreater{} H[Result: Propagated Stats at tf]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Advantages and Contextual
+Variations}\label{advantages-and-contextual-variations}
+
+RSTT exists as a middle ground between the accuracy of full STTs and the
+efficiency of directional methods.
+
+\begin{itemize}
+\item
+  \textbf{Computational Efficiency:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Variable Reduction:} For a second-order expansion, RSTT
+    requires integrating only \textbf{6 additional differential
+    equations} (the elements of \(\Gamma\)) in addition to the state and
+    STM. This is a drastic reduction from the 216 elements required for
+    a full second-order STT.
+  \item
+    \textbf{Speedup:} Numerical tests in LEO scenarios indicate that
+    RSTT reduces the computational time required to compute the STT by
+    approximately \textbf{37\%} while maintaining comparable long-term
+    accuracy.
+  \end{itemize}
+\item
+  \textbf{Accuracy Convergence:} While full STTs are more accurate in
+  the short term (due to periodic and linear secular terms), the RSTT
+  approximation converges to the exact STT solution as time advances and
+  the \(t^p\) secular terms become dominant.
+\item
+  \textbf{Comparison with Other Methods:}
+
+  \begin{itemize}
+  \item
+    \textbf{RSTT vs.~Full STT:} RSTT avoids the ``curse of
+    dimensionality'' and the manual derivation of complex
+    Hessian/third-order Local Dynamics Tensors.
+  \item
+    \textbf{RSTT vs.~DSTT (Directional STT):} While DSTT reduces
+    dimensionality by aligning with ``sensitive directions'' of the
+    Cauchy-Green Tensor, RSTT reduces complexity by isolating the
+    ``secular time drift'' common to all orbital perturbations.
+  \item
+    \textbf{RSTT vs.~UT (Unscented Transform):} RSTT-based filters (like
+    the ASEKF) can be several times faster than the UKF because they
+    replace sigma-point sampling with a single algebraic correction.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Variations on the RSTT
+Method}\label{variations-on-the-rstt-method}
+
+\begin{itemize}
+\item
+  \textbf{ASEKF (Approximate Second-Order EKF):} A high-order Kalman
+  filter that utilizes the RSTT approximation for the prediction step.
+  It yields results comparable to the UKF but with roughly \textbf{50\%
+  faster} computation than an EKF using exact STTs.
+\item
+  \textbf{Analytical RSTT for Two-Body Problems:} In purely Keplerian
+  regimes, the \(\Gamma\) vector and time derivatives can be expressed
+  in closed form, allowing for instantaneous non-linear UP without any
+  numerical integration.
+\item
+  \textbf{Vectorized DT (Distribution Transport):} A related evolution
+  that uses the same Taylor foundation but transforms the tensor
+  structure into a fixed \textbf{vector structure}, enabling parallel
+  computing speedups of 14x to 64x.
+\end{itemize}
 
 \section{Gaussian Mixture Models (GMM)
 Framework}\label{gaussian-mixture-models-gmm-framework}
@@ -2687,14 +3327,46 @@ sigma points of the GMM kernels.
 \subsubsection{GMM-STT (State Transition
 Tensor)}\label{gmm-stt-state-transition-tensor}
 
-This method regards Gaussian distributions as a function space to
-express PDFs in closed form.
+\paragraph{\texorpdfstring{\textbf{The Radius of Convergence Problem and
+GMM
+mitigation}}{The Radius of Convergence Problem and GMM mitigation}}\label{the-radius-of-convergence-problem-and-gmm-mitigation}
+
+STTs approximate the solution flow of a dynamical system using a
+high-order Taylor series expansion about a nominal trajectory. This
+expansion is localized and only valid within a finite neighborhood known
+as the \textbf{radius of convergence} {[}Park and Scheeres (2006){]}
+{[}Acciarini et al. (2025){]}.
 
 \begin{itemize}
 \item
-  \textbf{Methodology:} Instead of solving separate ODEs for each mean
-  and covariance, the STT solution flow is reformulated as a matrix
-  function valid over all components.
+  \textbf{Estimating Validity:} Tools like the \textbf{Cauchy--Hadamard
+  theorem} are used as a proxy to estimate this radius and check if the
+  initial uncertainties are within the valid region.
+\item
+  \textbf{Failure Mode:} If the initial state deviations are too large
+  or if the tails of the probability density function (PDF) extend
+  beyond this \(R_c\), the STT expansion fails to accurately reconstruct
+  the nonlinear dynamics, leading to significant errors.
+\end{itemize}
+
+GMMs address this limitation through a ``divide and conquer'' approach:
+
+\begin{itemize}
+\item
+  \textbf{Decomposition into Sub-Gaussians:} The initial uncertainty
+  distribution is split into a finite sum of smaller, weighted Gaussian
+  components.
+\item
+  \textbf{Ensuring Local Convergence:} By making each individual
+  Gaussian component ``small enough,'' the GMM ensures that each
+  component's domain is fully contained within the STT's \textbf{linear
+  region of convergence} or its high-order radius of convergence.
+\item
+  \textbf{Maintaining Phasing Accuracy:} In long-term propagation, the
+  uncertainty stretches along the trajectory (the direction of maximum
+  nonlinearity). Splitting the distribution---especially in coordinate
+  spaces like \textbf{equinoctial elements}---allows these components to
+  stay within accurate bounds even as global non-Gaussianity increases.
 \item
   \textbf{Mathematical Formula (State Deviation):} \[
   \delta \hat{x}_{i}^k(t) \approx \sum_{p=1}^{m} \frac{1}{p!} \Phi^k_{j_1...j_p}(t, t_0) \delta \hat{x}_{0,i}^{j_1} \dots \delta \hat{x}_{0,i}^{j_p}
@@ -2704,13 +3376,32 @@ express PDFs in closed form.
   \tightlist
   \item
     \(\delta \hat{x}_{i}^k(t)\) is the \(k\)-th state component of the
-    \(i\)-th component; \(\Phi^k_{j_1...j_p}\) is the \(p\)-th order
-    State Transition Tensor.
+    \(i\)-th Gaussian component; \(\Phi^k_{j_1...j_p}\) is the \(p\)-th
+    order State Transition Tensor.
   \end{itemize}
+\end{itemize}
+
+\paragraph{\texorpdfstring{\textbf{Benefits of Tandem GMM-STT
+Propagation}}{Benefits of Tandem GMM-STT Propagation}}\label{benefits-of-tandem-gmm-stt-propagation}
+
+\begin{itemize}
 \item
-  \textbf{Efficiency:} It becomes more efficient than individual
-  component propagation for \(L > 7\) components (using a 2nd-order
-  expansion).
+  \textbf{Reduced Expansion Order:} Because individual GMM components
+  experience less severe ``localized'' nonlinearity than the original
+  distribution, they can be accurately mapped using \textbf{lower-order
+  STTs} (e.g., second-order). This provides high accuracy while avoiding
+  the computational complexity of very high-order tensors.
+\item
+  \textbf{Mitigation of Distribution Tails:} Using GMMs effectively
+  mitigates issues arising from distribution tails that would otherwise
+  extend beyond the \(R_c\). This ensures the PDF has a compact domain
+  fully contained within the valid expanded flow.
+\item
+  \textbf{Adaptive Efficiency:} Techniques like \textbf{Automatic Domain
+  Splitting (ADS)} or \textbf{AEGIS} can detect when a component is
+  nearing the edge of its valid convergence region (using entropy or
+  truncation error thresholds) and trigger an online split, keeping the
+  propagation statistically consistent.
 \end{itemize}
 
 \subsubsection{GMM-DA (Differential
@@ -2852,7 +3543,7 @@ Bayes' rule.
 \end{itemize}
 
 \subsubsection{Role in Conjunction Assessment
-(CA)}\label{role-in-conjunction-assessment-ca-1}
+(CA)}\label{role-in-conjunction-assessment-ca}
 
 In the field of collision analysis, GMMs enable \textbf{all-on-all
 analysis}. Rather than evaluating millions of individual sample pairs as
@@ -3481,6 +4172,256 @@ The following flowchart details the procedural logic for identifying
 \end{Highlighting}
 \end{Shaded}
 
+\section{B: Derivation of the differential equation for the second-order
+State Transition Tensor (STT) propagation}\label{sec-appendix-stt}
+
+The \textbf{second-order State Transition Tensor (STT) differential
+equation} is obtained by
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  expanding the solution in a Taylor series
+  Equation~\ref{eq-stt-taylor-map},
+\item
+  substituting it into the Taylor expansion of the dynamics
+  Equation~\ref{eq-stt-eom-taylor-map},
+\item
+  differentiating Equation~\ref{eq-stt-taylor-map} with respect to time
+  (Equation~\ref{eq-stt-taylor-map-time-derivative}), and
+\item
+  \textbf{equating coefficients of equal powers of the initial
+  deviation} \(\delta x_0\).
+\end{enumerate}
+
+Below is the detailed derivation as described in Park and Scheeres
+(2006).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{Step 1. Taylor expansion of the state
+(Equation~\ref{eq-stt-taylor-map})}{Step 1. Taylor expansion of the state (Equation~)}}\label{step-1.-taylor-expansion-of-the-state-eq-stt-taylor-map}
+
+The paper expands the deviation from the nominal trajectory as
+
+\[
+\delta x_i(t)
+=\Phi_{i;a},\delta x_{0a}+\frac12\Phi_{i;ab},\delta x_{0a}\delta x_{0b}+\cdots
+\]
+
+where
+
+\begin{itemize}
+\tightlist
+\item
+  \(\Phi_{i;a}\) is the first-order STT,
+\item
+  \(\Phi_{i;ab}\) is the second-order STT.
+\end{itemize}
+
+This is simply Equation~\ref{eq-stt-taylor-map} truncated after second
+order.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{Step 2. Time derivative of
+Equation~\ref{eq-stt-taylor-map}}{Step 2. Time derivative of Equation~}}\label{step-2.-time-derivative-of-eq-stt-taylor-map}
+
+Since only the STTs depend on time,
+
+\[
+\delta\dot x_i=\dot\Phi_{i;a}\delta x_{0a}+\frac12\dot\Phi_{i;ab}\delta x_{0a}\delta x_{0b}+\cdots
+\]
+
+which is Equation~\ref{eq-stt-taylor-map-time-derivative}. The first
+term is first-order (hence ignored in the second order derivation), and
+the second term is second-order.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Step 3. Expand the
+dynamics}\label{step-3.-expand-the-dynamics}
+
+Equation~\ref{eq-stt-eom-taylor-map} gives
+
+\[
+\delta\dot x_i=f^\star_{i;\gamma}\delta x_\gamma+\frac12f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta+\cdots
+\]
+
+where
+
+\[
+f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
+\]
+
+\[
+f^\star_{i;\gamma\eta}=\frac{\partial^2 f_i}{\partial x_\gamma\partial x_\eta}
+\]
+
+evaluated along the reference trajectory.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{\texorpdfstring{Step 4. Substitute
+Equation~\ref{eq-stt-taylor-map} into
+Equation~\ref{eq-stt-eom-taylor-map}}{Step 4. Substitute Equation~ into Equation~}}\label{step-4.-substitute-eq-stt-taylor-map-into-eq-stt-eom-taylor-map}
+
+Replace every \(\delta x_\gamma\) by
+
+\[
+\delta x_\gamma=\Phi_{\gamma;a}\delta x_{0a}+\frac12\Phi_{\gamma;ab}\delta x_{0a}\delta x_{0b}.
+\]
+
+The right-hand side becomes
+
+\[
+f^\star_{i;\gamma}
+\left(
+\Phi_{\gamma;a}\delta x_{0a}
++
+\frac12
+\Phi_{\gamma;ab}
+\delta x_{0a}\delta x_{0b}
+\right)
++
+\frac12
+f^\star_{i;\gamma\eta}
+\delta x_\gamma\delta x_\eta.
+\]
+
+Now treat the two terms separately.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{First contribution}\label{first-contribution}
+
+Expanding the first term gives
+
+\[
+f^\star_{i;\gamma}
+\Phi_{\gamma;a}\delta x_{0a}
++
+\frac12
+f^\star_{i;\gamma}
+\Phi_{\gamma;ab}
+\delta x_{0a}\delta x_{0b}.
+\]
+
+The first piece is first-order.
+
+The second piece contributes to the second-order equation.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Second contribution}\label{second-contribution}
+
+Now examine
+
+\[
+\frac12
+f^\star_{i;\gamma\eta}
+\delta x_\gamma\delta x_\eta.
+\]
+
+For deriving the second-order equation, only first-order parts of each
+state are needed because
+
+\[
+(\text{1st})(\text{1st})=\text{2nd},
+\]
+
+while
+
+\[
+(\text{1st})(\text{2nd})
+=\text{3rd}
+\]
+
+and is ignored.
+
+Therefore,
+
+\[
+\delta x_\gamma=\Phi_{\gamma;a}\delta x_{0a},
+\]
+
+\[
+\delta x_\eta=\Phi_{\eta;b}\delta x_{0b}
+\]
+
+Hence
+
+\[
+\delta x_\gamma\delta x_\eta=\Phi_{\gamma;a}\Phi_{\eta;b}\delta x_{0a}\delta x_{0b}
+\]
+
+Substituting,
+
+\[
+\frac12
+f^\star_{i;\gamma\eta}
+\Phi_{\gamma;a}
+\Phi_{\eta;b}
+\delta x_{0a}\delta x_{0b}.
+\]
+
+This is the entire second-order contribution from the nonlinear
+dynamics.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsubsection{Collect all second-order
+terms}\label{collect-all-second-order-terms}
+
+The complete right-hand side therefore contains
+
+\[
+\frac12
+f^\star_{i;\gamma}
+\Phi_{\gamma;ab}
+\delta x_{0a}\delta x_{0b}
++
+\frac12
+f^\star_{i;\gamma\eta}
+\Phi_{\gamma;a}
+\Phi_{\eta;b}
+\delta x_{0a}\delta x_{0b}.
+\]
+
+The right-hand side from
+Equation~\ref{eq-stt-taylor-map-time-derivative} contains
+
+\[
+\frac12
+\dot\Phi_{i;ab}
+\delta x_{0a}\delta x_{0b}.
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Step 5. Balance
+coefficients}\label{step-5.-balance-coefficients}
+
+Since
+
+\[
+\delta x_{0a}\delta x_{0b}
+\]
+
+are independent variables, their coefficients must be equal.
+
+Removing the common factor (1/2),
+
+\[
+\boxed{
+\dot\Phi_{i;ab}=f^\star_{i;\gamma}\Phi_{\gamma;ab}+f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}}
+\] \{eq-stt-second-order-differential-equation\}
+
+First order STT's \(\Phi_{i;a}\) and \(\Phi_{i;b}\) are obtained by
+solving the first-order STT differential equation, which is a
+prerequisite for solving the second-order equation.
+
 \protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{1}
 \bibitem[\citeproctext]{ref-acciarini:10.2514ux2f1.G008717}
@@ -3500,6 +4441,12 @@ Conference (ACC)}, 5556--61.
 Bignon, Emmanuel, P Mercier, Vincent Azzopardi, and R Pinéde. 2015.
 {``Accurate Numerical Orbit Propagation Using Polynomial Algebra
 Computational Engine Pace.''} \emph{ISSFD 2015 Congress}.
+
+\bibitem[\citeproctext]{ref-boone-mcmahon:10.2514ux2f1.G006910}
+Boone, Spencer, and Jay McMahon. 2023. {``Directional State Transition
+Tensors for Capturing Dominant Nonlinear Effects in Orbital Dynamics.''}
+\emph{Journal of Guidance, Control, and Dynamics} 46 (3): 431--42.
+\url{https://doi.org/10.2514/1.G006910}.
 
 \bibitem[\citeproctext]{ref-bosorbit}
 Bos, Justin. 2025. \emph{Orbit Uncertainty Propagation in Space
@@ -3523,6 +4470,12 @@ Sup{é}rieur de l'A{é}ronautique et de l'Espace, Toulouse~\ldots.
 Fossà, Alberto. 2024. {``Propagation Multi-Fid{é}lit{é} d'incertitude
 Orbitale En Pr{é}sence d'acc{é}l{é}rations Stochastiques.''} PhD thesis,
 Inst. Sup{é}rieur de l'A{é}ronautique et de l'Espace, Toulouse.
+
+\bibitem[\citeproctext]{ref-fujimoto-scheeres:10.2514ux2f1.G000795}
+Fujimoto, K., and D. J. Scheeres. 2015. {``Tractable Expressions for
+Nonlinearly Propagated Uncertainties.''} \emph{Journal of Guidance,
+Control, and Dynamics} 38 (6): 1146--51.
+\url{https://doi.org/10.2514/1.G000795}.
 
 \bibitem[\citeproctext]{ref-JONES2019406}
 Jones, Brandon A., and Ryan Weisman. 2019. {``Multi-Fidelity Orbit
@@ -3574,11 +4527,10 @@ International Conference on Acoustics, Speech, and Signal Processing.
 Proceedings (Cat. No.01CH37221)} 6: 3461--3464 vol.6.
 \url{https://doi.org/10.1109/ICASSP.2001.940586}.
 
-\bibitem[\citeproctext]{ref-zhou2026time}
-Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2026.
-{``Time-Varying Directional State Transition Tensor for Orbit
-Uncertainty Propagation.''} \emph{Journal of Guidance, Control, and
-Dynamics}, 1--17.
+\bibitem[\citeproctext]{ref-zhou2024timevaryingdirectionalstatetransition}
+Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2024.
+\emph{Time-Varying Directional State Transition Tensor for Orbit
+Uncertainty Propagation}. \url{https://arxiv.org/abs/2412.07060}.
 
 \end{CSLReferences}
 

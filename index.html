@@ -112,7 +112,6 @@ window.Quarto = {
     
 
 ;,citation_issue=4;,citation_doi=10.2514/1.G008717;,citation_volume=48;,citation_journal_title=Journal of Guidance, Control, and Dynamics;">
-<meta name="citation_reference" content="citation_title=Time-varying directional state transition tensor for orbit uncertainty propagation;,citation_author=Xingyu Zhou;,citation_author=Roberto Armellin;,citation_author=Dong Qiao;,citation_author=Xiangyu Li;,citation_publication_date=2026;,citation_cover_date=2026;,citation_year=2026;,citation_journal_title=Journal of Guidance, Control, and Dynamics;,citation_publisher=American Institute of Aeronautics; Astronautics;">
 <meta name="citation_reference" content="citation_title=Nonlinear mapping of gaussian statistics: Theory and applications to spacecraft trajectory design;,citation_author=Ryan S. Park;,citation_author=Daniel J. Scheeres;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_fulltext_html_url= 
     
         https://doi.org/10.2514/1.20177
@@ -126,6 +125,21 @@ window.Quarto = {
 <meta name="citation_reference" content="citation_title=The higher order unscented filter;,citation_author=D. Tenne;,citation_author=T. Singh;,citation_publication_date=2003;,citation_cover_date=2003;,citation_year=2003;,citation_doi=10.1109/ACC.2003.1243441;,citation_volume=3;,citation_conference_title=Proceedings of the 2003 american control conference, 2003.;">
 <meta name="citation_reference" content="citation_title=The conjugate unscented transform — an approach to evaluate multi-dimensional expectation integrals;,citation_author=Nagavenkat Adurthi;,citation_author=Puneet Singla;,citation_author=Tarunraj Singh;,citation_publication_date=2012;,citation_cover_date=2012;,citation_year=2012;,citation_doi=10.1109/ACC.2012.6314970;,citation_conference_title=2012 american control conference (ACC);">
 <meta name="citation_reference" content="citation_title=Multifidelity orbit uncertainty propagation in the presence of stochastic accelerations;,citation_author=Alberto Fossa;,citation_author=Daniel Alazard;,citation_author=Emmanuel Delande;,citation_author=Roberto Armellin;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_fulltext_html_url=https://depozit.isae.fr/theses/2024/2024_Fossa_Alberto.pdf;,citation_dissertation_institution=Ph. D. Thesis, Inst. Supérieur de l’Aéronautique et de l’Espace, Toulouse&nbsp;…;">
+<meta name="citation_reference" content="citation_title=Directional state transition tensors for capturing dominant nonlinear effects in orbital dynamics;,citation_abstract=Higher-order methods such as state transition tensors (STTs) have shown promise for a variety of applications in astrodynamics, but can be limited in their use due to their potentially large computational and storage requirements. In this paper we present a method for approximating STTs by aligning the STTs with particularly unstable directions. This strategy allows us to isolate the most important terms in the higher-order STTs and ignore any less important terms. This method, which we call directional state transition tensors (DSTTs), is applied to several examples in two- and three-body dynamic systems, and it is shown to perform well for both nonlinear state and state uncertainty propagation. The method produces similar results to the full STTs, but requires significantly fewer elements to be stored, which can result in up to 1000× improvements in speed for nonlinear uncertainty propagation computations. DSTTs are promising for expanding the use of STTs to situations with highly nonlinear dynamics but limited computational resources, such as on-board a spacecraft.;,citation_author=Spencer Boone;,citation_author=Jay McMahon;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url= 
+    
+        https://doi.org/10.2514/1.G006910
+    
+    
+
+;,citation_issue=3;,citation_doi=10.2514/1.G006910;,citation_volume=46;,citation_journal_title=Journal of Guidance, Control, and Dynamics;">
+<meta name="citation_reference" content="citation_title=Time-varying directional state transition tensor for orbit uncertainty propagation;,citation_author=Xingyu Zhou;,citation_author=Roberto Armellin;,citation_author=Dong Qiao;,citation_author=Xiangyu Li;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_fulltext_html_url=https://arxiv.org/abs/2412.07060;">
+<meta name="citation_reference" content="citation_title=Tractable expressions for nonlinearly propagated uncertainties;,citation_author=K. Fujimoto;,citation_author=D. J. Scheeres;,citation_publication_date=2015;,citation_cover_date=2015;,citation_year=2015;,citation_fulltext_html_url= 
+    
+        https://doi.org/10.2514/1.G000795
+    
+    
+
+;,citation_issue=6;,citation_doi=10.2514/1.G000795;,citation_volume=38;,citation_journal_title=Journal of Guidance, Control, and Dynamics;">
 </head>
 
 <body class="quarto-light">
@@ -273,15 +287,44 @@ window.Quarto = {
   <li><a href="#core-mechanics-and-relationship-to-linear-approximation" id="toc-core-mechanics-and-relationship-to-linear-approximation" class="nav-link" data-scroll-target="#core-mechanics-and-relationship-to-linear-approximation">Core Mechanics and Relationship to Linear Approximation</a></li>
   <li><a href="#mathematical-architecture-of-stts" id="toc-mathematical-architecture-of-stts" class="nav-link" data-scroll-target="#mathematical-architecture-of-stts">Mathematical Architecture of STTs</a>
   <ul class="collapse">
+  <li><a href="#nonlinear-state-deviation" id="toc-nonlinear-state-deviation" class="nav-link" data-scroll-target="#nonlinear-state-deviation">Nonlinear State Deviation</a></li>
+  <li><a href="#taylor-expansion-of-the-solution-flow" id="toc-taylor-expansion-of-the-solution-flow" class="nav-link" data-scroll-target="#taylor-expansion-of-the-solution-flow">Taylor Expansion of the Solution Flow</a></li>
   <li><a href="#the-high-order-taylor-map" id="toc-the-high-order-taylor-map" class="nav-link" data-scroll-target="#the-high-order-taylor-map">The High-Order Taylor Map</a></li>
   <li><a href="#differential-equations-for-tensor-propagation" id="toc-differential-equations-for-tensor-propagation" class="nav-link" data-scroll-target="#differential-equations-for-tensor-propagation">Differential Equations for Tensor Propagation</a></li>
   </ul></li>
   <li><a href="#methodology-moment-propagation-via-algebraic-mapping" id="toc-methodology-moment-propagation-via-algebraic-mapping" class="nav-link" data-scroll-target="#methodology-moment-propagation-via-algebraic-mapping">Methodology: Moment Propagation via Algebraic Mapping</a></li>
   <li><a href="#algorithm-the-stt-uncertainty-pipeline" id="toc-algorithm-the-stt-uncertainty-pipeline" class="nav-link" data-scroll-target="#algorithm-the-stt-uncertainty-pipeline">Algorithm: The STT Uncertainty Pipeline</a></li>
   <li><a href="#variations-and-algorithmic-enhancements-1" id="toc-variations-and-algorithmic-enhancements-1" class="nav-link" data-scroll-target="#variations-and-algorithmic-enhancements-1">Variations and Algorithmic Enhancements</a></li>
-  <li><a href="#stt-in-the-spectrum-of-surrogate-methods" id="toc-stt-in-the-spectrum-of-surrogate-methods" class="nav-link" data-scroll-target="#stt-in-the-spectrum-of-surrogate-methods">STT in the Spectrum of Surrogate Methods</a></li>
-  <li><a href="#performance-and-requirements" id="toc-performance-and-requirements" class="nav-link" data-scroll-target="#performance-and-requirements">Performance and Requirements</a></li>
-  <li><a href="#role-in-conjunction-assessment-ca" id="toc-role-in-conjunction-assessment-ca" class="nav-link" data-scroll-target="#role-in-conjunction-assessment-ca">Role in Conjunction Assessment (CA)</a></li>
+  <li><a href="#contextual-limitations-of-stts-in-uncertainty-propagation" id="toc-contextual-limitations-of-stts-in-uncertainty-propagation" class="nav-link" data-scroll-target="#contextual-limitations-of-stts-in-uncertainty-propagation">Contextual Limitations of STTs in Uncertainty Propagation</a></li>
+  </ul></li>
+  <li><a href="#directional-state-transition-tensors-dstt" id="toc-directional-state-transition-tensors-dstt" class="nav-link" data-scroll-target="#directional-state-transition-tensors-dstt">Directional State Transition Tensors (DSTT)</a>
+  <ul class="collapse">
+  <li><a href="#theoretical-framework-and-methodology" id="toc-theoretical-framework-and-methodology" class="nav-link" data-scroll-target="#theoretical-framework-and-methodology">Theoretical Framework and Methodology</a>
+  <ul class="collapse">
+  <li><a href="#the-polynomial-approximation" id="toc-the-polynomial-approximation" class="nav-link" data-scroll-target="#the-polynomial-approximation">The Polynomial Approximation</a></li>
+  <li><a href="#methodology-of-the-transformation" id="toc-methodology-of-the-transformation" class="nav-link" data-scroll-target="#methodology-of-the-transformation">Methodology of the Transformation</a></li>
+  </ul></li>
+  <li><a href="#advantages-over-the-standard-stt-method" id="toc-advantages-over-the-standard-stt-method" class="nav-link" data-scroll-target="#advantages-over-the-standard-stt-method">Advantages over the Standard STT Method</a></li>
+  <li><a href="#variations-and-enhancements" id="toc-variations-and-enhancements" class="nav-link" data-scroll-target="#variations-and-enhancements">Variations and Enhancements</a>
+  <ul class="collapse">
+  <li><a href="#time-varying-directional-stt-tdstt" id="toc-time-varying-directional-stt-tdstt" class="nav-link" data-scroll-target="#time-varying-directional-stt-tdstt">Time-Varying Directional STT (TDSTT)</a></li>
+  <li><a href="#multi-directional-selection" id="toc-multi-directional-selection" class="nav-link" data-scroll-target="#multi-directional-selection">Multi-Directional Selection</a></li>
+  </ul></li>
+  <li><a href="#algorithm-flowchart-for-dstttdstt-implementation" id="toc-algorithm-flowchart-for-dstttdstt-implementation" class="nav-link" data-scroll-target="#algorithm-flowchart-for-dstttdstt-implementation">Algorithm Flowchart for DSTT/TDSTT Implementation</a></li>
+  <li><a href="#summary-table-contextual-positioning" id="toc-summary-table-contextual-positioning" class="nav-link" data-scroll-target="#summary-table-contextual-positioning">Summary Table: Contextual Positioning</a></li>
+  </ul></li>
+  <li><a href="#reduced-state-transition-tensors-rstt" id="toc-reduced-state-transition-tensors-rstt" class="nav-link" data-scroll-target="#reduced-state-transition-tensors-rstt">Reduced State Transition Tensors (RSTT)</a>
+  <ul class="collapse">
+  <li><a href="#theoretical-foundation-stabilizing-the-solution-flow" id="toc-theoretical-foundation-stabilizing-the-solution-flow" class="nav-link" data-scroll-target="#theoretical-foundation-stabilizing-the-solution-flow">Theoretical Foundation: Stabilizing the Solution Flow</a></li>
+  <li><a href="#methodology-for-rstt-approximation" id="toc-methodology-for-rstt-approximation" class="nav-link" data-scroll-target="#methodology-for-rstt-approximation">Methodology for RSTT Approximation</a>
+  <ul class="collapse">
+  <li><a href="#first-order-correction-the-secular-stm" id="toc-first-order-correction-the-secular-stm" class="nav-link" data-scroll-target="#first-order-correction-the-secular-stm">1. First-Order Correction (The Secular STM)</a></li>
+  <li><a href="#the-second-order-rstt-approximation" id="toc-the-second-order-rstt-approximation" class="nav-link" data-scroll-target="#the-second-order-rstt-approximation">2. The Second-Order RSTT Approximation</a></li>
+  <li><a href="#generalization-to-higher-orders" id="toc-generalization-to-higher-orders" class="nav-link" data-scroll-target="#generalization-to-higher-orders">3. Generalization to Higher Orders</a></li>
+  </ul></li>
+  <li><a href="#algorithm-for-rstt-based-uncertainty-propagation" id="toc-algorithm-for-rstt-based-uncertainty-propagation" class="nav-link" data-scroll-target="#algorithm-for-rstt-based-uncertainty-propagation">Algorithm for RSTT-Based Uncertainty Propagation</a></li>
+  <li><a href="#advantages-and-contextual-variations" id="toc-advantages-and-contextual-variations" class="nav-link" data-scroll-target="#advantages-and-contextual-variations">Advantages and Contextual Variations</a></li>
+  <li><a href="#variations-on-the-rstt-method" id="toc-variations-on-the-rstt-method" class="nav-link" data-scroll-target="#variations-on-the-rstt-method">Variations on the RSTT Method</a></li>
   </ul></li>
   <li><a href="#gaussian-mixture-models-gmm-framework" id="toc-gaussian-mixture-models-gmm-framework" class="nav-link" data-scroll-target="#gaussian-mixture-models-gmm-framework">Gaussian Mixture Models (GMM) Framework</a>
   <ul class="collapse">
@@ -305,7 +348,7 @@ window.Quarto = {
   <li><a href="#adaptive-gmms-aegis-and-mdaes" id="toc-adaptive-gmms-aegis-and-mdaes" class="nav-link" data-scroll-target="#adaptive-gmms-aegis-and-mdaes">Adaptive GMMs (AEGIS and MDAES)</a></li>
   <li><a href="#multidirectional-gmm-mgmm" id="toc-multidirectional-gmm-mgmm" class="nav-link" data-scroll-target="#multidirectional-gmm-mgmm">Multidirectional GMM (MGMM)</a></li>
   <li><a href="#gaussian-mixture-batch-processor-gmbp" id="toc-gaussian-mixture-batch-processor-gmbp" class="nav-link" data-scroll-target="#gaussian-mixture-batch-processor-gmbp">Gaussian Mixture Batch Processor (GMBP)</a></li>
-  <li><a href="#role-in-conjunction-assessment-ca-1" id="toc-role-in-conjunction-assessment-ca-1" class="nav-link" data-scroll-target="#role-in-conjunction-assessment-ca-1">Role in Conjunction Assessment (CA)</a></li>
+  <li><a href="#role-in-conjunction-assessment-ca" id="toc-role-in-conjunction-assessment-ca" class="nav-link" data-scroll-target="#role-in-conjunction-assessment-ca">Role in Conjunction Assessment (CA)</a></li>
   </ul></li>
   <li><a href="#adaptive-splitting-in-the-context-of-gaussian-mixture-models-gmm" id="toc-adaptive-splitting-in-the-context-of-gaussian-mixture-models-gmm" class="nav-link" data-scroll-target="#adaptive-splitting-in-the-context-of-gaussian-mixture-models-gmm">Adaptive splitting in the Context of Gaussian Mixture Models (GMM)</a>
   <ul class="collapse">
@@ -336,6 +379,7 @@ window.Quarto = {
   <li><a href="#algorithm-the-taylor-diffusion-propagator" id="toc-algorithm-the-taylor-diffusion-propagator" class="nav-link" data-scroll-target="#algorithm-the-taylor-diffusion-propagator">Algorithm: The Taylor Diffusion Propagator</a></li>
   </ul></li>
   <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
+  
   
   </ul>
 <div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="up_methods_comparison-preview.html"><i class="bi bi-journal-code"></i>Limitations of Orbital Uncertainty Propagation Methods</a></li></ul></div></nav>
@@ -1220,25 +1264,86 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <li><p><strong>Algebraic Propagation:</strong> Once the tensors are obtained by numerically integrating along a nominal trajectory, they provide a means to compute the nonlinear propagation of the first two statistical moments (mean and covariance) through relatively simple <strong>algebraic operations</strong>.</p></li>
 </ul>
 </section>
-<section id="mathematical-architecture-of-stts" class="level2">
+<section id="mathematical-architecture-of-stts" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="mathematical-architecture-of-stts">Mathematical Architecture of STTs</h2>
 <p>The fundamental premise of the STT method is that the state deviation <span class="math inline">\(\delta \mathbf{x}(t)\)</span> at a future time can be expressed as a function of the initial deviation <span class="math inline">\(\delta \mathbf{x}_0\)</span> using a <span class="math inline">\(P\)</span>-order Taylor series expansion about a nominal trajectory <span class="math inline">\(\mathbf{x}^*(t)\)</span>.</p>
-<section id="the-high-order-taylor-map" class="level3">
-<h3 class="anchored" data-anchor-id="the-high-order-taylor-map">The High-Order Taylor Map</h3>
-<p>The <span class="math inline">\(i\)</span>-th component of the state deviation at a future time <span class="math inline">\(t\)</span> is approximated as: <span class="math display">\[
-\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+<section id="nonlinear-state-deviation" class="level3">
+<h3 class="anchored" data-anchor-id="nonlinear-state-deviation">Nonlinear State Deviation</h3>
+<p><a href="#eq-stt-deviation" class="quarto-xref">Equation&nbsp;8</a> defines the deviation of a current state from a nominal trajectory as the difference between two solution flows of the system’s equations of motion, which are of the form <span class="math inline">\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)\)</span>.</p>
+<p><span id="eq-stt-deviation"><span class="math display">\[
+\delta \mathbf{x}(t) = \phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0) - \phi(t; \mathbf{x}_0, t_0)
+\tag{8}\]</span></span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\delta \mathbf{x}(t)\)</span>: The vector of state deviations at time <span class="math inline">\(t\)</span>.</p></li>
+<li><p><span class="math inline">\(\phi(t; \mathbf{x}_0, t_0)\)</span>: The <strong>solution flow</strong>, representing the mapping of the state from the initial epoch <span class="math inline">\(t_0\)</span> to a future time <span class="math inline">\(t\)</span>.</p></li>
+<li><p><span class="math inline">\(\mathbf{x}_0\)</span>: The nominal initial state.</p></li>
+<li><p><span class="math inline">\(\delta \mathbf{x}_0\)</span>: The initial deviation or perturbation from the nominal state.</p></li>
+</ul>
+<p>The above deviation follows the dynamics of the system, which can be expressed as a differential equation for the deviation: <span id="eq-stt-eom"><span class="math display">\[
+\dot{\delta \mathbf{x}}(t) = \mathbf{f}[\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0), t] - \mathbf{f}[\phi(t; \mathbf{x}_0, t_0), t]
+\tag{9}\]</span></span></p>
+</section>
+<section id="taylor-expansion-of-the-solution-flow" class="level3">
+<h3 class="anchored" data-anchor-id="taylor-expansion-of-the-solution-flow">Taylor Expansion of the Solution Flow</h3>
+<p>To arrive at <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>, we perform a multivariate Taylor series expansion of the perturbed solution flow <span class="math inline">\(\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0)\)</span> about the nominal initial conditions <span class="math inline">\(\mathbf{x}_0\)</span>.</p>
+<ul>
+<li><p><strong>Step 1: Scalar Component Expansion</strong> The <span class="math inline">\(i\)</span>-th component of the perturbed state at time <span class="math inline">\(t\)</span> can be expressed as a function of the initial state components: <span class="math display">\[
+x_i(t) = \phi_i(t; x_{0,1} + \delta x_{0,1}, \dots, x_{0,n} + \delta x_{0,n}, t_0)
+\]</span></p></li>
+<li><p><strong>Step 2: Multivariate Taylor Series Application</strong> Expanding this function about the nominal initial state <span class="math inline">\(x_{0,j}\)</span> yields: <span class="math display">\[
+x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x_{0,k_1}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} + \frac{1}{2!} \left. \frac{\partial^2 \phi_i}{\partial x_{0,k_1} \partial x_{0,k_2}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} \delta x_{0,k_2} + \dots
+\]</span></p></li>
+<li><p><strong>Step 3: Subtraction of the Nominal Flow</strong> Substituting this expanded form back into <a href="#eq-stt-deviation" class="quarto-xref">Equation&nbsp;8</a>: <span class="math display">\[
+\delta x_i(t) = \left[ \phi_i(t; \mathbf{x}_0, t_0) + \sum_{p=1}^P \frac{1}{p!} \Phi_{i,k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p} \right] - \phi_i(t; \mathbf{x}_0, t_0)
 \]</span></p>
+<div id="col-pth-order-stt" class="callout callout-style-default callout-note callout-titled" title="State Transition Tensor Definition">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>State Transition Tensor Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Phi_{i,k_1 \dots k_p}\)</span> is the <span class="math inline">\(p\)</span>-th order <strong>State Transition Tensor</strong>, defined as the <span class="math inline">\(p\)</span>-th partial derivative of the solution flow with respect to initial conditions: <span class="math inline">\(\frac{\partial^p x_i}{\partial x_{0,k_1} \dots \partial x_{0,k_p}}\)</span>.</p>
+<p>The set {k_1, k_2, …, k_n} is a re-labelling of the original state components {1, 2, …, n} with one-to-one mapping. This notation allows the flexibility to choose k_j such that it reflects a specific ordering or a subset of state components of interest for the expansion, while still maintaining the generality of the tensor representation.</p>
+</div>
+</div>
+<p>The zeroth-order term <span class="math inline">\(\phi_i(t; \mathbf{x}_0, t_0)\)</span> (the nominal trajectory) cancels out, leaving only the sum of the higher-order partial derivatives.</p></li>
+</ul>
+</section>
+<section id="the-high-order-taylor-map" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="the-high-order-taylor-map">The High-Order Taylor Map</h3>
+<p>The final expression relates initial deviations to future deviations through a sum of tensors: <span id="eq-stt-taylor-map"><span class="math display">\[
+\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\tag{10}\]</span></span></p>
 <p><strong>Term Definitions:</strong></p>
 <ul>
 <li><p><span class="math inline">\(\delta x_i(t)\)</span>: The <span class="math inline">\(i\)</span>-th component of the state deviation at time <span class="math inline">\(t\)</span>.</p></li>
-<li><p><span class="math inline">\(\Phi_{i,k_1 \dots k_p}\)</span>: The <span class="math inline">\(p\)</span>-th order <strong>State Transition Tensor</strong>, defined as the <span class="math inline">\(p\)</span>-th partial derivative of the solution flow with respect to initial conditions: <span class="math inline">\(\frac{\partial^p x_i}{\partial x_{0,k_1} \dots \partial x_{0,k_p}}\)</span>.</p></li>
+<li><p><span class="math inline">\(\Phi_{i,k_1 \dots k_p}\)</span>: The <span class="math inline">\(p\)</span>-th order <strong>State Transition Tensor</strong>, see the note above.</p></li>
 <li><p><span class="math inline">\(\delta x_{0,k_j}\)</span>: The <span class="math inline">\(k_j\)</span>-th component of the initial state deviation.</p></li>
 <li><p><span class="math inline">\(P\)</span>: The truncation order of the expansion (typically <span class="math inline">\(P=2\)</span> or <span class="math inline">\(3\)</span>).</p></li>
 </ul>
+<p>Using similar logic, we can also derive the Taylor expansion for the equations of motion (EOM) from <a href="#eq-stt-eom" class="quarto-xref">Equation&nbsp;9</a> for the perturbed state, which is essential for propagating the STTs through time:</p>
+<p><span id="eq-stt-eom-taylor-map"><span class="math display">\[
+\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\tag{11}\]</span></span></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="math display">\[
+\mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) = \left. \frac{\partial^p f_i}{\partial x_{k_1} \dots \partial x_{k_p}} \right|_{\mathbf{x}^*(t)}
+\]</span></p>
+<p>where the superscript <span class="math inline">\(^*\)</span> indicates evaluation along the nominal trajectory <span class="math inline">\(\mathbf{x}^*(t)\)</span>.</p>
+</div></div><p>We can also find <span class="math inline">\(\dot{x}_i(t)\)</span> by differentiating <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> with respect to time, which yields: <span id="eq-stt-taylor-map-time-derivative"><span class="math display">\[
+\dot{x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\tag{12}\]</span></span></p>
 </section>
 <section id="differential-equations-for-tensor-propagation" class="level3">
 <h3 class="anchored" data-anchor-id="differential-equations-for-tensor-propagation">Differential Equations for Tensor Propagation</h3>
-<p>STTs are obtained by integrating a set of coupled ordinary differential equations (ODEs) derived from the system dynamics <span class="math inline">\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, t)\)</span>. For example, the second-order STT evolves according to: <span class="math display">\[
+<p>STTs are obtained by integrating a set of coupled ordinary differential equations (ODEs) obtained by substituting <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> and <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> into RHS and LHS of <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> each. (Derivation is provided in <a href="#sec-appendix-stt" class="quarto-xref">Section&nbsp;16</a>). For example, the second-order STT(i.e, <span class="math inline">\(P=2\)</span>) evolves according to the following ODE:</p>
+<p><span class="math display">\[
 \dot{\Phi}_{i,ab} = f_{i,\alpha}^\star \Phi_{\alpha,ab} + f_{i,\alpha\beta}^\star \Phi_{\alpha,a} \Phi_{\beta,b}
 \]</span></p>
 <p><strong>Term Definitions:</strong></p>
@@ -1253,15 +1358,63 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <h2 class="anchored" data-anchor-id="methodology-moment-propagation-via-algebraic-mapping">Methodology: Moment Propagation via Algebraic Mapping</h2>
 <p>Unlike sampling methods that propagate individual points, STT-based uncertainty propagation maps the initial statistical moments directly to the terminal state through simple algebraic operations.</p>
 <ol type="1">
-<li><p><strong>Reference Integration:</strong> Solve the ODEs for the nominal state <span class="math inline">\(\mathbf{x}(t)\)</span> and the tensors <span class="math inline">\(\phi\)</span> up to order <span class="math inline">\(P\)</span>.</p></li>
-<li><p><strong>Initial Moment Characterization:</strong> Compute the raw moments of the initial PDF (e.g., using the moment-generating function for a Gaussian or uniform distribution).</p></li>
-<li><p><strong>Statistical Mapping:</strong> Use the Taylor expansion and the linearity of the expectation operator to compute the terminal mean (<span class="math inline">\(\hat{\mu}\)</span>) and covariance (<span class="math inline">\(\hat{\mathbf{P}}\)</span>): <span class="math display">\[
-\delta \mu_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
-\]</span></p></li>
-<li><p><strong>Gaussian Moment Property:</strong> If the initial distribution is Gaussian, higher-order moments are analytically linked to the covariance via <strong>Isserlis’ Theorem</strong> (or Wick’s formula), allowing for precise reconstruction of non-Gaussian terminal shapes using only the initial mean and covariance.</p></li>
+<li><strong>Reference Integration:</strong> Solve the ODEs for the nominal state <span class="math inline">\(\mathbf{x}(t)\)</span> and the tensors <span class="math inline">\(\phi\)</span> up to order <span class="math inline">\(P\)</span>. The value of <span class="math inline">\(P\)</span> is chosen based on the nonlinearity index taken from the propagation of the deviation <span class="math inline">\(\delta \mathbf{x}(t)\)</span>.</li>
+</ol>
+<div id="tip-nonlinearity-index" class="callout callout-style-default callout-tip callout-titled" title="Local Nonlinearity Index for STT Order Selection">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip&nbsp;1: Local Nonlinearity Index for STT Order Selection
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Formula: <span class="math display">\[
+\eta_m(t,t_0)=\sup_{i=1,\ldots,n}\sup_{k=1,\ldots,N}\frac{\left|\Delta x_i^{(m)}-\Delta\bar x_i\right|}{\left|\Delta\bar x_i\right|}
+\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(\Delta x_i^{(m)}\)</span> = ith component predicted by an mth-order STT,</li>
+<li><span class="math inline">\(\Delta\bar x_i\)</span> = ith component obtained by direct nonlinear numerical integration,</li>
+<li><span class="math inline">\(N\)</span> = sampled initial conditions,</li>
+<li><span class="math inline">\(n\)</span> = state dimension.</li>
+</ul>
+</div>
+</div>
+<ol start="2" type="1">
+<li><p><strong>Initial Moment Characterization:</strong> Compute the raw moments of the initial PDF.</p></li>
+<li><p><strong>Statistical Mapping:</strong> Use <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> and the linearity of the expectation operator to compute the terminal mean (<span class="math inline">\(\hat{\mu}\)</span>) and covariance (<span class="math inline">\(\hat{\mathbf{P}}\)</span>): <span class="math display">\[
+\delta \mu_i(t) =E[\delta x_i(t)]= \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
+\]</span></p>
+<p><span class="math display">\[
+P_{ij}(t)=E[\delta x_i \delta x_j]-\delta \mu_i\delta \mu_j=\sum_{p=1}^{m}\sum_{q=1}^{m}\frac1{p!q!}\Phi_{i;k_1\cdots k_p}\Phi_{j;l_1\cdots l_q}E[\delta x_{k_1}\cdots\delta x_{k_p}\delta x_{l_1}\cdots\delta x_{l_q}]-\delta \mu_i\delta \mu_j
+\]</span></p>
+<p>where <span class="math inline">\(\delta \mu_i\)</span> is the <span class="math inline">\(i\)</span>-th component of the terminal mean vector and <span class="math inline">\(\mathbf{P}_{ij}\)</span> is the <span class="math inline">\((i,j)\)</span>-th component of the terminal covariance matrix.</p></li>
 </ol>
 
 <div class="no-row-height column-margin column-container"><div class="">
+<ul>
+<li><p>Expectation of a random variable <span class="math inline">\(x(t)\)</span> is defined as: <span class="math display">\[
+\mu=E[x(t)]
+\]</span></p></li>
+<li><p>Covariance of two random variables <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> is defined as: <span class="math display">\[
+P_{xy}=E[(x(t)-\mu_x)(y(t)-\mu_y)]= E[xy]-\mu_x\mu_y
+\]</span></p></li>
+</ul>
+</div></div><ol start="4" type="1">
+<li><strong>Gaussian Moment Property:</strong> If the initial distribution is Gaussian, higher-order moments are analytically linked to the covariance via <strong>Isserlis’ Theorem</strong> (or Wick’s formula), allowing for precise reconstruction of non-Gaussian terminal shapes using only the initial mean and covariance.</li>
+</ol>
+<div id="note-isserlis" class="callout callout-style-default callout-note callout-titled" title="Isserlis' Theorem for Gaussian Moments">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Isserlis’ Theorem for Gaussian Moments
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>For a <strong>zero-mean</strong> multivariate normal random vector <span class="math inline">\(\mathbf{x}\)</span>, <strong>Isserlis’ Theorem</strong> provides a specific formula for the expectation of the product of its components.</p>
 <ol type="1">
 <li><p><strong>Odd Orders:</strong> If the total number of components <span class="math inline">\(k\)</span> is odd, the <span class="math inline">\(k\)</span>th-order central moment is <strong>zero</strong>.</p></li>
@@ -1276,7 +1429,9 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
 \]</span></p>
 <p><em>(Source:<span class="citation" data-cites="park-scheeres:10.2514/1.20177">Park and Scheeres (<a href="#ref-park-scheeres:10.2514/1.20177" role="doc-biblioref">2006</a>)</span>)</em></p>
-</div></div></section>
+</div>
+</div>
+</section>
 <section id="algorithm-the-stt-uncertainty-pipeline" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-the-stt-uncertainty-pipeline">Algorithm: The STT Uncertainty Pipeline</h2>
 <p>The following flowchart delineates the procedural execution of an STT-based uncertainty propagation campaign.</p>
@@ -1305,9 +1460,147 @@ E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{i
 <li><p><strong>Non-Gaussian STT Propagation:</strong> Extends the method to handle arbitrary initial PDFs (e.g., uniform distributions for asteroid gravity fields) by leveraging Moment Generating Functions (MGFs) to calculate initial expectations.</p></li>
 </ul>
 </section>
-<section id="stt-in-the-spectrum-of-surrogate-methods" class="level2">
-<h2 class="anchored" data-anchor-id="stt-in-the-spectrum-of-surrogate-methods">STT in the Spectrum of Surrogate Methods</h2>
-<p>Within the broader category of surrogate methods, STTs are defined by distinct trade-offs regarding differentiability and dimensionality.</p>
+<section id="contextual-limitations-of-stts-in-uncertainty-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="contextual-limitations-of-stts-in-uncertainty-propagation">Contextual Limitations of STTs in Uncertainty Propagation</h2>
+<p>Despite their accuracy, STTs are bounded by specific constraints within the larger UP landscape:</p>
+<ul>
+<li><p><strong>Local Validity:</strong> STTs are localized approximations valid only within the <strong>Radius of Convergence</strong> of the Taylor series; if uncertainties are too large, the expansion fails to reconstruct the dynamics.</p></li>
+<li><p><strong>Differentiability:</strong> The method requires the underlying dynamics to be continuous and differentiable to compute Local Dynamics Tensors (LDTs).</p></li>
+<li><p><strong>Complexity:</strong> Although the algebraic evaluation of the final state is fast, the method is described as <strong>computationally intensive</strong> during the initial phase because of the difficulty involved in deriving and integrating the high-order tensors for high-fidelity models (including <span class="math inline">\(J_2\)</span>, SRP, and drag).</p></li>
+</ul>
+<p>The primary takeaway is that STTs provide a <strong>local higher-order approximation</strong> of the flow manifold. While they accurately capture the “banana-shaped” warping caused by <span class="math inline">\(1/r^2\)</span> gravitational nonlinearities, they are strictly limited to the <strong>radius of convergence</strong> of the Taylor expansion. If the initial uncertainty is too large, the expansion fails, necessitating hybrid methods such as <strong>GMM-STT</strong>, which partition the state space into smaller, locally linear Gaussian kernels.</p>
+<p>Complexity is further compounded by the need to compute high-order derivatives of the dynamics, which can be prohibitive for high-fidelity models. Variations like <strong>Directional STTs</strong> and <strong>Reduced STTs</strong> have been developed to mitigate these challenges, but they still require careful consideration of the trade-offs between accuracy and computational efficiency.</p>
+</section>
+</section>
+<section id="directional-state-transition-tensors-dstt" class="level1">
+<h1>Directional State Transition Tensors (DSTT)</h1>
+<p>Within the larger context of orbital uncertainty propagation, <strong>Directional State Transition Tensors (DSTT)</strong> represent a specialized dimensionality-reduction framework derived from the high-order <strong>State Transition Tensor (STT)</strong> method, developed primarily by <span class="citation" data-cites="boone-mcmahon:10.2514/1.G006910">Boone and McMahon (<a href="#ref-boone-mcmahon:10.2514/1.G006910" role="doc-biblioref">2023</a>)</span>. While STTs provide superior precision over linearized models by capturing localized nonlinear motion through Taylor series expansions of the solution flow, they are fundamentally constrained by the “curse of dimensionality,” where the number of variables to be integrated grows exponentially with the expansion order. DSTTs mitigate this by leveraging the physical observation that system nonlinearity is often concentrated along a few “sensitive” or unstable directions.</p>
+<section id="theoretical-framework-and-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="theoretical-framework-and-methodology">Theoretical Framework and Methodology</h2>
+<p>The DSTT method reformulates the standard STT expansion by performing an orthogonal transformation of the initial state space, allowing derivatives to be taken with respect to a rotated basis that isolates directions of maximum instability. These STTs can be rotated such that the derivatives are taken with respect to an alternative basis <span class="math inline">\(y\in R^n\)</span> with no loss in information as long as <span class="math inline">\(y\)</span> constitutes an orthogonal basis that spans <span class="math inline">\(R^n\)</span>. Thesebases are related through the transformation <span class="math inline">\(y = Rx\)</span>, where <span class="math inline">\(R\)</span> corresponds to a linear transformation matrix.</p>
+<section id="the-polynomial-approximation" class="level3">
+<h3 class="anchored" data-anchor-id="the-polynomial-approximation">The Polynomial Approximation</h3>
+<p>The state deviation at a future time <span class="math inline">\(t_f\)</span> is approximated using the DSTT mapping: <span class="math display">\[
+\delta x_i(t_f) \approx \phi_{i, \kappa_1} \delta x_{\kappa_1 0} + \sum_{p=2}^{P} \frac{1}{p!} \varphi_{i, \gamma_1 \dots \gamma_p}(t_f, t_0) \delta y_{\gamma_1 0} \dots \delta y_{\gamma_p 0}
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\delta x_i\)</span>: The <span class="math inline">\(i\)</span>-th component of the final state deviation.</p></li>
+<li><p><span class="math inline">\(\phi_{i, \kappa_1}\)</span>: The first-order State Transition Matrix (STM).</p></li>
+<li><p><span class="math inline">\(\varphi_{i, \gamma_1 \dots \gamma_p}\)</span>: The <span class="math inline">\(p\)</span>-th order DSTT elements.</p></li>
+<li><p><span class="math inline">\(\delta y_{\gamma_j 0}\)</span>: The initial state deviation projected onto the rotated basis <span class="math inline">\(y = Rx\)</span>.</p></li>
+<li><p><span class="math inline">\(P\)</span>: The maximum truncation order of the Taylor series.</p></li>
+</ul>
+</section>
+<section id="methodology-of-the-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="methodology-of-the-transformation">Methodology of the Transformation</h3>
+<p>The construction of the DSTT relies on a linear transformation matrix <span class="math inline">\(R \in \mathbb{R}^{m \times n}\)</span>, where <span class="math inline">\(m\)</span> is the number of sensitive directions (typically <span class="math inline">\(m \ll n\)</span>). Each row of <span class="math inline">\(R\)</span> corresponds to a sensitive direction, identified using the eigenvectors of the <strong>Cauchy-Green Tensor (CGT)</strong>.</p>
+<div id="note-cgt" class="callout callout-style-default callout-note callout-titled" title="Cauchy-Green Tensor (CGT)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Cauchy-Green Tensor (CGT)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Cauchy-Green Tensor is a symmetric, positive-definite matrix that characterizes the local deformation of a flow. It is computed as the product of the transpose of the State Transition Matrix (STM) and the STM itself: <span class="math display">\[
+C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
+\]</span></p>
+<p>where <span class="math inline">\(t_f\)</span> is the final time and <span class="math inline">\(t_0\)</span> is the initial time. The eigenvalues of the CGT indicate the amount of stretching along each eigenvector direction, with larger eigenvalues corresponding to more sensitive directions. From <a href="#eq-lincov-propagation" class="quarto-xref">Equation&nbsp;5</a>, we understand the STM (<span class="math inline">\(\Phi\)</span>) is a linear mapping of the final perturbation vector <span class="math inline">\(\delta x(t_f)\)</span> to the initial perturbation vector <span class="math inline">\(\delta x(t_0)\)</span>. The CGT is a squaring operation that returns the relationship between the initial and final distance from the nominal motion.</p>
+<p><span class="math display">\[
+||\delta x(t_f)||^2 = \delta x(t_0)^T C(t_f,t_0) \delta x(t_0)
+\]</span></p>
+<p>The distance <span class="math inline">\(||\delta x(t_f)||^2\)</span> reveals the growth or the decay of the initial vector perturbation. Furthermore, the eigendecomposition of the CGT allows identification of the principal directions of expansion for the dynamical flow, including those that are locally associated with the largest and smallest stretching.</p>
+</div>
+</div>
+<p>The <span class="math inline">\(p\)</span>-th order DSTT elements are obtained by rotating the full STT (<span class="math inline">\(\phi\)</span>) onto this basis: <span class="math display">\[
+\varphi_{i, \gamma_1 \dots \gamma_p} = \phi_{i, k_1 \dots k_p} R_{\gamma_1, k_1} \dots R_{\gamma_p, k_p}
+\]</span></p>
+<p>By choosing the eigenvector <span class="math inline">\(\xi_1\)</span> associated with the largest eigenvalue <span class="math inline">\(\lambda_1\)</span> of the CGT, the DSTT captures the “direction of maximum stretch”. This ensures that the terms which contribute most significantly to the final state deviation are preserved, while stable directions are ignored.</p>
+<hr>
+</section>
+</section>
+<section id="advantages-over-the-standard-stt-method" class="level2">
+<h2 class="anchored" data-anchor-id="advantages-over-the-standard-stt-method">Advantages over the Standard STT Method</h2>
+<ul>
+<li><p><strong>Polynomial Complexity Growth:</strong> A full <span class="math inline">\(p\)</span>-th order STT contains <span class="math inline">\(n^{p+1}\)</span> elements, resulting in a total integration burden of <span class="math inline">\(\sum_{p=1}^P n^{p+1}\)</span> variables. In contrast, the DSTT reduces this to <span class="math inline">\(n + n^2 + \sum_{p=2}^P n m^p\)</span> variables.</p></li>
+<li><p><strong>Numerical Efficiency:</strong> For a standard 6-dimensional orbital state (<span class="math inline">\(n=6\)</span>) with one sensitive direction (<span class="math inline">\(m=1\)</span>) at second order (<span class="math inline">\(P=2\)</span>), the STT requires integrating 258 variables, whereas the DSTT requires only 48.</p></li>
+<li><p><strong>Computational Speedup:</strong> Numerical studies indicate that DSTTs can achieve up to <strong>1000× speed improvements</strong> in nonlinear uncertainty propagation compared to full STTs.</p></li>
+<li><p><strong>Reduced Storage:</strong> Because only the elements along unstable directions are stored, the method is significantly more suitable for real-time applications on on-board spacecraft computers with limited resources.</p></li>
+<li><p><strong>Analytical Tractability:</strong> DSTTs allow for the derivation of simplified, closed-form equations for propagated mean and covariance, bypassing the hundreds of terms required by Isserlis’ theorem in full higher-order covariance propagation.</p></li>
+</ul>
+<hr>
+</section>
+<section id="variations-and-enhancements" class="level2">
+<h2 class="anchored" data-anchor-id="variations-and-enhancements">Variations and Enhancements</h2>
+<section id="time-varying-directional-stt-tdstt" class="level3">
+<h3 class="anchored" data-anchor-id="time-varying-directional-stt-tdstt">Time-Varying Directional STT (TDSTT)</h3>
+<p>A major limitation of the standard DSTT is that it assumes sensitive directions are constant and is only valid at a predefined final epoch <span class="math inline">\(t_f\)</span>. The <strong>TDSTT</strong> [<span class="citation" data-cites="zhou2024timevaryingdirectionalstatetransition">Zhou et al. (<a href="#ref-zhou2024timevaryingdirectionalstatetransition" role="doc-biblioref">2024</a>)</span>] improves this by simultaneously integrating the nominal orbit, the Taylor expansion, and the time-varying eigenvalue-eigenvector pairs. This allows for uncertainty analysis at any point along the trajectory (on a dense time grid), which is critical for <strong>conjunction assessment</strong> where the time of closest approach (TCA) is not known <em>a priori</em>.</p>
+<section id="methodology" class="level4">
+<h4 class="anchored" data-anchor-id="methodology"><strong>Methodology</strong></h4>
+<p>The TDSTT’s primary advantage is its ability to perform uncertainty analysis on a <strong>dense time grid</strong> without re-integration.</p>
+<ul>
+<li><p><strong>Warm Start Strategy:</strong> At the initial epoch <span class="math inline">\(t_0\)</span>, the CGT is an identity matrix with repeated eigenvalues, causing singularity in the derivative equations. The methodology employs a “warm start” by integrating the full STT for a very small step (e.g., <span class="math inline">\(1/100,000\)</span> of the period) to obtain a non-singular CGT and its associated sensitive basis.</p></li>
+<li><p><strong>Augmented ODE System:</strong> The TDSTT methodology integrates the nominal state, the STM, the eigenvalues/eigenvectors, and the high-order TDSTT terms simultaneously.</p></li>
+<li><p><strong>Complexity Reduction:</strong> By utilizing the orthogonality of the sensitive directions, the complexity of computing the second-order TDSTT derivative is reduced from <span class="math inline">\(O(n^4m^2)\)</span> to <span class="math inline">\(O(m)\)</span>.</p></li>
+</ul>
+</section>
+<section id="derivatives-of-eigenvalue-eigenvector-pairs" class="level4">
+<h4 class="anchored" data-anchor-id="derivatives-of-eigenvalue-eigenvector-pairs"><strong>Derivatives of Eigenvalue-Eigenvector Pairs</strong></h4>
+<p>The integration of TDSTT requires calculating the time evolution of the sensitive basis. The derivative of the <span class="math inline">\(k\)</span>-th eigenvalue <span class="math inline">\(\lambda_k\)</span> of the CGT is derived as: <span class="math display">\[
+\dot{\lambda}_k = (\dot{\mathbf{C}} \xi_k, \xi_k)
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\dot{\lambda}_k\)</span>: The time derivative of the <span class="math inline">\(k\)</span>-th eigenvalue.</p></li>
+<li><p><span class="math inline">\(\dot{\mathbf{C}}\)</span>: The time derivative of the Cauchy-Green Tensor.</p></li>
+<li><p><span class="math inline">\(\xi_k\)</span>: The <span class="math inline">\(k\)</span>-th eigenvector of the CGT.</p></li>
+</ul>
+<p>The derivative of the <span class="math inline">\(k\)</span>-th eigenvector <span class="math inline">\(\xi_k\)</span> is represented linearly as: <span class="math display">\[
+\dot{\xi}_k = \sum_{p \neq k} B_{k,p} \xi_p
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><span class="math inline">\(B_{k,p}\)</span>: The coefficients of the eigenvector derivative, where <span class="math inline">\(B_{k,p} = \frac{1}{\lambda_p - \lambda_k} (\dot{\mathbf{C}} \xi_k, \xi_p)\)</span>.</li>
+</ul>
+</section>
+<section id="derivation-of-the-tdstt-odes" class="level4">
+<h4 class="anchored" data-anchor-id="derivation-of-the-tdstt-odes"><strong>Derivation of the TDSTT ODEs</strong></h4>
+<p>The governing ODE for a second-order TDSTT includes rotation terms (<span class="math inline">\(B\)</span>) representing the time derivative of the eigenvectors: <span class="math display">\[
+\dot{\varphi}_{i, p_1 p_2} = A_{i, \alpha} \varphi_{\alpha, p_1 p_2} + A_{i, \alpha \beta} \varphi_{\alpha, p_1} \varphi_{\beta, p_2} + \varphi_{i, \gamma_1 p_2} B_{p_1, \gamma_1} + \varphi_{i, p_1 \gamma_2} B_{p_2, \gamma_2}
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(A_{i, \alpha}, A_{i, \alpha \beta}\)</span>: Local dynamics tensors (Jacobian and Hessian).</p></li>
+<li><p><span class="math inline">\(B_{p_j, \gamma_j}\)</span>: Coefficients derived from eigenvector derivatives.</p></li>
+</ul>
+</section>
+</section>
+<section id="multi-directional-selection" class="level3">
+<h3 class="anchored" data-anchor-id="multi-directional-selection">Multi-Directional Selection</h3>
+<p>While many applications use only the primary sensitive direction (<span class="math inline">\(m=1\)</span>), some scenarios involve complex dynamics where multiple directions are unstable. The DSTT framework supports <span class="math inline">\(R\)</span> matrices built from the first <span class="math inline">\(k\)</span> eigenvectors, balancing the tradeoff between accuracy and computational cost.</p>
+</section>
+</section>
+<section id="algorithm-flowchart-for-dstttdstt-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="algorithm-flowchart-for-dstttdstt-implementation">Algorithm Flowchart for DSTT/TDSTT Implementation</h2>
+<pre class="mermaid"><code>graph TD
+    A[Start: Initial State x0 and Covariance P0] --&gt; B[Warm Start: Integrate full STT for small step t']
+    B --&gt; C[Compute CGT at t': C = STM^T * STM]
+    C --&gt; D[Eigendecomposition: Find sensitive basis R]
+    D --&gt; E[Integrate State, STM, and DSTT/TDSTT ODEs]
+    E --&gt; F{Dense Time Grid Output Required?}
+    F -- Yes (TDSTT) --&gt; G[Integrate Eigenvector Derivatives B simultaneously]
+    F -- No (DSTT) --&gt; H[Keep Basis R Fixed]
+    G --&gt; I[Output: Time-history of Reduced Taylor Maps]
+    H --&gt; I
+    I --&gt; J[Map Uncertainty: Algebraic calculation of Mean/Covariance]
+    J --&gt; K[End: Nonlinearly Propagated Statistics]</code></pre>
+<p><em>(Ref: <span class="citation" data-cites="boone-mcmahon:10.2514/1.G006910">Boone and McMahon (<a href="#ref-boone-mcmahon:10.2514/1.G006910" role="doc-biblioref">2023</a>)</span> )</em></p>
+</section>
+<section id="summary-table-contextual-positioning" class="level2">
+<h2 class="anchored" data-anchor-id="summary-table-contextual-positioning">Summary Table: Contextual Positioning</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -1319,56 +1612,129 @@ E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{i
 <tr class="header">
 <th style="text-align: left;">Feature</th>
 <th style="text-align: left;">State Transition Tensors (STT)</th>
-<th style="text-align: left;">Differential Algebra (DA)</th>
-<th style="text-align: left;">Polynomial Chaos (PCE)</th>
+<th style="text-align: left;">Directional STT (DSTT)</th>
+<th style="text-align: left;">Time-Varying DSTT (TDSTT)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>Expansion Type</strong></td>
-<td style="text-align: left;">Semi-Analytic Taylor Series</td>
-<td style="text-align: left;">Automated Taylor Polynomials</td>
-<td style="text-align: left;">Non-Intrusive Spectral Basis</td>
+<td style="text-align: left;"><strong>Expansion Basis</strong></td>
+<td style="text-align: left;">Cartesian coordinates</td>
+<td style="text-align: left;">Fixed unstable direction(s)</td>
+<td style="text-align: left;">Dynamic unstable direction(s)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Dynamics Requirement</strong></td>
-<td style="text-align: left;">Continuous &amp; Differentiable</td>
-<td style="text-align: left;">Continuous &amp; Differentiable</td>
-<td style="text-align: left;">Black-Box (Non-Differentiable)</td>
+<td style="text-align: left;"><strong>Complexity (<span class="math inline">\(n=6, P=2\)</span>)</strong></td>
+<td style="text-align: left;">258 variables</td>
+<td style="text-align: left;">48 variables</td>
+<td style="text-align: left;">55 variables</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>Input Dependence</strong></td>
-<td style="text-align: left;">Distribution Agnostic</td>
-<td style="text-align: left;">Distribution Agnostic</td>
-<td style="text-align: left;">Distribution Matched (Wiener-Askey)</td>
+<td style="text-align: left;"><strong>Epoch Flexibility</strong></td>
+<td style="text-align: left;">Valid at all points</td>
+<td style="text-align: left;">Predefined epoch only</td>
+<td style="text-align: left;">Valid at all points</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Complexity Growth</strong></td>
-<td style="text-align: left;">Exponential/Factorial with Order</td>
-<td style="text-align: left;">Controlled via Automated Eval</td>
-<td style="text-align: left;">Factorial (Curse of Dimensionality)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Main Advantage</strong></td>
-<td style="text-align: left;">Analytic moment propagation</td>
-<td style="text-align: left;">Automated derivative extraction</td>
-<td style="text-align: left;">Exponential convergence for smooth systems</td>
+<td style="text-align: left;"><strong>Best Use Case</strong></td>
+<td style="text-align: left;">Low-dimensional systems</td>
+<td style="text-align: left;">Known orbits (NRHO/Halo)</td>
+<td style="text-align: left;">New targets / Conjunctions</td>
 </tr>
 </tbody>
 </table>
-<p>The primary takeaway is that STTs provide a <strong>local higher-order approximation</strong> of the flow manifold. While they accurately capture the “banana-shaped” warping caused by <span class="math inline">\(1/r^2\)</span> gravitational nonlinearities, they are strictly limited to the <strong>radius of convergence</strong> of the Taylor expansion. If the initial uncertainty is too large, the expansion fails, necessitating hybrid methods such as <strong>GMM-STT</strong>, which partition the state space into smaller, locally linear Gaussian kernels.</p>
 </section>
-<section id="performance-and-requirements" class="level2">
-<h2 class="anchored" data-anchor-id="performance-and-requirements">Performance and Requirements</h2>
-<p>While STT is characterized as highly efficient for evaluating the final uncertainty, it faces strict mathematical and implementation barriers:</p>
+</section>
+<section id="reduced-state-transition-tensors-rstt" class="level1">
+<h1>Reduced State Transition Tensors (RSTT)</h1>
+<p>The <strong>Reduced State Transition Tensors (RSTT)</strong> method, primarily developed by Roa and Park (2021), serves as a strategic complexity-reduction technique. While standard <strong>State Transition Tensors (STTs)</strong> provide superior precision over linear models by capturing localized nonlinear motion through Taylor series expansions, they suffer from an exponential growth in computational burden as the expansion order increases. RSTT addresses this by isolating and capturing the <strong>dominant secular terms</strong> responsible for the growth of relative separation between neighboring trajectories.</p>
+<section id="theoretical-foundation-stabilizing-the-solution-flow" class="level2">
+<h2 class="anchored" data-anchor-id="theoretical-foundation-stabilizing-the-solution-flow">Theoretical Foundation: Stabilizing the Solution Flow</h2>
+<p>The fundamental methodology of RSTT is built on the premise that the primary instability in orbital motion—the Lyapunov instability—is relegated to the time domain, specifically the phasing of the spacecraft along its orbit.</p>
 <ul>
-<li><p><strong>Differentiability:</strong> Similar to DA and LinCov, STT requires the underlying physical dynamics of the system to be <strong>continuous and differentiable</strong>.</p></li>
-<li><p><strong>Complexity Trade-off:</strong> Although the algebraic evaluation of the final state is fast, the method is described as <strong>computationally intensive</strong> during the initial phase because of the difficulty involved in deriving and integrating the high-order tensors.</p></li>
+<li><p><strong>Sundman Transformation:</strong> To isolate secular trends, RSTT employs a time transformation (specifically a Sundman transformation of order <span class="math inline">\(\beta=2\)</span>) to switch the independent variable from physical time <span class="math inline">\(t\)</span> to the true anomaly increment <span class="math inline">\(\theta\)</span>: <span class="math display">\[\frac{d\theta}{dt} \equiv \gamma(\mathbf{x}, t) = \frac{h}{r^2}\]</span> <strong>Term Definitions:</strong></p>
+<ul>
+<li><span class="math inline">\(\theta\)</span>: The true anomaly increment from the initial epoch <span class="math inline">\(t_0\)</span>.</li>
+<li><span class="math inline">\(\gamma\)</span>: The angular frequency of the motion.</li>
+<li><span class="math inline">\(h\)</span>: The magnitude of the specific angular momentum.</li>
+<li><span class="math inline">\(r\)</span>: The magnitude of the spacecraft position vector.</li>
+</ul></li>
+<li><p><strong>Decomposition of the Integral Flow:</strong> By transcribing the solution into the <span class="math inline">\(\theta\)</span> domain, the state vector at a future time can be expressed as a stabilized solution <span class="math inline">\(G(\theta; \mathbf{x}_0)\)</span> corrected by a time-phasing term <span class="math inline">\(\Theta(t; \mathbf{x}_0)\)</span>: <span class="math display">\[
+\mathbf{x}(t) = \mathbf{F}(t; \mathbf{x}_0) = \mathbf{G}(\Theta(t; \mathbf{x}_0); \mathbf{x}_0)
+\]</span></p>
+<p>This decomposition allows the partial derivatives of the flow (the tensors) to be split into a stabilized component and a secular correction component.</p></li>
+</ul>
+<hr>
+</section>
+<section id="methodology-for-rstt-approximation" class="level2">
+<h2 class="anchored" data-anchor-id="methodology-for-rstt-approximation">Methodology for RSTT Approximation</h2>
+<p>The RSTT methodology reduces complexity by retaining only the highest-order secular terms (those growing like <span class="math inline">\(t^p\)</span> for a <span class="math inline">\(p\)</span>-th order tensor) while neglecting periodic and lower-order secular components.</p>
+<section id="first-order-correction-the-secular-stm" class="level3">
+<h3 class="anchored" data-anchor-id="first-order-correction-the-secular-stm">1. First-Order Correction (The Secular STM)</h3>
+<p>The standard State Transition Matrix (STM) <span class="math inline">\(\Phi\)</span> can be decomposed into a stabilized derivative and a first-order secular correction: <span class="math display">\[
+\Phi_{i;j} = \frac{\partial G_i}{\partial x_{0,j}} \bigg|_\theta + \Gamma_j \frac{\partial G_i}{\partial \theta}
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\Gamma_j\)</span>: The partial derivative of the time transformation <span class="math inline">\(\Theta\)</span> with respect to initial conditions <span class="math inline">\(\partial \Theta / \partial x_{0,j}\)</span>.</p></li>
+<li><p><span class="math inline">\(\partial G_i / \partial \theta\)</span>: The tangent vector to the orbit (related to velocity).</p></li>
 </ul>
 </section>
-<section id="role-in-conjunction-assessment-ca" class="level2">
-<h2 class="anchored" data-anchor-id="role-in-conjunction-assessment-ca">Role in Conjunction Assessment (CA)</h2>
-<p>In the field of orbital mechanics, the STT method is frequently combined with the other uncertainty propagation architectures. The sources specifically mention the development of hybrid frameworks that pair <strong>Gaussian Mixture Models (GMMs) with STT</strong> to efficiently propagate non-Gaussian uncertainties for conjunction analysis. This allows the GMM to break a large non-Gaussian problem into smaller Gaussian “kernels,” each of which is then non-linearly propagated using the semi-analytic STT method.</p>
+<section id="the-second-order-rstt-approximation" class="level3">
+<h3 class="anchored" data-anchor-id="the-second-order-rstt-approximation">2. The Second-Order RSTT Approximation</h3>
+<p>The core “reduction” occurs at the second order. Instead of integrating 216 individual elements for an <span class="math inline">\(n=6\)</span> state, the second-order RSTT is approximated as: <span class="math display">\[\Phi_{i;jk} \approx \frac{r^4}{h^2} \Gamma_j \Gamma_k \frac{\partial^2 F_i}{\partial t^2}
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\Phi_{i;jk}\)</span>: The components of the second-order STT.</p></li>
+<li><p><span class="math inline">\(\Gamma_j, \Gamma_k\)</span>: Sensitivities of the true anomaly to initial state variations.</p></li>
+<li><p><span class="math inline">\(\partial^2 F_i / \partial t^2\)</span>: The time derivative of the dynamics (the acceleration/force function).</p></li>
+</ul>
+</section>
+<section id="generalization-to-higher-orders" class="level3">
+<h3 class="anchored" data-anchor-id="generalization-to-higher-orders">3. Generalization to Higher Orders</h3>
+<p>Higher-order STTs (<span class="math inline">\(p \ge 3\)</span>) are similarly reduced to a product of <span class="math inline">\(\Gamma\)</span> vectors and higher-order time derivatives of the flow, growing like <span class="math inline">\(t^p\)</span>: <span class="math display">\[\Phi_{i;k_1 \dots k_p} \approx \frac{1}{\gamma^p} \Gamma_{k_1} \dots \Gamma_{k_p} \frac{\partial^p F_i}{\partial t^p}\]</span></p>
+<hr>
+</section>
+</section>
+<section id="algorithm-for-rstt-based-uncertainty-propagation" class="level2">
+<h2 class="anchored" data-anchor-id="algorithm-for-rstt-based-uncertainty-propagation">Algorithm for RSTT-Based Uncertainty Propagation</h2>
+<p>The following flowchart illustrates the implementation of RSTT for nonlinear covariance propagation.</p>
+<pre class="mermaid"><code>graph TD
+    A[Start: Initial Mean m0 and Covariance P0] --&gt; B[Initialize Nominal State and STM]
+    B --&gt; C[Integrate Dynamics and Variational Equations: dx/dt, dSTM/dt]
+    C --&gt; D[Integrate Time-Sensitivity Equations: dGamma/dt]
+    D --&gt; E[Obtain Time-Phasing Gradient Gamma at tf]
+    E --&gt; F[Construct RSTT Coefficients via Secular Approximation: Eq. 31]
+    F --&gt; G[Map Statistics: Algebraic Summation for Mean and Covariance]
+    G --&gt; H[Result: Propagated Stats at tf]</code></pre>
+<hr>
+</section>
+<section id="advantages-and-contextual-variations" class="level2">
+<h2 class="anchored" data-anchor-id="advantages-and-contextual-variations">Advantages and Contextual Variations</h2>
+<p>RSTT exists as a middle ground between the accuracy of full STTs and the efficiency of directional methods.</p>
+<ul>
+<li><p><strong>Computational Efficiency:</strong></p>
+<ul>
+<li><strong>Variable Reduction:</strong> For a second-order expansion, RSTT requires integrating only <strong>6 additional differential equations</strong> (the elements of <span class="math inline">\(\Gamma\)</span>) in addition to the state and STM. This is a drastic reduction from the 216 elements required for a full second-order STT.</li>
+<li><strong>Speedup:</strong> Numerical tests in LEO scenarios indicate that RSTT reduces the computational time required to compute the STT by approximately <strong>37%</strong> while maintaining comparable long-term accuracy.</li>
+</ul></li>
+<li><p><strong>Accuracy Convergence:</strong> While full STTs are more accurate in the short term (due to periodic and linear secular terms), the RSTT approximation converges to the exact STT solution as time advances and the <span class="math inline">\(t^p\)</span> secular terms become dominant.</p></li>
+<li><p><strong>Comparison with Other Methods:</strong></p>
+<ul>
+<li><p><strong>RSTT vs.&nbsp;Full STT:</strong> RSTT avoids the “curse of dimensionality” and the manual derivation of complex Hessian/third-order Local Dynamics Tensors.</p></li>
+<li><p><strong>RSTT vs.&nbsp;DSTT (Directional STT):</strong> While DSTT reduces dimensionality by aligning with “sensitive directions” of the Cauchy-Green Tensor, RSTT reduces complexity by isolating the “secular time drift” common to all orbital perturbations.</p></li>
+<li><p><strong>RSTT vs.&nbsp;UT (Unscented Transform):</strong> RSTT-based filters (like the ASEKF) can be several times faster than the UKF because they replace sigma-point sampling with a single algebraic correction.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="variations-on-the-rstt-method" class="level2">
+<h2 class="anchored" data-anchor-id="variations-on-the-rstt-method">Variations on the RSTT Method</h2>
+<ul>
+<li><p><strong>ASEKF (Approximate Second-Order EKF):</strong> A high-order Kalman filter that utilizes the RSTT approximation for the prediction step. It yields results comparable to the UKF but with roughly <strong>50% faster</strong> computation than an EKF using exact STTs.</p></li>
+<li><p><strong>Analytical RSTT for Two-Body Problems:</strong> In purely Keplerian regimes, the <span class="math inline">\(\Gamma\)</span> vector and time derivatives can be expressed in closed form, allowing for instantaneous non-linear UP without any numerical integration.</p></li>
+<li><p><strong>Vectorized DT (Distribution Transport):</strong> A related evolution that uses the same Taylor foundation but transforms the tensor structure into a fixed <strong>vector structure</strong>, enabling parallel computing speedups of 14x to 64x.</p></li>
+</ul>
 </section>
 </section>
 <section id="gaussian-mixture-models-gmm-framework" class="level1">
@@ -1447,23 +1813,40 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <h3 class="anchored" data-anchor-id="gmm-mf-multi-fidelity">GMM-MF (Multi-Fidelity)</h3>
 <p>A high-efficiency hybrid where the Multi-Fidelity method propagates the sigma points of the GMM kernels.</p>
 <ul>
-<li><p><strong>Methodology:</strong> The entire ensemble of sigma points from all components is propagated via a computationally cheap low-fidelity (LF) model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian identifies a subset of “important samples” to be corrected by the HF model via stochastic collocation. See <a href="#sec-mf-sc" class="quarto-xref">Section&nbsp;10.2.1</a> for a detailed discussion on the stochastic collocation multi-fidelity method.</p></li>
+<li><p><strong>Methodology:</strong> The entire ensemble of sigma points from all components is propagated via a computationally cheap low-fidelity (LF) model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian identifies a subset of “important samples” to be corrected by the HF model via stochastic collocation. See <a href="#sec-mf-sc" class="quarto-xref">Section&nbsp;12.2.1</a> for a detailed discussion on the stochastic collocation multi-fidelity method.</p></li>
 <li><p><strong>Performance:</strong> Achieves accuracy similar to GMM-UT but with an <strong>80% reduction in computation time</strong>.</p></li>
 </ul>
 </section>
 <section id="gmm-stt-state-transition-tensor" class="level3">
 <h3 class="anchored" data-anchor-id="gmm-stt-state-transition-tensor">GMM-STT (State Transition Tensor)</h3>
-<p>This method regards Gaussian distributions as a function space to express PDFs in closed form.</p>
+<section id="the-radius-of-convergence-problem-and-gmm-mitigation" class="level4">
+<h4 class="anchored" data-anchor-id="the-radius-of-convergence-problem-and-gmm-mitigation"><strong>The Radius of Convergence Problem and GMM mitigation</strong></h4>
+<p>STTs approximate the solution flow of a dynamical system using a high-order Taylor series expansion about a nominal trajectory. This expansion is localized and only valid within a finite neighborhood known as the <strong>radius of convergence</strong> [<span class="citation" data-cites="park-scheeres:10.2514/1.20177">Park and Scheeres (<a href="#ref-park-scheeres:10.2514/1.20177" role="doc-biblioref">2006</a>)</span>] [<span class="citation" data-cites="acciarini:10.2514/1.G008717">Acciarini et al. (<a href="#ref-acciarini:10.2514/1.G008717" role="doc-biblioref">2025</a>)</span>].</p>
 <ul>
-<li><p><strong>Methodology:</strong> Instead of solving separate ODEs for each mean and covariance, the STT solution flow is reformulated as a matrix function valid over all components.</p></li>
+<li><p><strong>Estimating Validity:</strong> Tools like the <strong>Cauchy–Hadamard theorem</strong> are used as a proxy to estimate this radius and check if the initial uncertainties are within the valid region.</p></li>
+<li><p><strong>Failure Mode:</strong> If the initial state deviations are too large or if the tails of the probability density function (PDF) extend beyond this <span class="math inline">\(R_c\)</span>, the STT expansion fails to accurately reconstruct the nonlinear dynamics, leading to significant errors.</p></li>
+</ul>
+<p>GMMs address this limitation through a “divide and conquer” approach:</p>
+<ul>
+<li><p><strong>Decomposition into Sub-Gaussians:</strong> The initial uncertainty distribution is split into a finite sum of smaller, weighted Gaussian components.</p></li>
+<li><p><strong>Ensuring Local Convergence:</strong> By making each individual Gaussian component “small enough,” the GMM ensures that each component’s domain is fully contained within the STT’s <strong>linear region of convergence</strong> or its high-order radius of convergence.</p></li>
+<li><p><strong>Maintaining Phasing Accuracy:</strong> In long-term propagation, the uncertainty stretches along the trajectory (the direction of maximum nonlinearity). Splitting the distribution—especially in coordinate spaces like <strong>equinoctial elements</strong>—allows these components to stay within accurate bounds even as global non-Gaussianity increases.</p></li>
 <li><p><strong>Mathematical Formula (State Deviation):</strong> <span class="math display">\[
 \delta \hat{x}_{i}^k(t) \approx \sum_{p=1}^{m} \frac{1}{p!} \Phi^k_{j_1...j_p}(t, t_0) \delta \hat{x}_{0,i}^{j_1} \dots \delta \hat{x}_{0,i}^{j_p}
 \]</span></p>
 <ul>
-<li><span class="math inline">\(\delta \hat{x}_{i}^k(t)\)</span> is the <span class="math inline">\(k\)</span>-th state component of the <span class="math inline">\(i\)</span>-th component; <span class="math inline">\(\Phi^k_{j_1...j_p}\)</span> is the <span class="math inline">\(p\)</span>-th order State Transition Tensor.</li>
+<li><span class="math inline">\(\delta \hat{x}_{i}^k(t)\)</span> is the <span class="math inline">\(k\)</span>-th state component of the <span class="math inline">\(i\)</span>-th Gaussian component; <span class="math inline">\(\Phi^k_{j_1...j_p}\)</span> is the <span class="math inline">\(p\)</span>-th order State Transition Tensor.</li>
 </ul></li>
-<li><p><strong>Efficiency:</strong> It becomes more efficient than individual component propagation for <span class="math inline">\(L &gt; 7\)</span> components (using a 2nd-order expansion).</p></li>
 </ul>
+</section>
+<section id="benefits-of-tandem-gmm-stt-propagation" class="level4">
+<h4 class="anchored" data-anchor-id="benefits-of-tandem-gmm-stt-propagation"><strong>Benefits of Tandem GMM-STT Propagation</strong></h4>
+<ul>
+<li><p><strong>Reduced Expansion Order:</strong> Because individual GMM components experience less severe “localized” nonlinearity than the original distribution, they can be accurately mapped using <strong>lower-order STTs</strong> (e.g., second-order). This provides high accuracy while avoiding the computational complexity of very high-order tensors.</p></li>
+<li><p><strong>Mitigation of Distribution Tails:</strong> Using GMMs effectively mitigates issues arising from distribution tails that would otherwise extend beyond the <span class="math inline">\(R_c\)</span>. This ensures the PDF has a compact domain fully contained within the valid expanded flow.</p></li>
+<li><p><strong>Adaptive Efficiency:</strong> Techniques like <strong>Automatic Domain Splitting (ADS)</strong> or <strong>AEGIS</strong> can detect when a component is nearing the edge of its valid convergence region (using entropy or truncation error thresholds) and trigger an online split, keeping the propagation statistically consistent.</p></li>
+</ul>
+</section>
 </section>
 <section id="gmm-da-differential-algebra" class="level3">
 <h3 class="anchored" data-anchor-id="gmm-da-differential-algebra">GMM-DA (Differential Algebra)</h3>
@@ -1524,8 +1907,8 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><strong>Methodology:</strong> It disperses linearization errors across an ensemble of Gaussian components, allowing for accurate reconstruction of “crescent-shaped” posteriors common in cislunar tracking.</li>
 </ul>
 </section>
-<section id="role-in-conjunction-assessment-ca-1" class="level3">
-<h3 class="anchored" data-anchor-id="role-in-conjunction-assessment-ca-1">Role in Conjunction Assessment (CA)</h3>
+<section id="role-in-conjunction-assessment-ca" class="level3">
+<h3 class="anchored" data-anchor-id="role-in-conjunction-assessment-ca">Role in Conjunction Assessment (CA)</h3>
 <p>In the field of collision analysis, GMMs enable <strong>all-on-all analysis</strong>. Rather than evaluating millions of individual sample pairs as in Monte Carlo simulation, every Gaussian component of a primary object is evaluated against every component of a secondary object. This allows for the use of more advanced analytical or numerical collision probability (<span class="math inline">\(P_c\)</span>) computation methods on each individual component pair.</p>
 </section>
 </section>
@@ -1584,7 +1967,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><p><strong>LF Basis Construction:</strong> The entire ensemble is propagated using an LF model (e.g., SGP4 or two-body dynamics) to define a subspace <span class="math inline">\(X_L(\Xi) \subseteq \mathcal{X}\)</span>.</p></li>
 <li><p><strong>Important Sample Selection:</strong> Identifying the <span class="math inline">\(r\)</span> nodes is an optimization problem solved via a <strong>greedy algorithm</strong> that maximizes the distance between the next selected node and the existing basis. This is implemented by solving the pivoted Cholesky decomposition of the Gramian matrix: <span id="eq-mf-pivoted-cholesky-decomp"><span class="math display">\[
 [X_L]^T G_L [X_L] = A^T C_h C_h^T A
-\tag{8}\]</span></span></p>
+\tag{13}\]</span></span></p>
 <p><strong>Terms defined:</strong></p>
 <ul>
 <li><p><span class="math inline">\(X_L\)</span>: Matrix of LF propagated samples.</p></li>
@@ -1592,15 +1975,15 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><p><span class="math inline">\(A\)</span>: Permutation/pivot matrix that identifies the indices of the important samples.</p></li>
 <li><p><span class="math inline">\(C_h\)</span>: Lower triangular Cholesky factor.</p></li>
 </ul>
-<p>See <a href="#sec-appendix-pivoted-cholesky" class="quarto-xref">Section&nbsp;13</a> for a detailed derivation of the pivoted Cholesky algorithm and its application to MF uncertainty propagation.</p></li>
-<li><p><strong><span class="math inline">\(c_\ell(\xi)\)</span> Coefficient Computation:</strong> The expansion coefficients <span class="math inline">\(c_\ell(\xi)\)</span> in <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;9</a> are computed by solving the linear system: <span class="math display">\[
+<p>See <a href="#sec-appendix-pivoted-cholesky" class="quarto-xref">Section&nbsp;15</a> for a detailed derivation of the pivoted Cholesky algorithm and its application to MF uncertainty propagation.</p></li>
+<li><p><strong><span class="math inline">\(c_\ell(\xi)\)</span> Coefficient Computation:</strong> The expansion coefficients <span class="math inline">\(c_\ell(\xi)\)</span> in <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;14</a> are computed by solving the linear system: <span class="math display">\[
 \mathbf{C_h C_h}^T \mathbf{c}(\mathbf{\xi}) = \mathbf{g}
 \]</span></p>
 <p>where <span class="math inline">\(g_i = x_L(\xi) \cdot x_L(\xi_i)\)</span> for <span class="math inline">\(i = 1, \ldots, r\)</span>.</p>
-<p>These coefficients effectively map the LF realization of a general sample <span class="math inline">\(\xi\)</span> to the HF space defined by the <span class="math inline">\(r\)</span> important samples via <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;9</a>.</p></li>
+<p>These coefficients effectively map the LF realization of a general sample <span class="math inline">\(\xi\)</span> to the HF space defined by the <span class="math inline">\(r\)</span> important samples via <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;14</a>.</p></li>
 <li><p><strong>HF Correction:</strong> The <span class="math inline">\(r\)</span> samples are propagated through the HF model, and a surrogate is built using the LF-derived coefficients: <span id="eq-mf-surrogate"><span class="math display">\[
 \hat{x}_H(\xi) = \sum_{l=1}^r c_\ell(\xi)x_H(\xi_\ell^*)
-\tag{9}\]</span></span></p>
+\tag{14}\]</span></span></p>
 <p><strong>Terms defined:</strong></p>
 <ul>
 <li><p><span class="math inline">\(\hat{x}_H(\xi)\)</span>: The approximated HF state vector for a given input <span class="math inline">\(\xi\)</span>.</p></li>
@@ -1609,7 +1992,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><p><span class="math inline">\(r\)</span>: The rank of the surrogate (number of HF evaluations).</p></li>
 </ul></li>
 </ul>
-<p><a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;9</a> is what is referred to as the “low-rank” <strong>stochastic collocation surrogate</strong>. The coefficients <span class="math inline">\(c_\ell(\xi)\)</span> are computed by solving a linear system derived from the LF model, ensuring that the surrogate accurately captures the HF dynamics while minimizing the number of expensive HF evaluations.</p>
+<p><a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;14</a> is what is referred to as the “low-rank” <strong>stochastic collocation surrogate</strong>. The coefficients <span class="math inline">\(c_\ell(\xi)\)</span> are computed by solving a linear system derived from the LF model, ensuring that the surrogate accurately captures the HF dynamics while minimizing the number of expensive HF evaluations.</p>
 <section id="algorithmic-flowchart" class="level4">
 <h4 class="anchored" data-anchor-id="algorithmic-flowchart"><strong>Algorithmic Flowchart</strong></h4>
 <pre class="mermaid"><code>graph TD
@@ -1738,6 +2121,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 </section>
 
 
+
 <div id="quarto-appendix" class="default"><section id="sec-appendix-pivoted-cholesky" class="level1 appendix"><h2 class="anchored quarto-appendix-heading">A: Pivoted Cholesky Decomposition for Multi-Fidelity Node Selection</h2><div class="quarto-appendix-contents">
 
 <p>In the architecture of <strong>Multi-Fidelity (MF) Uncertainty Propagation</strong>, the <strong>pivoted Cholesky decomposition</strong> serves as the mathematical engine for the “greedy” selection of <strong>important samples</strong> (nodes). This approach identifies a small subset of points from a large low-fidelity (LF) ensemble that are most representative of the state space, ensuring that high-fidelity (HF) evaluations are spent where they provide the most information.</p>
@@ -1796,6 +2180,174 @@ w_t = w_t - C_{h(t,n)}^2
     K --&gt; L{n &lt;= r?}
     L -- Yes --&gt; D
     L -- No --&gt; M[Output indices of r Important Samples]</code></pre>
+</div></section><section id="sec-appendix-stt" class="level1 appendix"><h2 class="anchored quarto-appendix-heading">B: Derivation of the differential equation for the second-order State Transition Tensor (STT) propagation</h2><div class="quarto-appendix-contents">
+
+<p>The <strong>second-order State Transition Tensor (STT) differential equation</strong> is obtained by</p>
+<ol type="1">
+<li>expanding the solution in a Taylor series <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>,</li>
+<li>substituting it into the Taylor expansion of the dynamics <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a>,</li>
+<li>differentiating <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> with respect to time (<a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>), and</li>
+<li><strong>equating coefficients of equal powers of the initial deviation</strong> <span class="math inline">\(\delta x_0\)</span>.</li>
+</ol>
+<p>Below is the detailed derivation as described in <span class="citation" data-cites="park-scheeres:10.2514/1.20177">Park and Scheeres (<a href="#ref-park-scheeres:10.2514/1.20177" role="doc-biblioref">2006</a>)</span>.</p>
+<hr>
+
+
+
+
+
+</div></section><section id="step-1.-taylor-expansion-of-the-state-eq-stt-taylor-map" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Step 1. Taylor expansion of the state (<a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h2><div class="quarto-appendix-contents">
+
+<p>The paper expands the deviation from the nominal trajectory as</p>
+<p><span class="math display">\[
+\delta x_i(t)
+=\Phi_{i;a},\delta x_{0a}+\frac12\Phi_{i;ab},\delta x_{0a}\delta x_{0b}+\cdots
+\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(\Phi_{i;a}\)</span> is the first-order STT,</li>
+<li><span class="math inline">\(\Phi_{i;ab}\)</span> is the second-order STT.</li>
+</ul>
+<p>This is simply <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> truncated after second order.</p>
+<hr>
+</div></section><section id="step-2.-time-derivative-of-eq-stt-taylor-map" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Step 2. Time derivative of <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a></h2><div class="quarto-appendix-contents">
+
+<p>Since only the STTs depend on time,</p>
+<p><span class="math display">\[
+\delta\dot x_i=\dot\Phi_{i;a}\delta x_{0a}+\frac12\dot\Phi_{i;ab}\delta x_{0a}\delta x_{0b}+\cdots
+\]</span></p>
+<p>which is <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>. The first term is first-order (hence ignored in the second order derivation), and the second term is second-order.</p>
+<hr>
+</div></section><section id="step-3.-expand-the-dynamics" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Step 3. Expand the dynamics</h2><div class="quarto-appendix-contents">
+
+<p><a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> gives</p>
+<p><span class="math display">\[
+\delta\dot x_i=f^\star_{i;\gamma}\delta x_\gamma+\frac12f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta+\cdots
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
+\]</span></p>
+<p><span class="math display">\[
+f^\star_{i;\gamma\eta}=\frac{\partial^2 f_i}{\partial x_\gamma\partial x_\eta}
+\]</span></p>
+<p>evaluated along the reference trajectory.</p>
+<hr>
+</div></section><section id="step-4.-substitute-eq-stt-taylor-map-into-eq-stt-eom-taylor-map" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Step 4. Substitute <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> into <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a></h2><div class="quarto-appendix-contents">
+
+<p>Replace every <span class="math inline">\(\delta x_\gamma\)</span> by</p>
+<p><span class="math display">\[
+\delta x_\gamma=\Phi_{\gamma;a}\delta x_{0a}+\frac12\Phi_{\gamma;ab}\delta x_{0a}\delta x_{0b}.
+\]</span></p>
+<p>The right-hand side becomes</p>
+<p><span class="math display">\[
+f^\star_{i;\gamma}
+\left(
+\Phi_{\gamma;a}\delta x_{0a}
++
+\frac12
+\Phi_{\gamma;ab}
+\delta x_{0a}\delta x_{0b}
+\right)
++
+\frac12
+f^\star_{i;\gamma\eta}
+\delta x_\gamma\delta x_\eta.
+\]</span></p>
+<p>Now treat the two terms separately.</p>
+<hr>
+
+
+
+</div></section><section id="first-contribution" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">First contribution</h2><div class="quarto-appendix-contents">
+
+<p>Expanding the first term gives</p>
+<p><span class="math display">\[
+f^\star_{i;\gamma}
+\Phi_{\gamma;a}\delta x_{0a}
++
+\frac12
+f^\star_{i;\gamma}
+\Phi_{\gamma;ab}
+\delta x_{0a}\delta x_{0b}.
+\]</span></p>
+<p>The first piece is first-order.</p>
+<p>The second piece contributes to the second-order equation.</p>
+<hr>
+</div></section><section id="second-contribution" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">Second contribution</h2><div class="quarto-appendix-contents">
+
+<p>Now examine</p>
+<p><span class="math display">\[
+\frac12
+f^\star_{i;\gamma\eta}
+\delta x_\gamma\delta x_\eta.
+\]</span></p>
+<p>For deriving the second-order equation, only first-order parts of each state are needed because</p>
+<p><span class="math display">\[
+(\text{1st})(\text{1st})=\text{2nd},
+\]</span></p>
+<p>while</p>
+<p><span class="math display">\[
+(\text{1st})(\text{2nd})
+=\text{3rd}
+\]</span></p>
+<p>and is ignored.</p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\delta x_\gamma=\Phi_{\gamma;a}\delta x_{0a},
+\]</span></p>
+<p><span class="math display">\[
+\delta x_\eta=\Phi_{\eta;b}\delta x_{0b}
+\]</span></p>
+<p>Hence</p>
+<p><span class="math display">\[
+\delta x_\gamma\delta x_\eta=\Phi_{\gamma;a}\Phi_{\eta;b}\delta x_{0a}\delta x_{0b}
+\]</span></p>
+<p>Substituting,</p>
+<p><span class="math display">\[
+\frac12
+f^\star_{i;\gamma\eta}
+\Phi_{\gamma;a}
+\Phi_{\eta;b}
+\delta x_{0a}\delta x_{0b}.
+\]</span></p>
+<p>This is the entire second-order contribution from the nonlinear dynamics.</p>
+<hr>
+</div></section><section id="collect-all-second-order-terms" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">Collect all second-order terms</h2><div class="quarto-appendix-contents">
+
+<p>The complete right-hand side therefore contains</p>
+<p><span class="math display">\[
+\frac12
+f^\star_{i;\gamma}
+\Phi_{\gamma;ab}
+\delta x_{0a}\delta x_{0b}
++
+\frac12
+f^\star_{i;\gamma\eta}
+\Phi_{\gamma;a}
+\Phi_{\eta;b}
+\delta x_{0a}\delta x_{0b}.
+\]</span></p>
+<p>The right-hand side from <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> contains</p>
+<p><span class="math display">\[
+\frac12
+\dot\Phi_{i;ab}
+\delta x_{0a}\delta x_{0b}.
+\]</span></p>
+<hr>
+</div></section><section id="step-5.-balance-coefficients" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Step 5. Balance coefficients</h2><div class="quarto-appendix-contents">
+
+<p>Since</p>
+<p><span class="math display">\[
+\delta x_{0a}\delta x_{0b}
+\]</span></p>
+<p>are independent variables, their coefficients must be equal.</p>
+<p>Removing the common factor (1/2),</p>
+<p><span class="math display">\[
+\boxed{
+\dot\Phi_{i;ab}=f^\star_{i;\gamma}\Phi_{\gamma;ab}+f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}}
+\]</span> {eq-stt-second-order-differential-equation}</p>
+<p>First order STT’s <span class="math inline">\(\Phi_{i;a}\)</span> and <span class="math inline">\(\Phi_{i;b}\)</span> are obtained by solving the first-order STT differential equation, which is a prerequisite for solving the second-order equation.</p>
 
 </div></section><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-acciarini:10.2514/1.G008717" class="csl-entry" role="listitem">
@@ -1806,6 +2358,9 @@ Adurthi, Nagavenkat, Puneet Singla, and Tarunraj Singh. 2012. <span>“The Conju
 </div>
 <div id="ref-bignon2015accurate" class="csl-entry" role="listitem">
 Bignon, Emmanuel, P Mercier, Vincent Azzopardi, and R Pinéde. 2015. <span>“Accurate Numerical Orbit Propagation Using Polynomial Algebra Computational Engine Pace.”</span> <em>ISSFD 2015 Congress</em>.
+</div>
+<div id="ref-boone-mcmahon:10.2514/1.G006910" class="csl-entry" role="listitem">
+Boone, Spencer, and Jay McMahon. 2023. <span>“Directional State Transition Tensors for Capturing Dominant Nonlinear Effects in Orbital Dynamics.”</span> <em>Journal of Guidance, Control, and Dynamics</em> 46 (3): 431–42. <a href="https://doi.org/10.2514/1.G006910">https://doi.org/10.2514/1.G006910</a>.
 </div>
 <div id="ref-bosorbit" class="csl-entry" role="listitem">
 Bos, Justin. 2025. <em>Orbit Uncertainty Propagation in Space Situational Awareness Applied to Conjunction Assessment</em>.
@@ -1818,6 +2373,9 @@ Fossa, Alberto, Daniel Alazard, Emmanuel Delande, and Roberto Armellin. 2024. <s
 </div>
 <div id="ref-fossa2024propagation" class="csl-entry" role="listitem">
 Fossà, Alberto. 2024. <span>“Propagation Multi-Fid<span>é</span>lit<span>é</span> d’incertitude Orbitale En Pr<span>é</span>sence d’acc<span>é</span>l<span>é</span>rations Stochastiques.”</span> PhD thesis, Inst. Sup<span>é</span>rieur de l’A<span>é</span>ronautique et de l’Espace, Toulouse.
+</div>
+<div id="ref-fujimoto-scheeres:10.2514/1.G000795" class="csl-entry" role="listitem">
+Fujimoto, K., and D. J. Scheeres. 2015. <span>“Tractable Expressions for Nonlinearly Propagated Uncertainties.”</span> <em>Journal of Guidance, Control, and Dynamics</em> 38 (6): 1146–51. <a href="https://doi.org/10.2514/1.G000795">https://doi.org/10.2514/1.G000795</a>.
 </div>
 <div id="ref-JONES2019406" class="csl-entry" role="listitem">
 Jones, Brandon A., and Ryan Weisman. 2019. <span>“Multi-Fidelity Orbit Uncertainty Propagation.”</span> <em>Acta Astronautica</em> 155: 406–17. https://doi.org/<a href="https://doi.org/10.1016/j.actaastro.2018.10.023">https://doi.org/10.1016/j.actaastro.2018.10.023</a>.
@@ -1846,8 +2404,8 @@ Tenne, D., and T. Singh. 2003. <span>“The Higher Order Unscented Filter.”</s
 <div id="ref-dermerwe2001sq-ut" class="csl-entry" role="listitem">
 Van der Merwe, R., and E. A. Wan. 2001. <span>“The Square-Root Unscented Kalman Filter for State and Parameter-Estimation.”</span> <em>2001 IEEE International Conference on Acoustics, Speech, and Signal Processing. Proceedings (Cat. No.01CH37221)</em> 6: 3461–3464 vol.6. <a href="https://doi.org/10.1109/ICASSP.2001.940586">https://doi.org/10.1109/ICASSP.2001.940586</a>.
 </div>
-<div id="ref-zhou2026time" class="csl-entry" role="listitem">
-Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2026. <span>“Time-Varying Directional State Transition Tensor for Orbit Uncertainty Propagation.”</span> <em>Journal of Guidance, Control, and Dynamics</em>, 1–17.
+<div id="ref-zhou2024timevaryingdirectionalstatetransition" class="csl-entry" role="listitem">
+Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2024. <em>Time-Varying Directional State Transition Tensor for Orbit Uncertainty Propagation</em>. <a href="https://arxiv.org/abs/2412.07060">https://arxiv.org/abs/2412.07060</a>.
 </div>
 </div></section></div></main>
 <!-- /main column -->
