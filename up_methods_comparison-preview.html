@@ -284,21 +284,11 @@
 <td>Requires reformulation of the governing equations</td>
 <td>Structural rigidity and implementation complexity of stochastic Galerkin system</td>
 <td>The Galerkin system must be derived and solved directly, which increases implementation effort and makes the method less flexible for complex force models.</td>
-<td>Need access to dynamics source code to perform the Galerkin</td>
-<td></td>
-<td></td>
+<td>Need access to dynamics source code to perform the Galerkin projection of the governing dynamics onto a subspace to transform a stochastic ordinary differential equation (SODE) in low-dimension into an equivalent deterministic ordinary differential equation (ODE) in higher dimension</td>
+<td>TBD</td>
+<td>TBD</td>
 </tr>
 <tr class="odd">
-<td>projection of the governing dynamics onto a subspace to transform a stochastic ordinary differential equation (SODE) in low-dimension into an equivalent deterministic ordinary differential equation (ODE) in higher dimension</td>
-<td>TBD</td>
-<td>TBD</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><strong>State Transition Tensors (STT)</strong></td>
 <td>High-order nonlinear state mapping accuracy</td>
 <td>High derivational and computational complexity</td>
@@ -308,7 +298,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Differential Algebra (DA)</strong></td>
 <td>Automated high-order Taylor expansion of dynamics</td>
 <td>Local and truncated polynomial representation</td>
@@ -318,7 +308,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Multi-fidelity (MF) propagation</strong></td>
 <td>Reduces cost via surrogate correction</td>
 <td>Depends on the quality of the low-fidelity model</td>
@@ -328,7 +318,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Gaussian Mixture Models (GMMs)</strong></td>
 <td>Flexible representation of multimodal distributions</td>
 <td>Component management is difficult</td>
@@ -338,7 +328,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>GMM–UT / GMM–STT / GMM–DA / GMM–PCE</strong></td>
 <td>Combines local Gaussian decomposition with nonlinear propagation</td>
 <td>Inherit limitations of both mixture and propagator</td>
@@ -348,7 +338,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>AEGIS</strong></td>
 <td>Adaptive entropy-based refinement of distribution</td>
 <td>Adaptive splitting can become computationally heavy</td>
@@ -358,7 +348,7 @@
 <td>TBD</td>
 <td>TBD</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Moment-based propagation</strong></td>
 <td>Very low computational cost and simplicity</td>
 <td>Retains only low-order information</td>
