@@ -3338,10 +3338,33 @@ as the \textbf{radius of convergence} {[}Park and Scheeres (2006){]}
 {[}Acciarini et al. (2025){]}.
 
 \begin{itemize}
+\tightlist
 \item
-  \textbf{Estimating Validity:} Tools like the \textbf{Cauchy--Hadamard
-  theorem} are used as a proxy to estimate this radius and check if the
-  initial uncertainties are within the valid region.
+  \textbf{Estimating Validity:} To compare how well the Taylor
+  expansions can reconstruct the actual nonlinear dynamics, we can, as
+  an initial analysis of the convergence radius, use results from basic
+  calculus that study the convergence of power series{[}Acciarini et al.
+  (2025){]}. Tools like the \textbf{Cauchy--Hadamard theorem} are used
+  as a proxy to estimate a convergence radius and check if the initial
+  uncertainties are within the valid region.
+\end{itemize}
+
+\marginnote{\begin{footnotesize}
+
+The \textbf{Cauchy--Hadamard} convergence radius of a Taylor expansion
+series
+\(\delta x_f^i \approx \mathcal{P}_i^k(\delta z) = \sum_{|\alpha|=1}^{k} \frac{1}{\alpha!} \left( \partial^\alpha x_f^i \right)\bigg|_{(\bar{x}_0, \bar{q})} \, \delta z^\alpha\)
+is given by: \[
+R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}|^{1/k}}
+\]
+
+Where \(a_{\alpha}\) is the \(\alpha\)-coefficient of the Taylor series,
+with \(\alpha\) being the n-tuple already introduced in the expansion.
+
+\end{footnotesize}}
+
+\begin{itemize}
+\tightlist
 \item
   \textbf{Failure Mode:} If the initial state deviations are too large
   or if the tails of the probability density function (PDF) extend
