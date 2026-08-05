@@ -1001,7 +1001,7 @@ $$ {#eq-stt-deviation}
 
 The above deviation follows the dynamics of the system, which can be expressed as a differential equation for the deviation:
 $$
-\dot{\delta \mathbf{x}}(t) = \mathbf{f}[\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0), t] - \mathbf{f}[\phi(t; \mathbf{x}_0, t_0), t]
+\dot{\delta \mathbf{x}}(t) = \mathbf{f}(x+\delta x, t) - \mathbf{f}(x, t)
 $$ {#eq-stt-eom}
 
 ### Taylor Expansion of the Solution Flow
@@ -1054,7 +1054,7 @@ $$ {#eq-stt-taylor-map}
 Using similar logic, we can also derive the Taylor expansion for the equations of motion (EOM) from @eq-stt-eom for the perturbed state, which is essential for propagating the STTs through time:
 
 $$
-\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{k_1} \dots \delta x_{k_p}
 $$ {#eq-stt-eom-taylor-map}
 
 :::{.column-margin}
@@ -1062,12 +1062,12 @@ $$
 \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) = \left. \frac{\partial^p f_i}{\partial x_{k_1} \dots \partial x_{k_p}} \right|_{\mathbf{x}^*(t)}
 $$ 
 
-where the superscript $^*$ indicates evaluation along the nominal trajectory $\mathbf{x}^*(t)$.
+where the superscript $*$ indicates evaluation along the nominal trajectory $\mathbf{x}^*(t)$.
 :::
 
 We can also find $\dot{x}_i(t)$ by differentiating @eq-stt-taylor-map with respect to time, which yields:
 $$
-\dot{x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
 $$ {#eq-stt-taylor-map-time-derivative}
 
 ### Differential Equations for Tensor Propagation
@@ -1565,7 +1565,16 @@ A high-efficiency hybrid where the Multi-Fidelity method propagates the sigma po
 
 STTs approximate the solution flow of a dynamical system using a high-order Taylor series expansion about a nominal trajectory. This expansion is localized and only valid within a finite neighborhood known as the **radius of convergence** \[@park-scheeres:10.2514/1.20177\] \[@acciarini:10.2514/1.G008717\]. 
 
-*   **Estimating Validity:** Tools like the **Cauchy–Hadamard theorem** are used as a proxy to estimate this radius and check if the initial uncertainties are within the valid region.
+*   **Estimating Validity:** To compare how well the Taylor expansions can reconstruct the actual nonlinear dynamics, we can, as an initial analysis of the convergence radius, use results from basic calculus that study the convergence of power series\[@acciarini:10.2514/1.G008717\]. Tools like the **Cauchy–Hadamard theorem** are used as a proxy to estimate a convergence radius and check if the initial uncertainties are within the valid region.
+
+:::{.column-margin}
+The **Cauchy–Hadamard** convergence radius of a Taylor expansion series $\delta x_f^i \approx \mathcal{P}_i^k(\delta z) = \sum_{|\alpha|=1}^{k} \frac{1}{\alpha!} \left( \partial^\alpha x_f^i \right)\bigg|_{(\bar{x}_0, \bar{q})} \, \delta z^\alpha$ is given by:
+$$
+R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}|^{1/k}}
+$$
+
+Where $a_{\alpha}$ is the $\alpha$-coefficient of the Taylor series, with $\alpha$ being the n-tuple already introduced in the expansion.
+:::
 
 *   **Failure Mode:** If the initial state deviations are too large or if the tails of the probability density function (PDF) extend beyond this $R_c$, the STT expansion fails to accurately reconstruct the nonlinear dynamics, leading to significant errors.
 
@@ -1585,6 +1594,7 @@ GMMs address this limitation through a "divide and conquer" approach:
     *   $\delta \hat{x}_{i}^k(t)$ is the $k$-th state component of the $i$-th Gaussian component; $\Phi^k_{j_1...j_p}$ is the $p$-th order State Transition Tensor.
 
 #### **Benefits of Tandem GMM-STT Propagation**
+
 *   **Reduced Expansion Order:** Because individual GMM components experience less severe "localized" nonlinearity than the original distribution, they can be accurately mapped using **lower-order STTs** (e.g., second-order). This provides high accuracy while avoiding the computational complexity of very high-order tensors.
 
 *   **Mitigation of Distribution Tails:** Using GMMs effectively mitigates issues arising from distribution tails that would otherwise extend beyond the $R_c$. This ensures the PDF has a compact domain fully contained within the valid expanded flow.

@@ -1281,7 +1281,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <li><p><span class="math inline">\(\delta \mathbf{x}_0\)</span>: The initial deviation or perturbation from the nominal state.</p></li>
 </ul>
 <p>The above deviation follows the dynamics of the system, which can be expressed as a differential equation for the deviation: <span id="eq-stt-eom"><span class="math display">\[
-\dot{\delta \mathbf{x}}(t) = \mathbf{f}[\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0), t] - \mathbf{f}[\phi(t; \mathbf{x}_0, t_0), t]
+\dot{\delta \mathbf{x}}(t) = \mathbf{f}(x+\delta x, t) - \mathbf{f}(x, t)
 \tag{9}\]</span></span></p>
 </section>
 <section id="taylor-expansion-of-the-solution-flow" class="level3">
@@ -1328,16 +1328,16 @@ x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\par
 </ul>
 <p>Using similar logic, we can also derive the Taylor expansion for the equations of motion (EOM) from <a href="#eq-stt-eom" class="quarto-xref">Equation&nbsp;9</a> for the perturbed state, which is essential for propagating the STTs through time:</p>
 <p><span id="eq-stt-eom-taylor-map"><span class="math display">\[
-\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) \delta x_{k_1} \dots \delta x_{k_p}
 \tag{11}\]</span></span></p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><span class="math display">\[
 \mathbf{f}^*_{i,k_1 \dots k_p}(t, t_0) = \left. \frac{\partial^p f_i}{\partial x_{k_1} \dots \partial x_{k_p}} \right|_{\mathbf{x}^*(t)}
 \]</span></p>
-<p>where the superscript <span class="math inline">\(^*\)</span> indicates evaluation along the nominal trajectory <span class="math inline">\(\mathbf{x}^*(t)\)</span>.</p>
+<p>where the superscript <span class="math inline">\(*\)</span> indicates evaluation along the nominal trajectory <span class="math inline">\(\mathbf{x}^*(t)\)</span>.</p>
 </div></div><p>We can also find <span class="math inline">\(\dot{x}_i(t)\)</span> by differentiating <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> with respect to time, which yields: <span id="eq-stt-taylor-map-time-derivative"><span class="math display">\[
-\dot{x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i,k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
 \tag{12}\]</span></span></p>
 </section>
 <section id="differential-equations-for-tensor-propagation" class="level3">
@@ -1737,7 +1737,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 </ul>
 </section>
 </section>
-<section id="gaussian-mixture-models-gmm-framework" class="level1">
+<section id="gaussian-mixture-models-gmm-framework" class="level1 page-columns page-full">
 <h1>Gaussian Mixture Models (GMM) Framework</h1>
 <p>In the larger landscape of <strong>Uncertainty Propagation (UP)</strong>, <strong>Gaussian Mixture Models (GMM)</strong> serve as a versatile “mixture model” framework that bridges the gap between computationally efficient linear methods and the complex, non-Gaussian realities of orbital mechanics. The foundational principle of the GMM framework is the “universal approximator” property, which asserts that any arbitrary probability density function (PDF) can be represented with sufficient accuracy as a weighted sum of multiple Gaussian kernels. This property allows GMMs to capture the intricate shapes of non-Gaussian distributions, such as the “banana” or “kidney” forms that emerge in long-term propagation through the highly nonlinear dynamics of orbital mechanics.</p>
 <section id="mathematical-architecture-of-the-gmm-framework" class="level2">
@@ -1798,7 +1798,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
     G -- Using UT/STT/DA/PCE/MF --&gt; H[Sum Propagated Components via Weights]
     H --&gt; I[Final Non-Gaussian Posterior PDF]</code></pre>
 </section>
-<section id="variations-and-hybrid-architectures-1" class="level2">
+<section id="variations-and-hybrid-architectures-1" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="variations-and-hybrid-architectures-1">Variations and Hybrid Architectures</h2>
 <p>The GMM framework is frequently combined with other UP methods to optimize the speed-accuracy Pareto front.</p>
 <section id="gmm-ut-unscented-transform" class="level3">
@@ -1817,14 +1817,22 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><p><strong>Performance:</strong> Achieves accuracy similar to GMM-UT but with an <strong>80% reduction in computation time</strong>.</p></li>
 </ul>
 </section>
-<section id="gmm-stt-state-transition-tensor" class="level3">
+<section id="gmm-stt-state-transition-tensor" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="gmm-stt-state-transition-tensor">GMM-STT (State Transition Tensor)</h3>
-<section id="the-radius-of-convergence-problem-and-gmm-mitigation" class="level4">
+<section id="the-radius-of-convergence-problem-and-gmm-mitigation" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="the-radius-of-convergence-problem-and-gmm-mitigation"><strong>The Radius of Convergence Problem and GMM mitigation</strong></h4>
 <p>STTs approximate the solution flow of a dynamical system using a high-order Taylor series expansion about a nominal trajectory. This expansion is localized and only valid within a finite neighborhood known as the <strong>radius of convergence</strong> [<span class="citation" data-cites="park-scheeres:10.2514/1.20177">Park and Scheeres (<a href="#ref-park-scheeres:10.2514/1.20177" role="doc-biblioref">2006</a>)</span>] [<span class="citation" data-cites="acciarini:10.2514/1.G008717">Acciarini et al. (<a href="#ref-acciarini:10.2514/1.G008717" role="doc-biblioref">2025</a>)</span>].</p>
 <ul>
-<li><p><strong>Estimating Validity:</strong> Tools like the <strong>Cauchy–Hadamard theorem</strong> are used as a proxy to estimate this radius and check if the initial uncertainties are within the valid region.</p></li>
-<li><p><strong>Failure Mode:</strong> If the initial state deviations are too large or if the tails of the probability density function (PDF) extend beyond this <span class="math inline">\(R_c\)</span>, the STT expansion fails to accurately reconstruct the nonlinear dynamics, leading to significant errors.</p></li>
+<li><strong>Estimating Validity:</strong> To compare how well the Taylor expansions can reconstruct the actual nonlinear dynamics, we can, as an initial analysis of the convergence radius, use results from basic calculus that study the convergence of power series[<span class="citation" data-cites="acciarini:10.2514/1.G008717">Acciarini et al. (<a href="#ref-acciarini:10.2514/1.G008717" role="doc-biblioref">2025</a>)</span>]. Tools like the <strong>Cauchy–Hadamard theorem</strong> are used as a proxy to estimate a convergence radius and check if the initial uncertainties are within the valid region.</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>The <strong>Cauchy–Hadamard</strong> convergence radius of a Taylor expansion series <span class="math inline">\(\delta x_f^i \approx \mathcal{P}_i^k(\delta z) = \sum_{|\alpha|=1}^{k} \frac{1}{\alpha!} \left( \partial^\alpha x_f^i \right)\bigg|_{(\bar{x}_0, \bar{q})} \, \delta z^\alpha\)</span> is given by: <span class="math display">\[
+R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}|^{1/k}}
+\]</span></p>
+<p>Where <span class="math inline">\(a_{\alpha}\)</span> is the <span class="math inline">\(\alpha\)</span>-coefficient of the Taylor series, with <span class="math inline">\(\alpha\)</span> being the n-tuple already introduced in the expansion.</p>
+</div></div><ul>
+<li><strong>Failure Mode:</strong> If the initial state deviations are too large or if the tails of the probability density function (PDF) extend beyond this <span class="math inline">\(R_c\)</span>, the STT expansion fails to accurately reconstruct the nonlinear dynamics, leading to significant errors.</li>
 </ul>
 <p>GMMs address this limitation through a “divide and conquer” approach:</p>
 <ul>
