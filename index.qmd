@@ -2,10 +2,10 @@
 title: "State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)"
 
 authors:
-  - name: Srihari S
-    affiliation: Indian Institute of Space Science and Technology, Thiruvananthapuram, India
-    roles: writing
-    corresponding: true
+    -   name: Srihari S
+        affiliation: Indian Institute of Space Science and Technology, Thiruvananthapuram, India
+        roles: writing
+        corresponding: true
 bibliography: references.bib
 nocite: |
     @*
@@ -102,12 +102,6 @@ The **Fokker-Planck Equation** (FPE) is the fundamental partial differential equ
 
 *   **The Computational Challenge in astrodynamics:** Direct numerical solutions to the FPE are generally intractable in astrodynamics due to the **"curse of dimensionality"**; a 6D orbital state requires spatial grids that grow exponentially, necessitating the use of the state-of-the-art approximation methods discussed in this report.
 
-
-<!--
-## Classification and Methodology of Uncertainty Propagation Techniques
-
-Managing the *curse of dimensionality* and the inherent non‑linearity of orbital mechanics requires a robust taxonomy of methods. These techniques are generally classified by how they represent the PDF: through point‑based samples, linearized mathematical transformations, mixture models, polynomial expansions, or hybrid multi‑fidelity approaches. Each method is assessed based on its ability to preserve the integrity of the PDF over time, its computational efficiency, and its suitability for real‑time operational use. The following sections provide a detailed overview of these methods, highlighting their theoretical foundations, practical implementations, and performance characteristics.
--->
 
 ## Concept Map of Orbital Uncertainty Propagation
 
@@ -979,21 +973,28 @@ STT based methods function by analytically mapping initial uncertainties using e
 -   **Algebraic Propagation:** Once the tensors are obtained by numerically integrating along a nominal trajectory, they provide a means to compute the nonlinear propagation of the first two statistical moments (mean and covariance) through relatively simple **algebraic operations**.
 
 ## Mathematical Architecture of STTs
-The fundamental premise of the STT method is that the state deviation $\delta \mathbf{x}(t)$ and its derivative $\dot{\delta \mathbf{x}(t)}$ at a future time can be expressed as functions of the initial deviation $\delta \mathbf{x}_0$ using a $P$-order Taylor series expansion about a nominal trajectory $\mathbf{x}^*(t)$.
+The fundamental premise of the STT method is that the state deviation (that arises from the initial uncertainty of state) $\delta \mathbf{x}(t)$ and its derivative $\dot{\delta \mathbf{x}(t)}$ at a future time can be expressed as functions of the initial deviation $\delta \mathbf{x}_0$ using a $P$-order Taylor series expansion about a nominal trajectory $\mathbf{x}^*(t)$.
 
 ### Nonlinear State Deviation
 
 @eq-stt-deviation defines the deviation of a current state from a nominal trajectory as the difference between two solution flows of the system's equations of motion. 
 
 $$
-\delta \mathbf{x}(t) = \phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0) - \phi(t; \mathbf{x}_0, t_0)
+\delta \mathbf{x}(t) = \mathbf{\phi}(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0) - \mathbf{\phi}(t; \mathbf{x}_0, t_0)
 $$ {#eq-stt-deviation}
 
 **Term Definitions:**
 
-*   $\delta \mathbf{x}(t)$: The vector of state deviations at time $t$.
+*   $\delta \mathbf{x}(t)$: The vector of state deviation at time $t$.
 
-*   $\phi(t; \mathbf{x}_0, t_0)$: The **solution flow**, representing the mapping of the state from the initial epoch $t_0$ to a future time $t$.
+*   $\mathbf{\phi}(t; \mathbf{x}_0, t_0)$: The **solution flow** of the system's equations of motion, mapping the initial state $\mathbf{x}_0$ at time $t_0$ to the state at time $t$. It represents the explicit solution of the system's ordinary differential equations.
+
+    :::{.callout-important title="Solution Flow in Orbital dynamics" #col-solution-flow}
+    The solution flow $\phi(t; \mathbf{x}_0, t_0)$ is not found in closed form for most orbital dynamics problems due to the complexity and nonlinearity of the governing equations. This is especially true for high-fidelity models that include perturbations such as atmospheric drag, solar radiation pressure, and third-body effects. Instead, the state at time $t$ is typically obtained through numerical integration of the equations of motion starting from the initial state $\mathbf{x}_0$ at time $t_0$. 
+
+    Hence, in orbital dynamics the solution flow is treated as a representation of the numerically propagated state. STT leverages the existence of such a solution flow to perform Taylor expansions around the nominal trajectory, allowing for the analytical propagation of uncertainties without requiring a closed-form solution.
+    :::
+
 
 *   $\mathbf{x}_0$: The nominal initial state.
 
@@ -1019,7 +1020,7 @@ To arrive at @eq-stt-taylor-map, we perform a multivariate Taylor series expansi
 *   **Step 2: Multivariate Taylor Series Application**
     Expanding this function about the nominal initial state $x_{0,j}$ yields:
     $$
-    x_i(t) \approx \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x_{0,k_1}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} + \frac{1}{2!} \left. \frac{\partial^2 \phi_i}{\partial x_{0,k_1} \partial x_{0,k_2}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} \delta x_{0,k_2} + \dots
+    x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x_{0,k_1}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} + \frac{1}{2!} \left. \frac{\partial^2 \phi_i}{\partial x_{0,k_1} \partial x_{0,k_2}} \right|_{\mathbf{x}_0} \delta x_{0,k_1} \delta x_{0,k_2} + \dots
     $$
 
     The derivative terms here can be compactly represented using the **State Transition Tensor** notation, where the $p$-th order tensor $\Phi_{i,k_1 \dots k_p}$ encapsulates the $p$-th partial derivatives of the solution flow with respect to the initial conditions.
@@ -1041,10 +1042,12 @@ To arrive at @eq-stt-taylor-map, we perform a multivariate Taylor series expansi
     The zeroth-order term $\phi_i(t; \mathbf{x}_0, t_0)$ (the nominal trajectory) cancels out, leaving only the sum of the higher-order partial derivatives.
 
 
+
+
 ### The High-Order Taylor Map
 The final expression relates initial deviations to future deviations through a sum of tensors:
 $$
-\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i;k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i;k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p}
 $$ {#eq-stt-taylor-map}
 
 **Term Definitions:**
@@ -1057,23 +1060,25 @@ $$ {#eq-stt-taylor-map}
 
 *   $P$: The truncation order of the expansion (typically $P=2$ or $3$).
 
-We can also derive the Taylor expansion for dynamics deviation caused by the initial uncertainty from @eq-stt-eom via a similar pathway. This yields the following expression for the time derivative of the deviation:
+Similar to state deviation, we can also derive the Taylor expansion for dynamics deviation caused by the initial uncertainty from @eq-stt-eom via a similar pathway. This yields the following expression for the time derivative of the deviation:
 
 $$
-\dot{\delta x}_i(t) = \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^{\star}_{i; l_1 \dots l_p}(t, t_0) \delta x_{l_1} \dots \delta x_{l_p}
+\dot{\delta x}_i(t) = \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^{\star}_{i; l_1 \dots l_p} \delta x_{l_1} \dots \delta x_{l_p}
 $$ {#eq-stt-eom-taylor-map}
 
 :::{.column-margin}
 $$
-\mathbf{f}^{\star}_{i; l_1 \dots l_p}(t, t_0) = \left. \frac{\partial^p f_i}{\partial x_{l_1} \dots \partial x_{l_p}} \right|_{\mathbf{x}^*(t)}
+\mathbf{f}^{\star}_{i; l_1 \dots l_p} = \left. \frac{\partial^p f_i}{\partial x_{l_1} \dots \partial x_{l_p}} \right|_{\mathbf{x}^*(t)}
 $$ 
 
 :::
 
-We can also find $\dot{x}_i(t)$ by differentiating @eq-stt-taylor-map with respect to time, which yields:
+We can also find $\dot{x}_i(t)$ by differentiating @eq-stt-taylor-map with respect to time $t$, which yields:
 $$
-\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i; k_1 \dots k_p}(t, t_0) \delta x_{0,k_1} \dots \delta x_{0,k_p}
+\dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i; k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p}
 $$ {#eq-stt-taylor-map-time-derivative}
+
+Since the initial deviations $\delta x_{0,k_j}$ are arbitrary (chosen from the initial uncertainty probability distribution), the time derivative does not affect them. Therefore, the time derivative of the deviation is expressed in terms of the time derivatives of the STTs.
 
 ### Differential Equations for Tensor Propagation {#sec-stt-ode}
 
@@ -1081,7 +1086,7 @@ These STT's are not static; they evolve over time according to the system's dyna
 
 1.  Substituting @eq-stt-taylor-map into each $\delta x_{l_j}$ in @eq-stt-eom-taylor-map, we obtain a new expression for $\dot{\delta x}_i(t)$ in terms of the initial deviations $\delta x_{0,k_j}$ and the STTs.
 
-2. We then equate this new expression with @eq-stt-taylor-map-time-derivative, which also expresses $\dot{\delta x}_i(t)$ in terms of the initial deviations and the time derivatives of the STTs. The coefficients of the same monomials $\delta x_{0,k_1} \dots \delta x_{0,k_p}$ on both sides of the equation must be equal, leading to a set of ODEs for the STTs.
+2. We then equate this new expression with @eq-stt-taylor-map-time-derivative, which also expresses $\dot{\delta x}_i(t)$ in terms of the initial deviations and the time derivatives of the STTs. The coefficients of the same monomials $\delta x_{0,k_1} \dots \delta x_{0,k_p}$ on both sides of the equation must be equal for every set \{$k_1,\dots, k_p$\}, leading to a set of ODEs for the STTs.
 
 An example derivation for the first and second-order STT is shown in @sec-appendix-stt. The resulting ODEs for the STTs are expressed as follows:
 
@@ -1182,11 +1187,11 @@ graph TD
     D --> E[Obtain Terminal Tensors at tf]
     E --> F[Reconstruct Terminal Mean: μ_tf = Σ Tensors * Initial Moments]
     F --> G[Reconstruct Terminal Covariance: P_tf = Σ f Tensors, P0]
-    G --> H{Capture Non-Gaussianity?}
+    G --> H[Check for Non-Gaussianity from Nonlinearity Index]
     H -- Yes --> I[Reconstruct Higher Moments: Skewness & Kurtosis]
-    H -- No --> J[Output Gaussian Approximation]
+    H -- No --> J[Increase Expansion Order: P] --> D
     I --> K[Pc Calculation for Conjunction Assessment]
-    J --> K
+    
 ```
 
 
@@ -2056,7 +2061,7 @@ $$
 \boxed{
 \dot\Phi_{i;a} = \sum_{\gamma} f^\star_{i;\gamma}\Phi_{\gamma;a}
 }
-$$ {eq-stt-first-order-differential-equation}
+$$ {#eq-first-order-stt-differential-equation}
 
 
 ## Second-order STT {.appendix}
@@ -2127,9 +2132,8 @@ f^\star_{i;\gamma}
 \delta x_{0a}\delta x_{0b}.
 $$
 
-The first piece is first-order and contributes to the first-order equation, while the second piece contributes to the second-order equation.
+The first piece is first-order and is part of @eq-first-order-stt-differential-equation, while the second piece contributes to the second-order equation.
 
-The second piece contributes to the second-order equation.
 
 ---
 
@@ -2153,19 +2157,19 @@ while
 
 $$
 (\text{1st})(\text{2nd})
-=\text{3rd}
+=\text{3rd order}
 $$
 
-and is ignored.
-
-Therefore,
+and does not become part of the second-order equation. Therefore, we only need to substitute the first-order Taylor expansion of the states into the second contribution, which are
 
 $$
 \delta x_\gamma=\sum_a\Phi_{\gamma;a}\delta x_{0a},
 $$
 
+and 
+
 $$
-\delta x_\eta=\sum_b\Phi_{\eta;b}\delta x_{0b}
+\delta x_\eta=\sum_b\Phi_{\eta;b}\delta x_{0b}.
 $$
 
 Hence
@@ -2217,14 +2221,7 @@ $$
 
 ## Step 5. Balance coefficients {.appendix}
 
-Since
-
-$$
-\delta x_{0a}\delta x_{0b}
-$$
-
-are independent variables, their coefficients must be equal. We equate the coefficients of $\delta x_{0a}\delta x_{0b}$ from both sides:
-
+We balance the coefficients of the second order terms $\delta x_{0a}\delta x_{0b}$  on both sides of the equation, which gives
 $$
 \frac12\dot\Phi_{i;ab}=\sum_{\gamma,\eta}\left[\frac12f^\star_{i;\gamma}\Phi_{\gamma;ab}+\frac12f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}\right]
 $$
@@ -2234,7 +2231,7 @@ Removing the common factor (1/2),
 $$
 \boxed{
 \dot\Phi_{i;ab}=\sum_{\gamma, \eta}\left[f^\star_{i;\gamma}\Phi_{\gamma;ab}+f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}\right]}
-$$ {eq-stt-second-order-differential-equation}
+$$ {#eq-second-order-stt-differential-equation}
 
 First order STT's $\Phi_{i;a}$ and $\Phi_{i;b}$ are obtained by solving the first-order STT differential equation, which is a prerequisite for solving the second-order equation.
 

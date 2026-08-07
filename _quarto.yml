@@ -10,7 +10,6 @@ manuscript:
   article: index.qmd
   notebooks: 
     - up_methods_comparison.qmd
-
 bibliography: references.bib
 
 website: 
