@@ -175,6 +175,7 @@ in the transformed state pdf while significantly improving the computational per
 
 The following sections provide a detailed overview of the most widely used methods in the literature, highlighting their theoretical foundations, practical implementations, and performance characteristics.
 
+---
 
 # The Sampling Baseline: Monte Carlo (MC)
 
@@ -291,6 +292,7 @@ To mitigate the extreme computational burden of the base Monte Carlo simulation,
 *   **Surrogate-Assisted MC:** Rather than numerical integration for every sample, surrogate models—such as high-order Taylor polynomials via Differential Algebra (DA) or Polynomial Chaos Expansions (PCE)—are used to rapidly evaluate samples.
 
 *   **MC from Epoch vs. MC from TCA:** Baseline "from Epoch" propagation uses high-fidelity models from the initial measurement time, while "from TCA" propagates uncertainty to the Time of Closest Approach (TCA) first and then performs a localized MC simulation, significantly saving time when it comes to rare-event probability (like collision probability $P_C$) estimation.
+
 
 # Linearized Covariance (LinCov) {#sec-lincov}
 
@@ -1923,6 +1925,7 @@ graph TD
     I --> J[Instantaneous Evaluation of Tail Probabilities]
 ```
 
+---
 
 # Appendix
 
@@ -1995,7 +1998,7 @@ graph TD
 
 ## First-order STT {.appendix}
 
-To derive the differential equation for the first-order STT $\Phi_{i;a}$, we need the equations @eq-stt-Taylor-map, @eq-stt-eom-Taylor-map and @eq-stt-Taylor-map-time-derivative in first order and follow the steps outlined in @sec-stt-ode.
+To derive the differential equation for the first-order STT $\Phi_{i;a}$, we need the equations @eq-stt-Taylor-map, @eq-stt-eom-Taylor-map and @eq-stt-Taylor-map-time-derivative in first order and follow the steps outlined in @sec-stt-ode to match the coefficients of $\delta x_{0a}$ on both sides of the resulting equation.
 
 ### 1. First order Taylor expansion of the state deviation (@eq-stt-Taylor-map) {.appendix}
 
@@ -2005,9 +2008,7 @@ $$ {#eq-stt-Taylor-map-first-order}
 
 This is @eq-stt-Taylor-map in first order. 
 
----
-
-### 2. Time derivative of state deviation Taylor map @eq-stt-Taylor-map {.appendix}
+### 2. Time derivative of state deviation Taylor map {.appendix}
 
 Since only the STTs depend on time,
 
@@ -2034,7 +2035,6 @@ $$
 
 evaluated along the reference trajectory. 
 
----
 
 ### 4. Substitution of State deviation Taylor map into dynamics Taylor map {.appendix}
 
@@ -2051,7 +2051,6 @@ $$
 $$
 
 
----
 
 ### 5. Balancing coefficients {.appendix}
 
@@ -2066,6 +2065,9 @@ $$ {#eq-first-order-stt-differential-equation}
 
 ## Second-order STT {.appendix}
 
+To derive the differential equation for the second-order STT $\Phi_{i;ab}$, we need the equations @eq-stt-Taylor-map, @eq-stt-eom-Taylor-map and @eq-stt-Taylor-map-time-derivative in second order and follow the steps outlined in @sec-stt-ode to match the coefficients of $\delta x_{0a}\delta x_{0b}$ on both sides of the resulting equation.
+
+
 ### 1. Second order Taylor expansion of the state deviation(@eq-stt-Taylor-map) {.appendix}
 
 $$
@@ -2074,9 +2076,9 @@ $$ {#eq-stt-Taylor-map-second-order}
 
 This is @eq-stt-Taylor-map truncated after second order. 
 
----
 
-### 2. Time derivative of state deviation Taylor map @eq-stt-Taylor-map {.appendix}
+
+### 2. Time derivative of state deviation Taylor map {.appendix}
 
 Since only the STTs depend on time,
 
@@ -2086,7 +2088,6 @@ $$ {#eq-stt-Taylor-map-time-derivative-second-order}
 
 which is @eq-stt-Taylor-map-time-derivative in second order.
 
----
 
 ### 3. Dynamics deviation Taylor map second order (@eq-stt-eom-Taylor-map) {.appendix}
 
@@ -2110,7 +2111,6 @@ $$
 
 evaluated along the reference trajectory. 
 
----
 
 ### 4. Substitution of state deviation Taylor expansions to dynamics Taylor map {.appendix}
 
@@ -2135,8 +2135,6 @@ $$
 
 The first piece is first-order and is part of @eq-first-order-stt-differential-equation, while the second piece contributes to the second-order equation.
 
-
----
 
 #### **Second contribution** {.appendix}
 
@@ -2191,7 +2189,6 @@ $$
 
 This is the entire second-order contribution from the nonlinear dynamics.
 
----
 
 #### **Collect all second-order terms** {.appendix}
 
@@ -2218,7 +2215,6 @@ $$
 \delta x_{0a}\delta x_{0b}.
 $$
 
----
 
 ### 5. Balancing coefficients {.appendix}
 

@@ -10,6 +10,7 @@ manuscript:
   article: index.qmd
   notebooks: 
     - up_methods_comparison.qmd
+  manuscript-url: https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/
 bibliography: references.bib
 
 website: 
