@@ -74,7 +74,7 @@ AEGIS introduces adaptive splitting based on entropy change, which helps it resp
 
 ## Moment-based propagation
 
-Moment-based methods are attractive because they are simple and computationally light. Their limitation is that they compress the full distribution into a small number of statistics. Once the propagated uncertainty becomes skewed, curved, or multimodal, the mean and covariance are no longer enough. This makes moment-based methods suitable for screening and approximate prediction, but not always for detailed collision-risk analysis.
+Moment-based methods are attractive because they are simple and computationally light. Their limitation is that they compress the full distribution into a few statistic properties . Once the propagated uncertainty becomes skewed, curved, or multimodal, the mean and covariance are no longer enough. This makes moment-based methods suitable for screening and approximate prediction, but not always for detailed collision-risk analysis.
 
 # Overall conclusion
 

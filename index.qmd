@@ -396,7 +396,7 @@ In order to explain the moment propagation,  consider an explicit moment propaga
 
 2.  **Variance ($\sigma_y^2$):** $\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2$
 
-While fast, moment propagation on the first-order taylor approximation fails to capture the "mean shift" caused by nonlinearities and performs poorly when the PDF becomes highly non-Gaussian.
+While fast, moment propagation on the first-order Taylor approximation fails to capture the "mean shift" caused by nonlinearities and performs poorly when the PDF becomes highly non-Gaussian.
 
 **Second-Order Equations:**
 
@@ -1009,7 +1009,7 @@ The superscript $\star$ indicates that the nominal trajectory $\mathbf{x}^\star(
 
 ### Taylor Expansion of the Solution Flow
 
-To arrive at @eq-stt-taylor-map, we perform a multivariate Taylor series expansion of the perturbed solution flow $\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0)$ about the nominal initial conditions $\mathbf{x}_0$.
+To arrive at @eq-stt-Taylor-map, we perform a multivariate Taylor series expansion of the perturbed solution flow $\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0)$ about the nominal initial conditions $\mathbf{x}_0$.
 
 *   **Step 1: Scalar Component Expansion**
     The $i$-th component of the perturbed state at time $t$ can be expressed as a function of the initial state components:
@@ -1048,7 +1048,7 @@ To arrive at @eq-stt-taylor-map, we perform a multivariate Taylor series expansi
 The final expression relates initial deviations to future deviations through a sum of tensors:
 $$
 \delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i;k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p}
-$$ {#eq-stt-taylor-map}
+$$ {#eq-stt-Taylor-map}
 
 **Term Definitions:**
 
@@ -1064,7 +1064,7 @@ Similar to state deviation, we can also derive the Taylor expansion for dynamics
 
 $$
 \dot{\delta x}_i(t) = \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^{\star}_{i; l_1 \dots l_p} \delta x_{l_1} \dots \delta x_{l_p}
-$$ {#eq-stt-eom-taylor-map}
+$$ {#eq-stt-eom-Taylor-map}
 
 :::{.column-margin}
 $$
@@ -1073,20 +1073,20 @@ $$
 
 :::
 
-We can also find $\dot{x}_i(t)$ by differentiating @eq-stt-taylor-map with respect to time $t$, which yields:
+We can also find $\dot{x}_i(t)$ by differentiating @eq-stt-Taylor-map with respect to time $t$, which yields:
 $$
 \dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i; k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p}
-$$ {#eq-stt-taylor-map-time-derivative}
+$$ {#eq-stt-Taylor-map-time-derivative}
 
 Since the initial deviations $\delta x_{0,k_j}$ are arbitrary (chosen from the initial uncertainty probability distribution), the time derivative does not affect them. Therefore, the time derivative of the deviation is expressed in terms of the time derivatives of the STTs.
 
 ### Differential Equations for Tensor Propagation {#sec-stt-ode}
 
-These STT's are not static; they evolve over time according to the system's dynamics. The evolution of the STTs is governed by a set of coupled ordinary differential equations (ODEs) derived from @eq-stt-taylor-map, @eq-stt-eom-taylor-map and @eq-stt-taylor-map-time-derivative. The following steps outline the derivation of these ODEs:
+These STT's are not static; they evolve over time according to the system's dynamics. The evolution of the STTs is governed by a set of coupled ordinary differential equations (ODEs) derived from @eq-stt-Taylor-map, @eq-stt-eom-Taylor-map and @eq-stt-Taylor-map-time-derivative. The following steps outline the derivation of these ODEs:
 
-1.  Substituting @eq-stt-taylor-map into each $\delta x_{l_j}$ in @eq-stt-eom-taylor-map, we obtain a new expression for $\dot{\delta x}_i(t)$ in terms of the initial deviations $\delta x_{0,k_j}$ and the STTs.
+1.  Substituting @eq-stt-Taylor-map into each $\delta x_{l_j}$ in @eq-stt-eom-Taylor-map, we obtain a new expression for $\dot{\delta x}_i(t)$ in terms of the initial deviations $\delta x_{0,k_j}$ and the STTs.
 
-2. We then equate this new expression with @eq-stt-taylor-map-time-derivative, which also expresses $\dot{\delta x}_i(t)$ in terms of the initial deviations and the time derivatives of the STTs. The coefficients of the same monomials $\delta x_{0,k_1} \dots \delta x_{0,k_p}$ on both sides of the equation must be equal for every set \{$k_1,\dots, k_p$\}, leading to a set of ODEs for the STTs.
+2. We then equate this new expression with @eq-stt-Taylor-map-time-derivative, which also expresses $\dot{\delta x}_i(t)$ in terms of the initial deviations and the time derivatives of the STTs. The coefficients of the same monomials $\delta x_{0,k_1} \dots \delta x_{0,k_p}$ on both sides of the equation must be equal for every set \{$k_1,\dots, k_p$\}, leading to a set of ODEs for the STTs.
 
 An example derivation for the first and second-order STT is shown in @sec-appendix-stt. The resulting ODEs for the STTs are expressed as follows:
 
@@ -1109,7 +1109,7 @@ $$
 ## Methodology: Moment Propagation via Algebraic Mapping
 Unlike sampling methods that propagate individual points, STT-based uncertainty propagation maps the initial statistical moments directly to the terminal state through simple algebraic operations.
 
-1.  **Reference Integration:** Solve the ODEs for the nominal state $\mathbf{x}(t)$ and the tensors $\phi$ up to order $P$. The value of $P$ is chosen based on the nonlinearity index taken from the propagation of the deviation $\delta \mathbf{x}(t)$.
+1.  **Reference Integration:** Solve the ODEs for the nominal state $\mathbf{x}(t)$ and the tensors $\phi$ up to the truncation order $P$. The value of $P$ is chosen based on the nonlinearity index taken from the propagation of the deviation $\delta \mathbf{x}(t)$.
 
 :::{.callout-tip title="Local Nonlinearity Index for STT Order Selection" #tip-nonlinearity-index}
 Formula: 
@@ -1128,7 +1128,7 @@ where
 
 2.  **Initial Moment Characterization:** Compute the raw moments of the initial PDF.
 
-3.  **Statistical Mapping:** Use @eq-stt-taylor-map and the linearity of the expectation operator to compute the terminal mean ($\hat{\mu}$) and covariance ($\hat{\mathbf{P}}$):
+3.  **Statistical Mapping:** Use @eq-stt-Taylor-map and the linearity of the expectation operator to compute the terminal mean ($\hat{\mu}$) and covariance ($\hat{\mathbf{P}}$):
     $$
     \delta \mu_i(t) =E[\delta x_i(t)]= \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
     $$
@@ -1995,36 +1995,36 @@ graph TD
 
 ## First-order STT {.appendix}
 
-To derive the differential equation for the first-order STT $\Phi_{i;a}$, we need the equations @eq-stt-taylor-map, @eq-stt-eom-taylor-map and @eq-stt-taylor-map-time-derivative in first order and follow the steps outlined in @sec-stt-ode.
+To derive the differential equation for the first-order STT $\Phi_{i;a}$, we need the equations @eq-stt-Taylor-map, @eq-stt-eom-Taylor-map and @eq-stt-Taylor-map-time-derivative in first order and follow the steps outlined in @sec-stt-ode.
 
-### 1. First order Taylor expansion of the state (@eq-stt-taylor-map) {.appendix}
+### 1. First order Taylor expansion of the state deviation (@eq-stt-Taylor-map) {.appendix}
 
 $$
 \delta x_i(t) = \sum_a\Phi_{i;a},\delta x_{0a}
-$$ {#eq-stt-taylor-map-first-order}
+$$ {#eq-stt-Taylor-map-first-order}
 
-This is @eq-stt-taylor-map in first order. 
+This is @eq-stt-Taylor-map in first order. 
 
 ---
 
-### 2. Time derivative of @eq-stt-taylor-map {.appendix}
+### 2. Time derivative of state deviation Taylor map @eq-stt-Taylor-map {.appendix}
 
 Since only the STTs depend on time,
 
 $$
 \delta\dot x_i = \sum_a \dot\Phi_{i;a}\delta x_{0a}
-$$ {#eq-stt-taylor-map-time-derivative-first-order}
+$$ {#eq-stt-Taylor-map-time-derivative-first-order}
 
-which is @eq-stt-taylor-map-time-derivative in first order.
+which is @eq-stt-Taylor-map-time-derivative in first order.
 
 
-### 3. Dynamics deviation taylor map first order (@eq-stt-eom-taylor-map) {.appendix}
+### 3. Dynamics deviation Taylor map first order (@eq-stt-eom-Taylor-map) {.appendix}
 
-@eq-stt-eom-taylor-map in first order gives
+@eq-stt-eom-Taylor-map in first order gives
 
 $$
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\delta x_\gamma
-$$ {#eq-stt-eom-taylor-map-first-order}
+$$ {#eq-stt-eom-Taylor-map-first-order}
 
 where
 
@@ -2036,7 +2036,7 @@ evaluated along the reference trajectory.
 
 ---
 
-### 4. Substitute @eq-stt-taylor-map into @eq-stt-eom-taylor-map {.appendix}
+### 4. Substitution of State deviation Taylor map into dynamics Taylor map {.appendix}
 
 Replace every $\delta x_\gamma$ by
 
@@ -2044,7 +2044,7 @@ $$
 \delta x_\gamma=\sum_a \dot\Phi_{\gamma;a}\delta x_{0a}
 $$
 
-using @eq-stt-taylor-map-first-order. Then the @eq-stt-eom-taylor-map-first-order becomes
+using @eq-stt-Taylor-map-first-order. Then the @eq-stt-eom-Taylor-map-first-order becomes
 
 $$
 \delta\dot x_i = \sum_{\gamma} \sum_a f^\star_{i;\gamma}\Phi_{\gamma;a}\delta x_{0a}
@@ -2053,9 +2053,9 @@ $$
 
 ---
 
-### 5. Balance coefficients {.appendix}
+### 5. Balancing coefficients {.appendix}
 
-Now we equate both @eq-stt-taylor-map-time-derivative-first-order and the modified @eq-stt-eom-taylor-map-first-order. Since $\delta x_{0a}$ are independent variables, their coefficients must be equal. Removing the common factor, we obtain the first-order STT differential equation:
+Now we equate both @eq-stt-Taylor-map-time-derivative-first-order and the modified @eq-stt-eom-Taylor-map-first-order. Since $\delta x_{0a}$ are independent variables, their coefficients must be equal. Removing the common factor, we obtain the first-order STT differential equation:
 
 $$
 \boxed{
@@ -2066,34 +2066,35 @@ $$ {#eq-first-order-stt-differential-equation}
 
 ## Second-order STT {.appendix}
 
-### 1. Second order Taylor expansion of the state (@eq-stt-taylor-map) {.appendix}
+### 1. Second order Taylor expansion of the state deviation(@eq-stt-Taylor-map) {.appendix}
 
 $$
 \delta x_i(t) = \sum_a\Phi_{i;a},\delta x_{0a} + \frac12\sum_{a,b}\Phi_{i;ab},\delta x_{0a}\delta x_{0b}
-$$ {#eq-stt-taylor-map-second-order}
+$$ {#eq-stt-Taylor-map-second-order}
 
-This is @eq-stt-taylor-map truncated after second order. 
+This is @eq-stt-Taylor-map truncated after second order. 
 
 ---
 
-### 2. Time derivative of @eq-stt-taylor-map {.appendix}
+### 2. Time derivative of state deviation Taylor map @eq-stt-Taylor-map {.appendix}
 
 Since only the STTs depend on time,
 
 $$
 \delta\dot x_i = \sum_a \dot\Phi_{i;a}\delta x_{0a} + \frac12\sum_{a,b}\dot\Phi_{i;ab}\delta x_{0a}\delta x_{0b}
-$$ {#eq-stt-taylor-map-time-derivative-second-order}
+$$ {#eq-stt-Taylor-map-time-derivative-second-order}
 
-which is @eq-stt-taylor-map-time-derivative in second order.
+which is @eq-stt-Taylor-map-time-derivative in second order.
 
+---
 
-### 3. Dynamics deviation taylor map first order (@eq-stt-eom-taylor-map) {.appendix}
+### 3. Dynamics deviation Taylor map second order (@eq-stt-eom-Taylor-map) {.appendix}
 
-@eq-stt-eom-taylor-map truncated to second order gives
+@eq-stt-eom-Taylor-map truncated to second order gives
 
 $$
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\delta x_\gamma + \frac12\sum_{\gamma,\eta} f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta
-$$ {#eq-stt-eom-taylor-map-second-order}
+$$ {#eq-stt-eom-Taylor-map-second-order}
 
 where
 
@@ -2111,9 +2112,9 @@ evaluated along the reference trajectory.
 
 ---
 
-### 4. Substitute @eq-stt-taylor-map into @eq-stt-eom-taylor-map {.appendix}
+### 4. Substitution of state deviation Taylor expansions to dynamics Taylor map {.appendix}
 
-Substituting @eq-stt-taylor-map-second-order into the first $\delta x_{\gamma}$ of @eq-stt-eom-taylor-map-second-order gives
+Substituting @eq-stt-Taylor-map-second-order into the first $\delta x_{\gamma}$ of @eq-stt-eom-Taylor-map-second-order gives
 
 $$
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\left(\sum_a\Phi_{\gamma;a},\delta x_{0a} + \frac12\sum_{a,b}\Phi_{\gamma;ab},\delta x_{0a}\delta x_{0b}\right) + \frac12\sum_{\gamma,\eta} f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta
@@ -2209,7 +2210,7 @@ f^\star_{i;\gamma\eta}
 \delta x_{0a}\delta x_{0b}.
 $$
 
-The right-hand side from @eq-stt-taylor-map-time-derivative-second-order contains
+The right-hand side from @eq-stt-Taylor-map-time-derivative-second-order contains
 
 $$
 \sum_{a,b}\frac12
@@ -2219,14 +2220,14 @@ $$
 
 ---
 
-## Step 5. Balance coefficients {.appendix}
+### 5. Balancing coefficients {.appendix}
 
 We balance the coefficients of the second order terms $\delta x_{0a}\delta x_{0b}$  on both sides of the equation, which gives
 $$
 \frac12\dot\Phi_{i;ab}=\sum_{\gamma,\eta}\left[\frac12f^\star_{i;\gamma}\Phi_{\gamma;ab}+\frac12f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}\right]
 $$
 
-Removing the common factor (1/2),
+Removing the common factor (1/2), we get the final equation for the second-order STT differential equation:
 
 $$
 \boxed{

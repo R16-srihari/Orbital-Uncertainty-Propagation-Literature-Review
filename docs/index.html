@@ -741,7 +741,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <li><p><strong>Mean (<span class="math inline">\(\mu_y\)</span>):</strong> <span class="math inline">\(\mu_y = f(\mu_x)\)</span></p></li>
 <li><p><strong>Variance (<span class="math inline">\(\sigma_y^2\)</span>):</strong> <span class="math inline">\(\sigma_y^2 = [f'(\mu_x)]^2 \sigma_x^2\)</span></p></li>
 </ol>
-<p>While fast, moment propagation on the first-order taylor approximation fails to capture the “mean shift” caused by nonlinearities and performs poorly when the PDF becomes highly non-Gaussian.</p>
+<p>While fast, moment propagation on the first-order Taylor approximation fails to capture the “mean shift” caused by nonlinearities and performs poorly when the PDF becomes highly non-Gaussian.</p>
 <p><strong>Second-Order Equations:</strong></p>
 <ol type="1">
 <li><p><strong>Mean:</strong> <span class="math inline">\(\mu_y = f(\mu_x) + \frac{1}{2} f''(\mu_x) \sigma_x^2\)</span></p></li>
@@ -1296,7 +1296,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 </section>
 <section id="taylor-expansion-of-the-solution-flow" class="level3">
 <h3 class="anchored" data-anchor-id="taylor-expansion-of-the-solution-flow">Taylor Expansion of the Solution Flow</h3>
-<p>To arrive at <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>, we perform a multivariate Taylor series expansion of the perturbed solution flow <span class="math inline">\(\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0)\)</span> about the nominal initial conditions <span class="math inline">\(\mathbf{x}_0\)</span>.</p>
+<p>To arrive at <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>, we perform a multivariate Taylor series expansion of the perturbed solution flow <span class="math inline">\(\phi(t; \mathbf{x}_0 + \delta \mathbf{x}_0, t_0)\)</span> about the nominal initial conditions <span class="math inline">\(\mathbf{x}_0\)</span>.</p>
 <ul>
 <li><p><strong>Step 1: Scalar Component Expansion</strong> The <span class="math inline">\(i\)</span>-th component of the perturbed state at time <span class="math inline">\(t\)</span> can be expressed as a function of the initial state components: <span class="math display">\[
 x_i(t) = \phi_i(t; x_{0,1} + \delta x_{0,1}, \dots, x_{0,n} + \delta x_{0,n}, t_0)
@@ -1327,7 +1327,7 @@ x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x
 </section>
 <section id="the-high-order-taylor-map" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="the-high-order-taylor-map">The High-Order Taylor Map</h3>
-<p>The final expression relates initial deviations to future deviations through a sum of tensors: <span id="eq-stt-taylor-map"><span class="math display">\[
+<p>The final expression relates initial deviations to future deviations through a sum of tensors: <span id="eq-stt-Taylor-map"><span class="math display">\[
 \delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i;k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p}
 \tag{10}\]</span></span></p>
 <p><strong>Term Definitions:</strong></p>
@@ -1338,7 +1338,7 @@ x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x
 <li><p><span class="math inline">\(P\)</span>: The truncation order of the expansion (typically <span class="math inline">\(P=2\)</span> or <span class="math inline">\(3\)</span>).</p></li>
 </ul>
 <p>Similar to state deviation, we can also derive the Taylor expansion for dynamics deviation caused by the initial uncertainty from <a href="#eq-stt-eom" class="quarto-xref">Equation&nbsp;9</a> via a similar pathway. This yields the following expression for the time derivative of the deviation:</p>
-<p><span id="eq-stt-eom-taylor-map"><span class="math display">\[
+<p><span id="eq-stt-eom-Taylor-map"><span class="math display">\[
 \dot{\delta x}_i(t) = \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^{\star}_{i; l_1 \dots l_p} \delta x_{l_1} \dots \delta x_{l_p}
 \tag{11}\]</span></span></p>
 
@@ -1346,17 +1346,17 @@ x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x
 <p><span class="math display">\[
 \mathbf{f}^{\star}_{i; l_1 \dots l_p} = \left. \frac{\partial^p f_i}{\partial x_{l_1} \dots \partial x_{l_p}} \right|_{\mathbf{x}^*(t)}
 \]</span></p>
-</div></div><p>We can also find <span class="math inline">\(\dot{x}_i(t)\)</span> by differentiating <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> with respect to time <span class="math inline">\(t\)</span>, which yields: <span id="eq-stt-taylor-map-time-derivative"><span class="math display">\[
+</div></div><p>We can also find <span class="math inline">\(\dot{x}_i(t)\)</span> by differentiating <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> with respect to time <span class="math inline">\(t\)</span>, which yields: <span id="eq-stt-Taylor-map-time-derivative"><span class="math display">\[
 \dot{\delta x}_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \dot{\Phi}_{i; k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p}
 \tag{12}\]</span></span></p>
 <p>Since the initial deviations <span class="math inline">\(\delta x_{0,k_j}\)</span> are arbitrary (chosen from the initial uncertainty probability distribution), the time derivative does not affect them. Therefore, the time derivative of the deviation is expressed in terms of the time derivatives of the STTs.</p>
 </section>
 <section id="sec-stt-ode" class="level3">
 <h3 class="anchored" data-anchor-id="sec-stt-ode">Differential Equations for Tensor Propagation</h3>
-<p>These STT’s are not static; they evolve over time according to the system’s dynamics. The evolution of the STTs is governed by a set of coupled ordinary differential equations (ODEs) derived from <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>, <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> and <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>. The following steps outline the derivation of these ODEs:</p>
+<p>These STT’s are not static; they evolve over time according to the system’s dynamics. The evolution of the STTs is governed by a set of coupled ordinary differential equations (ODEs) derived from <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>, <a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> and <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>. The following steps outline the derivation of these ODEs:</p>
 <ol type="1">
-<li><p>Substituting <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> into each <span class="math inline">\(\delta x_{l_j}\)</span> in <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a>, we obtain a new expression for <span class="math inline">\(\dot{\delta x}_i(t)\)</span> in terms of the initial deviations <span class="math inline">\(\delta x_{0,k_j}\)</span> and the STTs.</p></li>
-<li><p>We then equate this new expression with <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>, which also expresses <span class="math inline">\(\dot{\delta x}_i(t)\)</span> in terms of the initial deviations and the time derivatives of the STTs. The coefficients of the same monomials <span class="math inline">\(\delta x_{0,k_1} \dots \delta x_{0,k_p}\)</span> on both sides of the equation must be equal for every set {<span class="math inline">\(k_1,\dots, k_p\)</span>}, leading to a set of ODEs for the STTs.</p></li>
+<li><p>Substituting <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> into each <span class="math inline">\(\delta x_{l_j}\)</span> in <a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>, we obtain a new expression for <span class="math inline">\(\dot{\delta x}_i(t)\)</span> in terms of the initial deviations <span class="math inline">\(\delta x_{0,k_j}\)</span> and the STTs.</p></li>
+<li><p>We then equate this new expression with <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>, which also expresses <span class="math inline">\(\dot{\delta x}_i(t)\)</span> in terms of the initial deviations and the time derivatives of the STTs. The coefficients of the same monomials <span class="math inline">\(\delta x_{0,k_1} \dots \delta x_{0,k_p}\)</span> on both sides of the equation must be equal for every set {<span class="math inline">\(k_1,\dots, k_p\)</span>}, leading to a set of ODEs for the STTs.</p></li>
 </ol>
 <p>An example derivation for the first and second-order STT is shown in <a href="#sec-appendix-stt" class="quarto-xref">Section&nbsp;16</a>. The resulting ODEs for the STTs are expressed as follows:</p>
 <p><span class="math display">\[
@@ -1403,7 +1403,7 @@ Tip&nbsp;1: Local Nonlinearity Index for STT Order Selection
 </div>
 <ol start="2" type="1">
 <li><p><strong>Initial Moment Characterization:</strong> Compute the raw moments of the initial PDF.</p></li>
-<li><p><strong>Statistical Mapping:</strong> Use <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> and the linearity of the expectation operator to compute the terminal mean (<span class="math inline">\(\hat{\mu}\)</span>) and covariance (<span class="math inline">\(\hat{\mathbf{P}}\)</span>): <span class="math display">\[
+<li><p><strong>Statistical Mapping:</strong> Use <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> and the linearity of the expectation operator to compute the terminal mean (<span class="math inline">\(\hat{\mu}\)</span>) and covariance (<span class="math inline">\(\hat{\mathbf{P}}\)</span>): <span class="math display">\[
 \delta \mu_i(t) =E[\delta x_i(t)]= \sum_{p=1}^P \frac{1}{p!} \phi_{i, k_1 \dots k_p} \mathbb{E}[\delta x_{0, k_1} \dots \delta x_{0, k_p}]
 \]</span></p>
 <p><span class="math display">\[
@@ -2211,33 +2211,32 @@ w_t = w_t - C_{h(t,n)}^2
 
 
 
-
 </div></section><section id="first-order-stt" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">First-order STT</h2><div class="quarto-appendix-contents">
 
-<p>To derive the differential equation for the first-order STT <span class="math inline">\(\Phi_{i;a}\)</span>, we need the equations <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>, <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> and <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in first order and follow the steps outlined in <a href="#sec-stt-ode" class="quarto-xref">Section&nbsp;8.2.4</a>.</p>
+<p>To derive the differential equation for the first-order STT <span class="math inline">\(\Phi_{i;a}\)</span>, we need the equations <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>, <a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> and <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in first order and follow the steps outlined in <a href="#sec-stt-ode" class="quarto-xref">Section&nbsp;8.2.4</a>.</p>
 
 
 
 
 
-</div></section><section id="first-order-taylor-expansion-of-the-state-eq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">1. First order Taylor expansion of the state (<a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h2><div class="quarto-appendix-contents">
+</div></section><section id="first-order-taylor-expansion-of-the-state-deviation-eq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">1. First order Taylor expansion of the state deviation (<a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h2><div class="quarto-appendix-contents">
 
-<p><span id="eq-stt-taylor-map-first-order"><span class="math display">\[
+<p><span id="eq-stt-Taylor-map-first-order"><span class="math display">\[
 \delta x_i(t) = \sum_a\Phi_{i;a},\delta x_{0a}
 \tag{15}\]</span></span></p>
-<p>This is <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> in first order.</p>
+<p>This is <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> in first order.</p>
 <hr>
-</div></section><section id="time-derivative-of-eq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">2. Time derivative of <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a></h2><div class="quarto-appendix-contents">
+</div></section><section id="time-derivative-of-state-deviation-taylor-map-eq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">2. Time derivative of state deviation Taylor map <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a></h2><div class="quarto-appendix-contents">
 
 <p>Since only the STTs depend on time,</p>
-<p><span id="eq-stt-taylor-map-time-derivative-first-order"><span class="math display">\[
+<p><span id="eq-stt-Taylor-map-time-derivative-first-order"><span class="math display">\[
 \delta\dot x_i = \sum_a \dot\Phi_{i;a}\delta x_{0a}
 \tag{16}\]</span></span></p>
-<p>which is <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in first order.</p>
-</div></section><section id="dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">3. Dynamics deviation taylor map first order (<a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h2><div class="quarto-appendix-contents">
+<p>which is <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in first order.</p>
+</div></section><section id="dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">3. Dynamics deviation Taylor map first order (<a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h2><div class="quarto-appendix-contents">
 
-<p><a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> in first order gives</p>
-<p><span id="eq-stt-eom-taylor-map-first-order"><span class="math display">\[
+<p><a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> in first order gives</p>
+<p><span id="eq-stt-eom-Taylor-map-first-order"><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\delta x_\gamma
 \tag{17}\]</span></span></p>
 <p>where</p>
@@ -2246,20 +2245,20 @@ f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
 \]</span></p>
 <p>evaluated along the reference trajectory.</p>
 <hr>
-</div></section><section id="substitute-eq-stt-taylor-map-into-eq-stt-eom-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">4. Substitute <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> into <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a></h2><div class="quarto-appendix-contents">
+</div></section><section id="substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">4. Substitution of State deviation Taylor map into dynamics Taylor map</h2><div class="quarto-appendix-contents">
 
 <p>Replace every <span class="math inline">\(\delta x_\gamma\)</span> by</p>
 <p><span class="math display">\[
 \delta x_\gamma=\sum_a \dot\Phi_{\gamma;a}\delta x_{0a}
 \]</span></p>
-<p>using <a href="#eq-stt-taylor-map-first-order" class="quarto-xref">Equation&nbsp;15</a>. Then the <a href="#eq-stt-eom-taylor-map-first-order" class="quarto-xref">Equation&nbsp;17</a> becomes</p>
+<p>using <a href="#eq-stt-Taylor-map-first-order" class="quarto-xref">Equation&nbsp;15</a>. Then the <a href="#eq-stt-eom-Taylor-map-first-order" class="quarto-xref">Equation&nbsp;17</a> becomes</p>
 <p><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} \sum_a f^\star_{i;\gamma}\Phi_{\gamma;a}\delta x_{0a}
 \]</span></p>
 <hr>
-</div></section><section id="balance-coefficients" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">5. Balance coefficients</h2><div class="quarto-appendix-contents">
+</div></section><section id="balancing-coefficients" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">5. Balancing coefficients</h2><div class="quarto-appendix-contents">
 
-<p>Now we equate both <a href="#eq-stt-taylor-map-time-derivative-first-order" class="quarto-xref">Equation&nbsp;16</a> and the modified <a href="#eq-stt-eom-taylor-map-first-order" class="quarto-xref">Equation&nbsp;17</a>. Since <span class="math inline">\(\delta x_{0a}\)</span> are independent variables, their coefficients must be equal. Removing the common factor, we obtain the first-order STT differential equation:</p>
+<p>Now we equate both <a href="#eq-stt-Taylor-map-time-derivative-first-order" class="quarto-xref">Equation&nbsp;16</a> and the modified <a href="#eq-stt-eom-Taylor-map-first-order" class="quarto-xref">Equation&nbsp;17</a>. Since <span class="math inline">\(\delta x_{0a}\)</span> are independent variables, their coefficients must be equal. Removing the common factor, we obtain the first-order STT differential equation:</p>
 <p><span id="eq-first-order-stt-differential-equation"><span class="math display">\[
 \boxed{
 \dot\Phi_{i;a} = \sum_{\gamma} f^\star_{i;\gamma}\Phi_{\gamma;a}
@@ -2271,24 +2270,26 @@ f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
 
 
 
-</div></section><section id="second-order-taylor-expansion-of-the-state-eq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">1. Second order Taylor expansion of the state (<a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h2><div class="quarto-appendix-contents">
 
-<p><span id="eq-stt-taylor-map-second-order"><span class="math display">\[
+</div></section><section id="second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">1. Second order Taylor expansion of the state deviation(<a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h2><div class="quarto-appendix-contents">
+
+<p><span id="eq-stt-Taylor-map-second-order"><span class="math display">\[
 \delta x_i(t) = \sum_a\Phi_{i;a},\delta x_{0a} + \frac12\sum_{a,b}\Phi_{i;ab},\delta x_{0a}\delta x_{0b}
 \tag{19}\]</span></span></p>
-<p>This is <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> truncated after second order.</p>
+<p>This is <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> truncated after second order.</p>
 <hr>
-</div></section><section id="time-derivative-of-eq-stt-taylor-map-1" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">2. Time derivative of <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a></h2><div class="quarto-appendix-contents">
+</div></section><section id="time-derivative-of-state-deviation-taylor-map-eq-stt-taylor-map-1" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">2. Time derivative of state deviation Taylor map <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a></h2><div class="quarto-appendix-contents">
 
 <p>Since only the STTs depend on time,</p>
-<p><span id="eq-stt-taylor-map-time-derivative-second-order"><span class="math display">\[
+<p><span id="eq-stt-Taylor-map-time-derivative-second-order"><span class="math display">\[
 \delta\dot x_i = \sum_a \dot\Phi_{i;a}\delta x_{0a} + \frac12\sum_{a,b}\dot\Phi_{i;ab}\delta x_{0a}\delta x_{0b}
 \tag{20}\]</span></span></p>
-<p>which is <a href="#eq-stt-taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in second order.</p>
-</div></section><section id="dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map-1" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">3. Dynamics deviation taylor map first order (<a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h2><div class="quarto-appendix-contents">
+<p>which is <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in second order.</p>
+<hr>
+</div></section><section id="dynamics-deviation-taylor-map-second-order-eq-stt-eom-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">3. Dynamics deviation Taylor map second order (<a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h2><div class="quarto-appendix-contents">
 
-<p><a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a> truncated to second order gives</p>
-<p><span id="eq-stt-eom-taylor-map-second-order"><span class="math display">\[
+<p><a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> truncated to second order gives</p>
+<p><span id="eq-stt-eom-Taylor-map-second-order"><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\delta x_\gamma + \frac12\sum_{\gamma,\eta} f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta
 \tag{21}\]</span></span></p>
 <p>where</p>
@@ -2301,9 +2302,9 @@ f^\star_{i;\gamma\eta}=\frac{\partial^2 f_i}{\partial x_\gamma \partial x_\eta},
 \]</span></p>
 <p>evaluated along the reference trajectory.</p>
 <hr>
-</div></section><section id="substitute-eq-stt-taylor-map-into-eq-stt-eom-taylor-map-1" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">4. Substitute <a href="#eq-stt-taylor-map" class="quarto-xref">Equation&nbsp;10</a> into <a href="#eq-stt-eom-taylor-map" class="quarto-xref">Equation&nbsp;11</a></h2><div class="quarto-appendix-contents">
+</div></section><section id="substitution-of-state-deviation-taylor-expansions-to-dynamics-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">4. Substitution of state deviation Taylor expansions to dynamics Taylor map</h2><div class="quarto-appendix-contents">
 
-<p>Substituting <a href="#eq-stt-taylor-map-second-order" class="quarto-xref">Equation&nbsp;19</a> into the first <span class="math inline">\(\delta x_{\gamma}\)</span> of <a href="#eq-stt-eom-taylor-map-second-order" class="quarto-xref">Equation&nbsp;21</a> gives</p>
+<p>Substituting <a href="#eq-stt-Taylor-map-second-order" class="quarto-xref">Equation&nbsp;19</a> into the first <span class="math inline">\(\delta x_{\gamma}\)</span> of <a href="#eq-stt-eom-Taylor-map-second-order" class="quarto-xref">Equation&nbsp;21</a> gives</p>
 <p><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\left(\sum_a\Phi_{\gamma;a},\delta x_{0a} + \frac12\sum_{a,b}\Phi_{\gamma;ab},\delta x_{0a}\delta x_{0b}\right) + \frac12\sum_{\gamma,\eta} f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta
 \]</span></p>
@@ -2376,19 +2377,19 @@ f^\star_{i;\gamma\eta}
 \Phi_{\eta;b}
 \delta x_{0a}\delta x_{0b}.
 \]</span></p>
-<p>The right-hand side from <a href="#eq-stt-taylor-map-time-derivative-second-order" class="quarto-xref">Equation&nbsp;20</a> contains</p>
+<p>The right-hand side from <a href="#eq-stt-Taylor-map-time-derivative-second-order" class="quarto-xref">Equation&nbsp;20</a> contains</p>
 <p><span class="math display">\[
 \sum_{a,b}\frac12
 \dot\Phi_{i;ab}
 \delta x_{0a}\delta x_{0b}.
 \]</span></p>
 <hr>
-</div></section><section id="step-5.-balance-coefficients" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Step 5. Balance coefficients</h2><div class="quarto-appendix-contents">
+</div></section><section id="balancing-coefficients-1" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">5. Balancing coefficients</h2><div class="quarto-appendix-contents">
 
 <p>We balance the coefficients of the second order terms <span class="math inline">\(\delta x_{0a}\delta x_{0b}\)</span> on both sides of the equation, which gives <span class="math display">\[
 \frac12\dot\Phi_{i;ab}=\sum_{\gamma,\eta}\left[\frac12f^\star_{i;\gamma}\Phi_{\gamma;ab}+\frac12f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}\right]
 \]</span></p>
-<p>Removing the common factor (1/2),</p>
+<p>Removing the common factor (1/2), we get the final equation for the second-order STT differential equation:</p>
 <p><span id="eq-second-order-stt-differential-equation"><span class="math display">\[
 \boxed{
 \dot\Phi_{i;ab}=\sum_{\gamma, \eta}\left[f^\star_{i;\gamma}\Phi_{\gamma;ab}+f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}\right]}
