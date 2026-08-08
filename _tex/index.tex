@@ -642,6 +642,8 @@ The following sections provide a detailed overview of the most widely
 used methods in the literature, highlighting their theoretical
 foundations, practical implementations, and performance characteristics.
 
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
 \section{The Sampling Baseline: Monte Carlo
 (MC)}\label{the-sampling-baseline-monte-carlo-mc}
 
@@ -4136,6 +4138,8 @@ Propagator}\label{algorithm-the-taylor-diffusion-propagator}
 \end{Highlighting}
 \end{Shaded}
 
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
 \section{Appendix}\label{appendix}
 
 \section{A: Pivoted Cholesky Decomposition for Multi-Fidelity Node
@@ -4264,7 +4268,9 @@ To derive the differential equation for the first-order STT
 \(\Phi_{i;a}\), we need the equations Equation~\ref{eq-stt-Taylor-map},
 Equation~\ref{eq-stt-eom-Taylor-map} and
 Equation~\ref{eq-stt-Taylor-map-time-derivative} in first order and
-follow the steps outlined in Section~\ref{sec-stt-ode}.
+follow the steps outlined in Section~\ref{sec-stt-ode} to match the
+coefficients of \(\delta x_{0a}\) on both sides of the resulting
+equation.
 
 \subsubsection{\texorpdfstring{1. First order Taylor expansion of the
 state deviation
@@ -4276,11 +4282,8 @@ state deviation
 
 This is Equation~\ref{eq-stt-Taylor-map} in first order.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\subsubsection{\texorpdfstring{2. Time derivative of state deviation
-Taylor map
-Equation~\ref{eq-stt-Taylor-map}}{2. Time derivative of state deviation Taylor map Equation~}}\label{time-derivative-of-state-deviation-taylor-map-eq-stt-taylor-map}
+\subsubsection{2. Time derivative of state deviation Taylor
+map}\label{time-derivative-of-state-deviation-taylor-map}
 
 Since only the STTs depend on time,
 
@@ -4309,8 +4312,6 @@ f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
 
 evaluated along the reference trajectory.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
 \subsubsection{4. Substitution of State deviation Taylor map into
 dynamics Taylor
 map}\label{substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map}
@@ -4327,8 +4328,6 @@ Equation~\ref{eq-stt-eom-Taylor-map-first-order} becomes
 \[
 \delta\dot x_i = \sum_{\gamma} \sum_a f^\star_{i;\gamma}\Phi_{\gamma;a}\delta x_{0a}
 \]
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \subsubsection{5. Balancing coefficients}\label{balancing-coefficients}
 
@@ -4347,6 +4346,14 @@ differential equation:
 
 \subsection{Second-order STT}\label{second-order-stt}
 
+To derive the differential equation for the second-order STT
+\(\Phi_{i;ab}\), we need the equations Equation~\ref{eq-stt-Taylor-map},
+Equation~\ref{eq-stt-eom-Taylor-map} and
+Equation~\ref{eq-stt-Taylor-map-time-derivative} in second order and
+follow the steps outlined in Section~\ref{sec-stt-ode} to match the
+coefficients of \(\delta x_{0a}\delta x_{0b}\) on both sides of the
+resulting equation.
+
 \subsubsection{\texorpdfstring{1. Second order Taylor expansion of the
 state
 deviation(Equation~\ref{eq-stt-Taylor-map})}{1. Second order Taylor expansion of the state deviation(Equation~)}}\label{second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map}
@@ -4357,11 +4364,8 @@ deviation(Equation~\ref{eq-stt-Taylor-map})}{1. Second order Taylor expansion of
 
 This is Equation~\ref{eq-stt-Taylor-map} truncated after second order.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\subsubsection{\texorpdfstring{2. Time derivative of state deviation
-Taylor map
-Equation~\ref{eq-stt-Taylor-map}}{2. Time derivative of state deviation Taylor map Equation~}}\label{time-derivative-of-state-deviation-taylor-map-eq-stt-taylor-map-1}
+\subsubsection{2. Time derivative of state deviation Taylor
+map}\label{time-derivative-of-state-deviation-taylor-map-1}
 
 Since only the STTs depend on time,
 
@@ -4371,8 +4375,6 @@ Since only the STTs depend on time,
 
 which is Equation~\ref{eq-stt-Taylor-map-time-derivative} in second
 order.
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \subsubsection{\texorpdfstring{3. Dynamics deviation Taylor map second
 order
@@ -4397,8 +4399,6 @@ f^\star_{i;\gamma\eta}=\frac{\partial^2 f_i}{\partial x_\gamma \partial x_\eta},
 \]
 
 evaluated along the reference trajectory.
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \subsubsection{4. Substitution of state deviation Taylor expansions to
 dynamics Taylor
@@ -4428,8 +4428,6 @@ f^\star_{i;\gamma}
 The first piece is first-order and is part of
 Equation~\ref{eq-first-order-stt-differential-equation}, while the
 second piece contributes to the second-order equation.
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \paragraph{\texorpdfstring{\textbf{Second
 contribution}}{Second contribution}}\label{second-contribution}
@@ -4489,8 +4487,6 @@ f^\star_{i;\gamma\eta}
 This is the entire second-order contribution from the nonlinear
 dynamics.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
 \paragraph{\texorpdfstring{\textbf{Collect all second-order
 terms}}{Collect all second-order terms}}\label{collect-all-second-order-terms}
 
@@ -4517,8 +4513,6 @@ Equation~\ref{eq-stt-Taylor-map-time-derivative-second-order} contains
 \dot\Phi_{i;ab}
 \delta x_{0a}\delta x_{0b}.
 \]
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \subsubsection{5. Balancing
 coefficients}\label{balancing-coefficients-1}
