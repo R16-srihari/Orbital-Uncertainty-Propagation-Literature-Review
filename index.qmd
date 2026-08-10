@@ -1126,9 +1126,36 @@ where
 * $N$ = sampled initial conditions,
 * $n$ = state dimension. 
 
+In practice, the nonlinearity index is computed by propagating a set of initial deviations $\delta \mathbf{x}_0$ through both the $m$-th order STT and a direct numerical integration of the full nonlinear dynamics. The relative error between these two predictions is then evaluated to determine if the current order $m$ is sufficient to capture the system's nonlinearity. If $\eta_m$ exceeds a predefined threshold, a higher-order STT is computed to improve accuracy.
 :::
 
-2.  **Initial Moment Characterization:** Compute the raw moments of the initial PDF. Since STT methods propagates the deviation $\delta \mathbf{x}(t)$, the initial moments are computed for the zero-mean deviation $\delta \mathbf{x}_0$ rather than the absolute state $\mathbf{x}_0$. For a Gaussian initial distribution, the moments can be computed analytically using **Isserlis' Theorem** (or Wick's formula).
+2.  **Initial Moment Characterization:** The initial uncertainty is characterized by its statistical moments, which are computed from the Moment generating function (MGF) of the initial probability distribution which is typically assumed to be Gaussian. The MGF provides a convenient way to compute the moments of a known distribution, which are then used in the algebraic mapping.
+
+:::{.callout-note title="Moment Generating Function (MGF)" #tip-mgf}
+
+For a multivariate random vector such that $\mathbf{x}\sim\mathcal N(\boldsymbol{\mu},\mathbf{P})$, the MGF is defined as:
+
+$$
+\boxed{
+M_{\mathbf x}(\mathbf t)
+=\exp\left(
+\mathbf t^T\boldsymbol{\mu}
++\frac12\mathbf t^TP\mathbf t
+\right)
+}
+$$
+
+The moments of the distribution can be obtained by partially differentiating the MGF with respect to components of $\mathbf{t}$ and evaluating at $\mathbf{t} = 0$. That is, the $k$-th order moment is given by:
+
+$$
+E[x_1^{k_1} x_2^{k_2} \dots x_n^{k_n}] = \left. \frac{\partial^{k_1 + k_2 + \dots + k_n} M_{\mathbf{x}}(\mathbf{t})}{\partial t_1^{k_1} \partial t_2^{k_2} \dots \partial t_n^{k_n}} \right|_{\mathbf{t}=0}
+$$
+:::
+
+
+
+<!--
+Since STT methods propagates the state deviation $\delta \mathbf{x}(t)$ rather than the absolute state $\mathbf{x}(t)$, the initial moment characterization is done for the initial deviation $\delta \mathbf{x}_0$, which is a zero-mean Gaussian random vector. For a Gaussian initial distribution, the moments can be computed analytically using **Isserlis' Theorem** (or Wick's formula).
 
 :::{.callout-note title="Isserlis' Theorem for Gaussian Moments" #note-isserlis}
 For a **zero-mean** multivariate normal random vector $\mathbf{x}$, **Isserlis' Theorem** provides a specific formula for the expectation of the product of its components.
@@ -1150,7 +1177,7 @@ $$
 
 *(Source:@acciarini:10.2514/1.G008717)*
 :::
-
+-->
 
 
 3.  **Statistical Mapping:** Use @eq-stt-Taylor-map and the linearity of the expectation operator to compute the terminal mean ($\hat{\mu}$) and covariance ($\hat{\mathbf{P}}$):
