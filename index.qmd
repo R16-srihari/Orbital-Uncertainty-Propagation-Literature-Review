@@ -998,7 +998,7 @@ $$ {#eq-stt-deviation}
     :::
 
 
-*   $\mathbf{x}_0$: The nominal initial state.
+*   $\mathbf{x}_0$: The nominal trajectory initial state.
 
 *   $\delta \mathbf{x}_0$: The initial deviation or perturbation from the nominal state.
 
@@ -1128,7 +1128,30 @@ where
 
 :::
 
-2.  **Initial Moment Characterization:** Compute the raw moments of the initial PDF.
+2.  **Initial Moment Characterization:** Compute the raw moments of the initial PDF. Since STT methods propagates the deviation $\delta \mathbf{x}(t)$, the initial moments are computed for the zero-mean deviation $\delta \mathbf{x}_0$ rather than the absolute state $\mathbf{x}_0$. For a Gaussian initial distribution, the moments can be computed analytically using **Isserlis' Theorem** (or Wick's formula).
+
+:::{.callout-note title="Isserlis' Theorem for Gaussian Moments" #note-isserlis}
+For a **zero-mean** multivariate normal random vector $\mathbf{x}$, **Isserlis' Theorem** provides a specific formula for the expectation of the product of its components.
+
+1.  **Odd Orders:** If the total number of components $k$ is odd, the $k$th-order central moment is **zero**.
+
+2.  **Even Orders:** If $k$ is even, the expectation is equal to the sum of the products of the covariances of all possible unordered pairings of the components:
+    $$
+    E[x_{k_1} x_{k_2} \dots x_{k_n}] = \sum_{\text{all pairings}}\prod_{\text{pairs }(i,j)}P_{ij}
+    $$
+
+    Where $P_{ij}$ is the covariance between components $x_i$ and $x_j$.
+
+For example, the **fourth-order moment** of a zero-mean Gaussian distribution is computed as:
+
+$$
+E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
+$$
+
+*(Source:@acciarini:10.2514/1.G008717)*
+:::
+
+
 
 3.  **Statistical Mapping:** Use @eq-stt-Taylor-map and the linearity of the expectation operator to compute the terminal mean ($\hat{\mu}$) and covariance ($\hat{\mathbf{P}}$):
     $$
@@ -1154,29 +1177,7 @@ where
 
 :::
 
-4.  **Gaussian Moment Property:** If the initial distribution is Gaussian, higher-order moments are analytically linked to the covariance via **Isserlis' Theorem** (or Wick's formula), allowing for precise reconstruction of non-Gaussian terminal shapes using only the initial mean and covariance.
 
-:::{.callout-note title="Isserlis' Theorem for Gaussian Moments" #note-isserlis}
-For a **zero-mean** multivariate normal random vector $\mathbf{x}$, **Isserlis' Theorem** provides a specific formula for the expectation of the product of its components.
-
-1.  **Odd Orders:** If the total number of components $k$ is odd, the $k$th-order central moment is **zero**.
-
-2.  **Even Orders:** If $k$ is even, the expectation is equal to the sum of the products of the covariances of all possible unordered pairings of the components:
-    $$E[x_{k_1} x_{k_2} \dots x_{k_n}] = \sum_{p \in \Pi} \prod_{\{i,j\} \in p} \sigma_{ij}$$
-    *Where:*
-    
-    *   $\Pi$: The set of all partitions of $\{1, \dots, k\}$ into $k/2$ pairs.
-    
-    *   $\sigma_{ij}$: The covariance between components $x_i$ and $x_j$.
-
-For example, the **fourth-order moment** of a zero-mean Gaussian distribution is computed as:
-
-$$
-E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
-$$
-
-*(Source:@park-scheeres:10.2514/1.20177)*
-:::
 
 ## Algorithm: The STT Uncertainty Pipeline
 The following flowchart delineates the procedural execution of an STT-based uncertainty propagation campaign.
