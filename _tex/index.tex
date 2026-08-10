@@ -2277,7 +2277,7 @@ of the system's equations of motion.
 
   \end{tcolorbox}
 \item
-  \(\mathbf{x}_0\): The nominal initial state.
+  \(\mathbf{x}_0\): The nominal trajectory initial state.
 \item
   \(\delta \mathbf{x}_0\): The initial deviation or perturbation from
   the nominal state.
@@ -2499,9 +2499,53 @@ where
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \setcounter{enumi}{1}
+\tightlist
 \item
   \textbf{Initial Moment Characterization:} Compute the raw moments of
-  the initial PDF.
+  the initial PDF. Since STT methods propagates the deviation
+  \(\delta \mathbf{x}(t)\), the initial moments are computed for the
+  zero-mean deviation \(\delta \mathbf{x}_0\) rather than the absolute
+  state \(\mathbf{x}_0\). For a Gaussian initial distribution, the
+  moments can be computed analytically using \textbf{Isserlis' Theorem}
+  (or Wick's formula).
+\end{enumerate}
+
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Isserlis' Theorem for Gaussian Moments}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+
+For a \textbf{zero-mean} multivariate normal random vector
+\(\mathbf{x}\), \textbf{Isserlis' Theorem} provides a specific formula
+for the expectation of the product of its components.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Odd Orders:} If the total number of components \(k\) is odd,
+  the \(k\)th-order central moment is \textbf{zero}.
+\item
+  \textbf{Even Orders:} If \(k\) is even, the expectation is equal to
+  the sum of the products of the covariances of all possible unordered
+  pairings of the components: \[
+  E[x_{k_1} x_{k_2} \dots x_{k_n}] = \sum_{\text{all pairings}}\prod_{\text{pairs }(i,j)}P_{ij}
+  \]
+
+  Where \(P_{ij}\) is the covariance between components \(x_i\) and
+  \(x_j\).
+\end{enumerate}
+
+For example, the \textbf{fourth-order moment} of a zero-mean Gaussian
+distribution is computed as:
+
+\[
+E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
+\]
+
+\emph{(Source:Acciarini et al. (2025))}
+
+\end{tcolorbox}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
 \item
   \textbf{Statistical Mapping:} Use Equation~\ref{eq-stt-Taylor-map} and
   the linearity of the expectation operator to compute the terminal mean
@@ -2533,57 +2577,6 @@ where
 \end{itemize}
 
 \end{footnotesize}}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
-\tightlist
-\item
-  \textbf{Gaussian Moment Property:} If the initial distribution is
-  Gaussian, higher-order moments are analytically linked to the
-  covariance via \textbf{Isserlis' Theorem} (or Wick's formula),
-  allowing for precise reconstruction of non-Gaussian terminal shapes
-  using only the initial mean and covariance.
-\end{enumerate}
-
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Isserlis' Theorem for Gaussian Moments}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
-
-For a \textbf{zero-mean} multivariate normal random vector
-\(\mathbf{x}\), \textbf{Isserlis' Theorem} provides a specific formula
-for the expectation of the product of its components.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  \textbf{Odd Orders:} If the total number of components \(k\) is odd,
-  the \(k\)th-order central moment is \textbf{zero}.
-\item
-  \textbf{Even Orders:} If \(k\) is even, the expectation is equal to
-  the sum of the products of the covariances of all possible unordered
-  pairings of the components:
-  \[E[x_{k_1} x_{k_2} \dots x_{k_n}] = \sum_{p \in \Pi} \prod_{\{i,j\} \in p} \sigma_{ij}\]
-  \emph{Where:}
-
-  \begin{itemize}
-  \item
-    \(\Pi\): The set of all partitions of \(\{1, \dots, k\}\) into
-    \(k/2\) pairs.
-  \item
-    \(\sigma_{ij}\): The covariance between components \(x_i\) and
-    \(x_j\).
-  \end{itemize}
-\end{enumerate}
-
-For example, the \textbf{fourth-order moment} of a zero-mean Gaussian
-distribution is computed as:
-
-\[
-E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
-\]
-
-\emph{(Source:Park and Scheeres (2006))}
-
-\end{tcolorbox}
 
 \subsection{Algorithm: The STT Uncertainty
 Pipeline}\label{algorithm-the-stt-uncertainty-pipeline}
