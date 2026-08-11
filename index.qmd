@@ -1129,7 +1129,7 @@ where
 In practice, the nonlinearity index is computed by propagating a set of initial deviations $\delta \mathbf{x}_0$ through both the $m$-th order STT and a direct numerical integration of the full nonlinear dynamics. The relative error between these two predictions is then evaluated to determine if the current order $m$ is sufficient to capture the system's nonlinearity. If $\eta_m$ exceeds a predefined threshold, a higher-order STT is computed to improve accuracy.
 :::
 
-2.  **Initial Moment Characterization:** The initial uncertainty is characterized by its statistical moments, which are computed from the Moment generating function (MGF) of the initial probability distribution which is typically assumed to be Gaussian. The MGF provides a convenient way to compute the moments of a known distribution, which are then used in the algebraic mapping.
+2.  **Initial Moment Characterization:** The initial uncertainty is characterized by its statistical moments, which are computed from the Moment generating function (MGF) of the initial probability distribution, which as we said earlier, is typically assumed to be Gaussian. The MGF provides a convenient way to compute the moments of a known distribution, which are then used in the algebraic mapping.
 
 :::{.callout-note title="Moment Generating Function (MGF)" #tip-mgf}
 
@@ -1138,7 +1138,7 @@ For a multivariate random vector such that $\mathbf{x}\sim\mathcal N(\boldsymbol
 $$
 \boxed{
 M_{\mathbf x}(\mathbf t)
-=\exp\left(
+=E[e^{\mathbf t^T \mathbf x}]=\exp\left(
 \mathbf t^T\boldsymbol{\mu}
 +\frac12\mathbf t^TP\mathbf t
 \right)
@@ -1150,6 +1150,17 @@ The moments of the distribution can be obtained by partially differentiating the
 $$
 E[x_1^{k_1} x_2^{k_2} \dots x_n^{k_n}] = \left. \frac{\partial^{k_1 + k_2 + \dots + k_n} M_{\mathbf{x}}(\mathbf{t})}{\partial t_1^{k_1} \partial t_2^{k_2} \dots \partial t_n^{k_n}} \right|_{\mathbf{t}=0}
 $$
+
+For example, the first four moments of a Gaussian distribution are:
+$$
+\begin{aligned}
+E[x_i] &= \mu_i \\
+E[x_i x_j] &= \mu_i \mu_j + P_{ij} \\
+E[x_i x_j x_k] &= \mu_i \mu_j \mu_k + \mu_i P_{jk} + \mu_j P_{ik} + \mu_k P_{ij} \\
+E[x_i x_j x_k x_l] &= \mu_i \mu_j \mu_k \mu_l + \mu_i \mu_j P_{kl} + \mu_i \mu_k P_{jl} + \mu_i \mu_l P_{jk} + \mu_j \mu_k P_{il} + \mu_j \mu_l P_{ik} + \mu_k \mu_l P_{ij} + P_{ij} P_{kl} + P_{ik} P_{jl} + P_{il} P_{jk}
+\end{aligned}
+$$
+
 :::
 
 
