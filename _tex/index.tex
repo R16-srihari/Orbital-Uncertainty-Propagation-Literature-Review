@@ -2494,6 +2494,14 @@ where
   \(n\) = state dimension.
 \end{itemize}
 
+In practice, the nonlinearity index is computed by propagating a set of
+initial deviations \(\delta \mathbf{x}_0\) through both the \(m\)-th
+order STT and a direct numerical integration of the full nonlinear
+dynamics. The relative error between these two predictions is then
+evaluated to determine if the current order \(m\) is sufficient to
+capture the system's nonlinearity. If \(\eta_m\) exceeds a predefined
+threshold, a higher-order STT is computed to improve accuracy.
+
 \end{tcolorbox}
 
 \begin{enumerate}
@@ -2501,45 +2509,49 @@ where
 \setcounter{enumi}{1}
 \tightlist
 \item
-  \textbf{Initial Moment Characterization:} Compute the raw moments of
-  the initial PDF. Since STT methods propagates the deviation
-  \(\delta \mathbf{x}(t)\), the initial moments are computed for the
-  zero-mean deviation \(\delta \mathbf{x}_0\) rather than the absolute
-  state \(\mathbf{x}_0\). For a Gaussian initial distribution, the
-  moments can be computed analytically using \textbf{Isserlis' Theorem}
-  (or Wick's formula).
+  \textbf{Initial Moment Characterization:} The initial uncertainty is
+  characterized by its statistical moments, which are computed from the
+  Moment generating function (MGF) of the initial probability
+  distribution, which as we said earlier, is typically assumed to be
+  Gaussian. The MGF provides a convenient way to compute the moments of
+  a known distribution, which are then used in the algebraic mapping.
 \end{enumerate}
 
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Isserlis' Theorem for Gaussian Moments}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note \ref*{tip-mgf}: Moment Generating Function (MGF)}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
-For a \textbf{zero-mean} multivariate normal random vector
-\(\mathbf{x}\), \textbf{Isserlis' Theorem} provides a specific formula
-for the expectation of the product of its components.
+\quartocallouttip{tip-mgf} 
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  \textbf{Odd Orders:} If the total number of components \(k\) is odd,
-  the \(k\)th-order central moment is \textbf{zero}.
-\item
-  \textbf{Even Orders:} If \(k\) is even, the expectation is equal to
-  the sum of the products of the covariances of all possible unordered
-  pairings of the components: \[
-  E[x_{k_1} x_{k_2} \dots x_{k_n}] = \sum_{\text{all pairings}}\prod_{\text{pairs }(i,j)}P_{ij}
-  \]
-
-  Where \(P_{ij}\) is the covariance between components \(x_i\) and
-  \(x_j\).
-\end{enumerate}
-
-For example, the \textbf{fourth-order moment} of a zero-mean Gaussian
-distribution is computed as:
+For a multivariate random vector such that
+\(\mathbf{x}\sim\mathcal N(\boldsymbol{\mu},\mathbf{P})\), the MGF is
+defined as:
 
 \[
-E[x_i x_j x_k x_l] = \sigma_{ij}\sigma_{kl} + \sigma_{ik}\sigma_{jl} + \sigma_{il}\sigma_{jk}
+\boxed{
+M_{\mathbf x}(\mathbf t)
+=E[e^{\mathbf t^T \mathbf x}]=\exp\left(
+\mathbf t^T\boldsymbol{\mu}
++\frac12\mathbf t^TP\mathbf t
+\right)
+}
 \]
 
-\emph{(Source:Acciarini et al. (2025))}
+The moments of the distribution can be obtained by partially
+differentiating the MGF with respect to components of \(\mathbf{t}\) and
+evaluating at \(\mathbf{t} = 0\). That is, the \(k\)-th order moment is
+given by:
+
+\[
+E[x_1^{k_1} x_2^{k_2} \dots x_n^{k_n}] = \left. \frac{\partial^{k_1 + k_2 + \dots + k_n} M_{\mathbf{x}}(\mathbf{t})}{\partial t_1^{k_1} \partial t_2^{k_2} \dots \partial t_n^{k_n}} \right|_{\mathbf{t}=0}
+\]
+
+For example, the first four moments of a Gaussian distribution are: \[
+\begin{aligned}
+E[x_i] &= \mu_i \\
+E[x_i x_j] &= \mu_i \mu_j + P_{ij} \\
+E[x_i x_j x_k] &= \mu_i \mu_j \mu_k + \mu_i P_{jk} + \mu_j P_{ik} + \mu_k P_{ij} \\
+E[x_i x_j x_k x_l] &= \mu_i \mu_j \mu_k \mu_l + \mu_i \mu_j P_{kl} + \mu_i \mu_k P_{jl} + \mu_i \mu_l P_{jk} + \mu_j \mu_k P_{il} + \mu_j \mu_l P_{ik} + \mu_k \mu_l P_{ij} + P_{ij} P_{kl} + P_{ik} P_{jl} + P_{il} P_{jk}
+\end{aligned}
+\]
 
 \end{tcolorbox}
 
