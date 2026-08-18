@@ -140,6 +140,7 @@ window.Quarto = {
     
 
 ;,citation_issue=6;,citation_doi=10.2514/1.G000795;,citation_volume=38;,citation_journal_title=Journal of Guidance, Control, and Dynamics;">
+<meta name="citation_reference" content="citation_title=High-order expansion of neural ordinary differential equation flows;,citation_abstract=Artificial neural networks, widely recognized for their role in machine learning, are also transforming the study of ordinary differential equations (ODEs), bridging data-driven modeling with classical dynamical systems as well as enabling the development of infinitely deep neural models. However, their practical applicability remains, in this context, constrained by the opacity of the learned dynamics, which operate as black-box systems with limited explainability, thereby hindering trust in their deployment. Existing approaches for the analysis of neurally driven dynamical systems are now scarce and restricted to first-order gradient information due to computational constraints, thereby limiting the depth of achievable insight. Here, we introduce event transition tensors as a new tool containing high-order differential information that provides a rigorous mathematical description of NeuralODE dynamics on event manifolds. We demonstrate its versatility across diverse applications: characterizing uncertainties in a data-driven prey-predator control model, analyzing neural optimal feedback dynamics, and mapping landing trajectories in a three-body neural Hamiltonian system. In all cases, our method allows for the interpretability of NeuralODEs and their analytical verification by expressing their behavior through previously unknown explicit mathematical structures. The neural dynamics are thereby fully encapsulated within a set of compact, computationally efficient tensors, which retain all the necessary information for rigorous system analysis and certification. Our findings contribute to a deeper theoretical foundation for event-triggered neural differential equations and provide a mathematical construct for explaining complex system dynamics. Event transition tensors make NeuralODEs interpretable, enabling rigorous analysis via compact high-order differential structure.;,citation_author=Dario Izzo;,citation_author=Sebastien Origer;,citation_author=Giacomo Acciarini;,citation_author=Francesco Biscani;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;,citation_fulltext_html_url=https://www.science.org/doi/abs/10.1126/sciadv.ady1348;,citation_issue=51;,citation_doi=10.1126/sciadv.ady1348;,citation_volume=11;,citation_journal_title=Science Advances;">
 </head>
 
 <body class="quarto-light">
@@ -326,6 +327,14 @@ window.Quarto = {
   <li><a href="#advantages-and-contextual-variations" id="toc-advantages-and-contextual-variations" class="nav-link" data-scroll-target="#advantages-and-contextual-variations">Advantages and Contextual Variations</a></li>
   <li><a href="#variations-on-the-rstt-method" id="toc-variations-on-the-rstt-method" class="nav-link" data-scroll-target="#variations-on-the-rstt-method">Variations on the RSTT Method</a></li>
   </ul></li>
+  <li><a href="#event-transition-tensors-ett" id="toc-event-transition-tensors-ett" class="nav-link" data-scroll-target="#event-transition-tensors-ett">Event Transition Tensors (ETT)</a>
+  <ul class="collapse">
+  <li><a href="#theoretical-foundation-from-solution-flows-to-event-maps" id="toc-theoretical-foundation-from-solution-flows-to-event-maps" class="nav-link" data-scroll-target="#theoretical-foundation-from-solution-flows-to-event-maps">1. Theoretical Foundation: From Solution Flows to Event Maps</a></li>
+  <li><a href="#methodology-computation-via-augmented-systems-and-inversion" id="toc-methodology-computation-via-augmented-systems-and-inversion" class="nav-link" data-scroll-target="#methodology-computation-via-augmented-systems-and-inversion">2. Methodology: Computation via Augmented Systems and Inversion</a></li>
+  <li><a href="#algorithm-flowchart-for-ett-propagation" id="toc-algorithm-flowchart-for-ett-propagation" class="nav-link" data-scroll-target="#algorithm-flowchart-for-ett-propagation">3. Algorithm Flowchart for ETT Propagation</a></li>
+  <li><a href="#variations-and-comparative-context" id="toc-variations-and-comparative-context" class="nav-link" data-scroll-target="#variations-and-comparative-context">4. Variations and Comparative Context</a></li>
+  <li><a href="#implementation-advantages" id="toc-implementation-advantages" class="nav-link" data-scroll-target="#implementation-advantages">5. Implementation Advantages</a></li>
+  </ul></li>
   <li><a href="#gaussian-mixture-models-gmm-framework" id="toc-gaussian-mixture-models-gmm-framework" class="nav-link" data-scroll-target="#gaussian-mixture-models-gmm-framework">Gaussian Mixture Models (GMM) Framework</a>
   <ul class="collapse">
   <li><a href="#mathematical-architecture-of-the-gmm-framework" id="toc-mathematical-architecture-of-the-gmm-framework" class="nav-link" data-scroll-target="#mathematical-architecture-of-the-gmm-framework">Mathematical Architecture of the GMM Framework</a>
@@ -382,7 +391,7 @@ window.Quarto = {
   
   
   </ul>
-<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="up_methods_comparison-preview.html"><i class="bi bi-journal-code"></i>Limitations of Orbital Uncertainty Propagation Methods</a></li></ul></div></nav>
+<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="up_methods_comparison-preview.html"><i class="bi bi-journal-code"></i>Limitations of Orbital Uncertainty Propagation Methods</a></li><li><a href="neural_ODE_ett-preview.html"><i class="bi bi-journal-code"></i>Neural Ordinary Differential Equations (NeuralODEs)</a></li></ul></div></nav>
 </div>
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
@@ -1359,7 +1368,7 @@ x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x
 <li><p>Substituting <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> into each <span class="math inline">\(\delta x_{l_j}\)</span> in <a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>, we obtain a new expression for <span class="math inline">\(\dot{\delta x}_i(t)\)</span> in terms of the initial deviations <span class="math inline">\(\delta x_{0,k_j}\)</span> and the STTs.</p></li>
 <li><p>We then equate this new expression with <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a>, which also expresses <span class="math inline">\(\dot{\delta x}_i(t)\)</span> in terms of the initial deviations and the time derivatives of the STTs. The coefficients of the same monomials <span class="math inline">\(\delta x_{0,k_1} \dots \delta x_{0,k_p}\)</span> on both sides of the equation must be equal for every set {<span class="math inline">\(k_1,\dots, k_p\)</span>}, leading to a set of ODEs for the STTs.</p></li>
 </ol>
-<p>An example derivation for the first and second-order STT is shown in <a href="#sec-appendix-stt" class="quarto-xref">Section&nbsp;16</a>. The resulting ODEs for the STTs are expressed as follows:</p>
+<p>An example derivation for the first and second-order STT is shown in <a href="#sec-appendix-stt" class="quarto-xref">Section&nbsp;17</a>. The resulting ODEs for the STTs are expressed as follows:</p>
 <p><span class="math display">\[
 \begin{aligned}
 \dot{\Phi}_i,a= f_{i,\alpha}^\star \Phi_{\alpha,a} \\
@@ -1789,6 +1798,71 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 </ul>
 </section>
 </section>
+<section id="event-transition-tensors-ett" class="level1">
+<h1>Event Transition Tensors (ETT)</h1>
+<p>In the field of high-order uncertainty propagation (UP), <strong>Event Transition Tensors (ETTs)</strong> represent a significant extension of the <strong>State Transition Tensor (STT)</strong> framework. While standard STTs are parametric tools used to map state deviations and statistical moments to a predefined future time, ETTs provide a rigorous mathematical description of system behavior on <strong>differentiable event manifolds</strong>.</p>
+<p>This methodology is critical for aerospace applications where the epoch of interest is defined by a physical condition (e.g., atmospheric entry, planetary landing, or a surface of section crossing) rather than a fixed timestamp.</p>
+<section id="theoretical-foundation-from-solution-flows-to-event-maps" class="level3">
+<h3 class="anchored" data-anchor-id="theoretical-foundation-from-solution-flows-to-event-maps">1. Theoretical Foundation: From Solution Flows to Event Maps</h3>
+<p>To understand ETTs, one must distinguish between the standard solution flow of an ordinary differential equation (ODE) and the specialized event map.</p>
+<ul>
+<li><p><strong>The Solution Flow (<span class="math inline">\(\Phi\)</span>):</strong> In the STT framework, the flow represents all possible trajectories generated by varying initial conditions <span class="math inline">\(\mathbf{x}_0\)</span> and parameters <span class="math inline">\(\theta\)</span> over a fixed time <span class="math inline">\(t\)</span>. The coefficients of the Taylor expansion of this flow are the STTs.</p></li>
+<li><p><strong>The Event Manifold (<span class="math inline">\(e\)</span>):</strong> An event is implicitly defined by the condition <span class="math inline">\(e(\mathbf{x}, \theta, t) = 0\)</span>, representing a target surface or a specific state condition.</p></li>
+<li><p><strong>The Event Map (<span class="math inline">\(\mathcal{F}\)</span>):</strong> The event map is defined as the flow of the dynamical system evaluated at the <strong>trigger time <span class="math inline">\(t^*\)</span></strong>, where <span class="math inline">\(t^*\)</span> is the time at which the trajectory intersects the manifold.</p></li>
+<li><p><strong>The Definition of ETTs:</strong> ETTs are the coefficients of the multivariate Taylor expansion of the event map <span class="math inline">\(\mathcal{F}\)</span>. Mathematically, if the order of the expansion is <span class="math inline">\(k\)</span>, the state on the event manifold <span class="math inline">\(\mathbf{x}_e\)</span> is approximated as: <span class="math display">\[
+\delta x_{ie} \approx \sum_{1 \le |\alpha| \le k} \frac{1}{\alpha!} \left[ \partial^\alpha \mathcal{F}_i(\mathbf{x}_0, \theta) \right] \delta \mathbf{z}^\alpha
+\]</span></p>
+<p><strong>Term Definitions:</strong></p>
+<ul>
+<li><p><span class="math inline">\(\delta x_{ie}\)</span>: The <span class="math inline">\(i\)</span>-th component of the state deviation on the event manifold.</p></li>
+<li><p><span class="math inline">\(\alpha\)</span>: An <span class="math inline">\(n\)</span>-tuple multi-index representing the partial derivative order.</p></li>
+<li><p><span class="math inline">\(\delta \mathbf{z}\)</span>: The vector combining initial state perturbations <span class="math inline">\(\delta \mathbf{x}_0\)</span> and parameter deviations <span class="math inline">\(\delta \theta\)</span>.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="methodology-computation-via-augmented-systems-and-inversion" class="level3">
+<h3 class="anchored" data-anchor-id="methodology-computation-via-augmented-systems-and-inversion">2. Methodology: Computation via Augmented Systems and Inversion</h3>
+<p>The methodology for computing ETTs involves transforming a variable-time event problem into a fixed-time integration problem through the use of differential algebra or variational equations.</p>
+<ul>
+<li><p><strong>Step 1: System Augmentation</strong> The system of ODEs <span class="math inline">\(\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, \theta, t)\)</span> is augmented with the derivative of the event function <span class="math inline">\(\epsilon = e(\mathbf{x}, \theta, t)\)</span>. To recast the problem for a fixed integration interval, a normalized time variable <span class="math inline">\(\tau = t/T\)</span> is introduced, where <span class="math inline">\(T\)</span> is the unknown event trigger time. <span class="math display">\[
+\begin{cases} \dot{\mathbf{x}} = T \mathbf{f}(\mathbf{x}, \theta, \tau) \\ \dot{\epsilon} = T \left( \frac{\partial e}{\partial t} + \nabla_\mathbf{x} e \cdot \mathbf{f} \right) \end{cases}
+\]</span></p></li>
+<li><p><strong>Step 2: Integration of Variational Equations</strong> By integrating the <span class="math inline">\(k\)</span>-th order variational equations of this augmented system up to <span class="math inline">\(\tau = 1\)</span>, one obtains a polynomial representation of the final state <span class="math inline">\(\delta \mathbf{x}_f\)</span> and the event variation <span class="math inline">\(\delta \epsilon_f\)</span> as functions of initial perturbations and the time correction <span class="math inline">\(\delta T\)</span>.</p></li>
+<li><p><strong>Step 3: Map Inversion</strong> Utilizing the <strong>implicit function theorem</strong>, the polynomial system is partially inverted. By forcing the final event variation <span class="math inline">\(\delta \epsilon_f\)</span> to zero, the variation in the trigger time <span class="math inline">\(\delta T\)</span> is expressed as a function of the initial perturbations. Substituting this result back into the state polynomial yields the ETTs, which define the system state constrained strictly to the event manifold.</p></li>
+</ul>
+</section>
+<section id="algorithm-flowchart-for-ett-propagation" class="level3">
+<h3 class="anchored" data-anchor-id="algorithm-flowchart-for-ett-propagation">3. Algorithm Flowchart for ETT Propagation</h3>
+<pre class="mermaid"><code>graph TD
+    A[Start: Initial State x0, Parameters theta, and Event e=0] --&gt; B[Augment System: Add Event Derivative Equation]
+    B --&gt; C[Normalize Time: tau = t/T]
+    C --&gt; D[Integrate k-th Order Variational Equations to tau=1]
+    D --&gt; E[Obtain Polynomials for State xf and Event Variation eps_f]
+    E --&gt; F[Apply Map Inversion: Swap eps_f and Delta T]
+    F --&gt; G[Constraint: Set eps_f = 0 to solve for Delta T]
+    G --&gt; H[Substitute Delta T into State Polynomial]
+    H --&gt; I[Result: Event Transition Tensors on Manifold]
+    I --&gt; J[Map Statistics: Compute Propagated Moments at Event]</code></pre>
+</section>
+<section id="variations-and-comparative-context" class="level3">
+<h3 class="anchored" data-anchor-id="variations-and-comparative-context">4. Variations and Comparative Context</h3>
+<p>ETTs exist in a continuum with STTs and other high-order methods, with several variations depending on the application:</p>
+<ul>
+<li><p><strong>ETTs vs.&nbsp;STTs:</strong> If the event manifold is defined as a reaching a predefined constant time <span class="math inline">\(T\)</span>, the ETTs collapse into standard STTs.</p></li>
+<li><p><strong>Poincaré Maps:</strong> In periodic systems, ETTs are used to construct discrete Poincaré maps [Poincaré return maps]. This is done by defining the surface of section (e.g., <span class="math inline">\(x_{jf} - \bar{x}_{j0} = 0\)</span>) and inverting the map to find the period correction <span class="math inline">\(\delta t^*\)</span> required for the return.</p></li>
+<li><p><strong>NeuralODEs expansion:</strong> A novel variation involves using ETTs to analyze <strong>Neural Ordinary Differential Equations</strong>. Because NeuralODEs often function as “black-box” systems, ETTs provide a way to certify their reliability by expressing their complex learned dynamics through explicit, high-order mathematical structures on event boundaries.</p></li>
+<li><p><strong>Non-Gaussian Handling:</strong> ETTs can be combined with <strong>Moment Generating Functions (MGFs)</strong> to propagate non-Gaussian uncertainties (e.g., uniform distributions for spacecraft mass or position) to an event manifold without requiring Monte Carlo sampling.</p></li>
+</ul>
+</section>
+<section id="implementation-advantages" class="level3">
+<h3 class="anchored" data-anchor-id="implementation-advantages">5. Implementation Advantages</h3>
+<ul>
+<li><p><strong>Computational Efficiency:</strong> Mapping statistical moments directly to an event manifold eliminates the need for “stopping” numerical integrators for each sample in a Monte Carlo run.</p></li>
+<li><p><strong>Rigorous Certification:</strong> In safety-critical missions, such as landing a quadcopter through a gate or a spacecraft on an asteroid, ETTs allow for the analytical verification of performance requirements (e.g., relative velocity &lt; 0.5 m/s in 99% of cases) by bounding all possible configurations on the manifold.</p></li>
+<li><p><strong>Automation:</strong> Modern pipelines, such as the open-source <strong>heyoka</strong> project, have automated the symbolic derivation and integration of these tensors, making the manual derivation of high-order event sensitivities unnecessary.</p></li>
+</ul>
+</section>
+</section>
 <section id="gaussian-mixture-models-gmm-framework" class="level1 page-columns page-full">
 <h1>Gaussian Mixture Models (GMM) Framework</h1>
 <p>In the larger landscape of <strong>Uncertainty Propagation (UP)</strong>, <strong>Gaussian Mixture Models (GMM)</strong> serve as a versatile “mixture model” framework that bridges the gap between computationally efficient linear methods and the complex, non-Gaussian realities of orbital mechanics. The foundational principle of the GMM framework is the “universal approximator” property, which asserts that any arbitrary probability density function (PDF) can be represented with sufficient accuracy as a weighted sum of multiple Gaussian kernels. This property allows GMMs to capture the intricate shapes of non-Gaussian distributions, such as the “banana” or “kidney” forms that emerge in long-term propagation through the highly nonlinear dynamics of orbital mechanics.</p>
@@ -1865,7 +1939,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <h3 class="anchored" data-anchor-id="gmm-mf-multi-fidelity">GMM-MF (Multi-Fidelity)</h3>
 <p>A high-efficiency hybrid where the Multi-Fidelity method propagates the sigma points of the GMM kernels.</p>
 <ul>
-<li><p><strong>Methodology:</strong> The entire ensemble of sigma points from all components is propagated via a computationally cheap low-fidelity (LF) model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian identifies a subset of “important samples” to be corrected by the HF model via stochastic collocation. See <a href="#sec-mf-sc" class="quarto-xref">Section&nbsp;12.2.1</a> for a detailed discussion on the stochastic collocation multi-fidelity method.</p></li>
+<li><p><strong>Methodology:</strong> The entire ensemble of sigma points from all components is propagated via a computationally cheap low-fidelity (LF) model (e.g., SGP4). A pivoted Cholesky decomposition of the LF Gramian identifies a subset of “important samples” to be corrected by the HF model via stochastic collocation. See <a href="#sec-mf-sc" class="quarto-xref">Section&nbsp;13.2.1</a> for a detailed discussion on the stochastic collocation multi-fidelity method.</p></li>
 <li><p><strong>Performance:</strong> Achieves accuracy similar to GMM-UT but with an <strong>80% reduction in computation time</strong>.</p></li>
 </ul>
 </section>
@@ -2035,7 +2109,7 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <li><p><span class="math inline">\(A\)</span>: Permutation/pivot matrix that identifies the indices of the important samples.</p></li>
 <li><p><span class="math inline">\(C_h\)</span>: Lower triangular Cholesky factor.</p></li>
 </ul>
-<p>See <a href="#sec-appendix-pivoted-cholesky" class="quarto-xref">Section&nbsp;15</a> for a detailed derivation of the pivoted Cholesky algorithm and its application to MF uncertainty propagation.</p></li>
+<p>See <a href="#sec-appendix-pivoted-cholesky" class="quarto-xref">Section&nbsp;16</a> for a detailed derivation of the pivoted Cholesky algorithm and its application to MF uncertainty propagation.</p></li>
 <li><p><strong><span class="math inline">\(c_\ell(\xi)\)</span> Coefficient Computation:</strong> The expansion coefficients <span class="math inline">\(c_\ell(\xi)\)</span> in <a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;14</a> are computed by solving the linear system: <span class="math display">\[
 \mathbf{C_h C_h}^T \mathbf{c}(\mathbf{\xi}) = \mathbf{g}
 \]</span></p>
@@ -2449,6 +2523,9 @@ Fossà, Alberto. 2024. <span>“Propagation Multi-Fid<span>é</span>lit<span>é<
 </div>
 <div id="ref-fujimoto-scheeres:10.2514/1.G000795" class="csl-entry" role="listitem">
 Fujimoto, K., and D. J. Scheeres. 2015. <span>“Tractable Expressions for Nonlinearly Propagated Uncertainties.”</span> <em>Journal of Guidance, Control, and Dynamics</em> 38 (6): 1146–51. <a href="https://doi.org/10.2514/1.G000795">https://doi.org/10.2514/1.G000795</a>.
+</div>
+<div id="ref-Izzo_Acciarini:10.1126/sciadv.ady1348" class="csl-entry" role="listitem">
+Izzo, Dario, Sebastien Origer, Giacomo Acciarini, and Francesco Biscani. 2025. <span>“High-Order Expansion of Neural Ordinary Differential Equation Flows.”</span> <em>Science Advances</em> 11 (51): eady1348. <a href="https://doi.org/10.1126/sciadv.ady1348">https://doi.org/10.1126/sciadv.ady1348</a>.
 </div>
 <div id="ref-JONES2019406" class="csl-entry" role="listitem">
 Jones, Brandon A., and Ryan Weisman. 2019. <span>“Multi-Fidelity Orbit Uncertainty Propagation.”</span> <em>Acta Astronautica</em> 155: 406–17. https://doi.org/<a href="https://doi.org/10.1016/j.actaastro.2018.10.023">https://doi.org/10.1016/j.actaastro.2018.10.023</a>.
