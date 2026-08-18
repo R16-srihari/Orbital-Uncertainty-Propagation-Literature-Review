@@ -4,12 +4,14 @@ project:
   render:
     - index.qmd
     - up_methods_comparison.qmd
+    - neural_ODE_ett.qmd
     - "!log.qmd"
 
 manuscript:
   article: index.qmd
   notebooks: 
     - up_methods_comparison.qmd
+    - neural_ODE_ett.qmd
   manuscript-url: https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/
 bibliography: references.bib
 
