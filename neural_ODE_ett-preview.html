@@ -176,8 +176,8 @@
   <ul>
   <li><a href="#i.-mathematical-foundation-and-formation" id="toc-i.-mathematical-foundation-and-formation" class="nav-link active" data-scroll-target="#i.-mathematical-foundation-and-formation">I. Mathematical Foundation and Formation</a></li>
   <li><a href="#ii.-training-methodology-the-adjoint-sensitivity-method" id="toc-ii.-training-methodology-the-adjoint-sensitivity-method" class="nav-link" data-scroll-target="#ii.-training-methodology-the-adjoint-sensitivity-method">II. Training Methodology: The Adjoint Sensitivity Method</a></li>
-  <li><a href="#iii.-motivation-behind-data-driven-dynamics-discovery" id="toc-iii.-motivation-behind-data-driven-dynamics-discovery" class="nav-link" data-scroll-target="#iii.-motivation-behind-data-driven-dynamics-discovery">III. Motivation Behind Data-Driven Dynamics Discovery</a></li>
-  <li><a href="#iv.-variations-on-the-neural-ode-framework" id="toc-iv.-variations-on-the-neural-ode-framework" class="nav-link" data-scroll-target="#iv.-variations-on-the-neural-ode-framework">IV. Variations on the Neural ODE Framework</a></li>
+  <li><a href="#iii.-motivation-behind-data-driven-dynamics-building" id="toc-iii.-motivation-behind-data-driven-dynamics-building" class="nav-link" data-scroll-target="#iii.-motivation-behind-data-driven-dynamics-building">III. Motivation Behind Data-Driven Dynamics Building</a></li>
+  <li><a href="#iv.-variations-on-the-neural-ode-method" id="toc-iv.-variations-on-the-neural-ode-method" class="nav-link" data-scroll-target="#iv.-variations-on-the-neural-ode-method">IV. Variations on the Neural ODE Method</a></li>
   </ul>
 </nav>
 </div>
@@ -185,83 +185,72 @@
 </div>
 <main class="content quarto-banner-title-block" id="quarto-document-content">      
 
-       <p>Neural Ordinary Differential Equations (Neural ODEs) represent a significant departure from discrete-layered architectures by interpreting the evolution of a system’s state as a continuous-time process governed by a neural network-parameterized vector field. This framework bridges the gap between traditional dynamical systems theory and deep learning, enabling the construction of “infinitely deep” models that respect continuous physics.</p>
+       <p>Neural Ordinary Differential Equations (Neural ODEs) represent a paradigm shift in deep learning where discrete sequences of hidden layers are replaced by a continuous-depth vector field parameterized by a neural network. This framework interprets the transformation of a system’s state as the solution to an initial value problem (IVP), bridging the gap between classical dynamical systems and modern machine learning.</p>
 <section id="i.-mathematical-foundation-and-formation" class="level3">
 <h3 class="anchored" data-anchor-id="i.-mathematical-foundation-and-formation">I. Mathematical Foundation and Formation</h3>
-<p>Neural ODEs are formed by defining the time derivative of a system’s state as a parametric function represented by a neural network.</p>
+<p>Neural ODEs are formed by defining the time derivative of a hidden state <span class="math inline">\(\mathbf{h}(t)\)</span> as a parametric function <span class="math inline">\(f\)</span> represented by a neural network.</p>
 <ul>
-<li><p><strong>Governing Vector Field</strong>: The system is defined by an autonomous ODE: <span class="math display">\[
-\frac{d\mathbf{x}}{dt} = \mathbf{f}(\mathbf{x}, t; \theta)
-\]</span></p>
+<li><strong>Governing Equation</strong>: <span class="math display">\[\frac{d\mathbf{h}(t)}{dt} = f(\mathbf{h}(t), t, \theta)\]</span></li>
+<li><span class="math inline">\(\mathbf{h}(t) \in \mathbb{R}^D\)</span>: The state or hidden representation at time <span class="math inline">\(t\)</span>.
 <ul>
-<li><p><span class="math inline">\(\mathbf{x} \in \mathbb{R}^n\)</span>: The state vector of the system.</p></li>
-<li><p><span class="math inline">\(t\)</span>: The continuous time variable.</p></li>
-<li><p><span class="math inline">\(\theta\)</span>: The set of trainable weights and biases characterizing the neural network.</p></li>
-<li><p><span class="math inline">\(\mathbf{f}\)</span>: The vector field (right-hand side of the ODE) parameterized by the network.</p></li>
+<li><span class="math inline">\(t\)</span>: The continuous depth or time variable.</li>
+<li><span class="math inline">\(\theta\)</span>: The trainable weights and biases of the neural network.</li>
+<li><span class="math inline">\(f\)</span>: The vector field parameterized by the network that defines the dynamics.</li>
 </ul></li>
-<li><p><strong>State Prediction through Integration</strong>: The state at a future time <span class="math inline">\(t_1\)</span> is obtained by integrating the learned vector field from an initial condition <span class="math inline">\(\mathbf{x}(t_0)\)</span>: <span class="math display">\[
-\hat{\mathbf{y}}_i = \mathbf{x}(t_0) + \int_{t_0}^{t_1} \mathbf{f}(\mathbf{x}(t), t; \theta) dt
-\]</span> In practice, this integration is performed using numerical solvers such as the Dormand-Prince 4(5) algorithm or high-order Taylor methods.</p></li>
+<li><strong>State Evolution through Integration</strong>: To compute the output at “depth” or time <span class="math inline">\(T\)</span>, the system integrates the learned dynamics from an initial condition <span class="math inline">\(\mathbf{h}(0)\)</span>: <span class="math display">\[\mathbf{h}(T) = \mathbf{h}(0) + \int_{0}^{T} f(\mathbf{h}(t), t, \theta) \, dt\]</span> In practice, this is evaluated using black-box numerical ODE solvers (e.g., Dormand-Prince or implicit Adams methods), which adapt their evaluation strategy based on a user-specified error tolerance.</li>
 </ul>
 </section>
 <section id="ii.-training-methodology-the-adjoint-sensitivity-method" class="level3">
 <h3 class="anchored" data-anchor-id="ii.-training-methodology-the-adjoint-sensitivity-method">II. Training Methodology: The Adjoint Sensitivity Method</h3>
-<p>The primary methodology for training Neural ODEs involves computing gradients of a loss function <span class="math inline">\(J\)</span> with respect to <span class="math inline">\(\theta\)</span> without storing intermediate activations of the solver, which circumvents memory bottlenecks.</p>
+<p>The critical challenge in training Neural ODEs is computing gradients of a loss function <span class="math inline">\(L\)</span> with respect to the network parameters <span class="math inline">\(\theta\)</span> through an ODE solver. To avoid the high memory cost of backpropagating through the solver’s internal operations, researchers utilize the <strong>Adjoint Sensitivity Method</strong>.</p>
 <ol type="1">
-<li><p><strong>Forward Pass</strong>: The system is integrated forward from <span class="math inline">\(t_0\)</span> to <span class="math inline">\(t_1\)</span> to compute the predicted state and the associated loss.</p></li>
-<li><p><strong>Backward Pass (Adjoint Method)</strong>: To compute sensitivities, an augmented system is integrated backward in time: <span class="math display">\[
-\frac{d\mathbf{a}}{dt} = -\mathbf{a}^T \frac{\partial \mathbf{f}}{\partial \mathbf{x}}
-\]</span></p>
-<ul>
-<li><span class="math inline">\(\mathbf{a} = \frac{\partial L}{\partial \mathbf{x}}\)</span>: The “adjoint” state, representing the gradient of the loss with respect to the hidden state.</li>
-</ul></li>
-<li><p><strong>Parameter Update</strong>: Gradients with respect to <span class="math inline">\(\theta\)</span> are calculated simultaneously during the backward integration, allowing updates via stochastic gradient descent or AdamW.</p></li>
+<li><strong>Adjoint State Definition</strong>: The “adjoint” <span class="math inline">\(\mathbf{a}(t) = \frac{\partial L}{\partial \mathbf{h}(t)}\)</span> represents how the gradient of the loss depends on the hidden state at each instant.</li>
+<li><strong>Adjoint Dynamics</strong>: The adjoint state follows its own differential equation, solved backward in time: <span class="math display">\[\frac{d\mathbf{a}(t)}{dt} = -\mathbf{a}(t)^T \frac{\partial f(\mathbf{h}(t), t, \theta)}{\partial \mathbf{h}}\]</span></li>
+<li><strong>Parameter Gradient Computation</strong>: The gradient with respect to the parameters is computed as an integral of the product of the adjoint state and the sensitivity of the vector field: <span class="math display">\[\frac{dL}{d\theta} = \int_{t_1}^{t_0} \mathbf{a}(t)^T \frac{\partial f(\mathbf{h}(t), t, \theta)}{\partial \theta} \, dt\]</span></li>
 </ol>
-<p><strong>Flowchart of Neural ODE Training Process:</strong></p>
+<p><strong>Flowchart: Neural ODE Training via Adjoint Sensitivity</strong></p>
 <pre class="mermaid"><code>graph TD
-    A[Initial State x_0] --&gt; B[Numerical ODE Solver]
-    B --&gt; C[Forward Integration: dx/dt = f_x, t; theta]
-    C --&gt; D[Predicted State x_hat]
-    D --&gt; E[Compute Loss J_theta]
-    E --&gt; F[Initialize Adjoint State a]
-    F --&gt; G[Backward Integration: Adjoint Equation]
-    G --&gt; H[Compute Gradients dJ/d_theta]
-    H --&gt; I[Update Parameters theta via Optimizer]
-    I --&gt; A
+    A[Initial State h_0] --&gt; B[ODE Solver: Forward Pass]
+    B --&gt; C[Predicted State h_T]
+    C --&gt; D[Compute Loss L]
+    D --&gt; E[Initialize Adjoint a_T = dL/dh_T]
+    E --&gt; F[ODE Solver: Backward Pass]
+    F --&gt; G[Simultaneously solve h_t, a_t, and dL/d_theta]
+    G --&gt; H[Update theta via Optimizer]
+    H --&gt; A
 </code></pre>
 </section>
-<section id="iii.-motivation-behind-data-driven-dynamics-discovery" class="level3">
-<h3 class="anchored" data-anchor-id="iii.-motivation-behind-data-driven-dynamics-discovery">III. Motivation Behind Data-Driven Dynamics Discovery</h3>
-<p>The drive toward building dynamical models using machine learning is motivated by critical challenges in science and engineering:</p>
+<section id="iii.-motivation-behind-data-driven-dynamics-building" class="level3">
+<h3 class="anchored" data-anchor-id="iii.-motivation-behind-data-driven-dynamics-building">III. Motivation Behind Data-Driven Dynamics Building</h3>
+<p>Researchers are motivated to use Neural ODEs to build dynamical models for several theoretical and practical reasons:</p>
 <ul>
-<li><p><strong>Universal Approximation</strong>: Theoretically, any ordinary differential equation can be represented by a neural model, allowing researchers to capture highly nonlinear and chaotic dynamics that traditional models may miss.</p></li>
-<li><p><strong>Handling Unmodeled Effects</strong>: In complex physical systems, such as turbulent shear flows or comet landing trajectories, first-principles derivations often fail to account for hidden dynamics. Data-driven methods can “discover” these governing laws directly from observations.</p></li>
-<li><p><strong>Irregular Sampling</strong>: Continuous-time models offer greater versatility than discrete models because they can naturally handle training data with varying temporal spacing.</p></li>
-<li><p><strong>Memory Efficiency</strong>: By using the adjoint sensitivity method, researchers can train extremely deep representations (equivalent to infinite layers) with constant memory cost, which is crucial for high-dimensional scientific computing.</p></li>
+<li><strong>Continuous vs.&nbsp;Discrete Time</strong>: Physical laws are inherently continuous. Neural ODEs naturally represent continuous physics, whereas traditional discrete models (like ResNets) are Euler discretizations of a continuous process.</li>
+<li><strong>Memory Efficiency</strong>: By using the adjoint method, Neural ODEs can be trained with <strong>constant memory cost</strong> <span class="math inline">\(O(1)\)</span> relative to the depth of the model, bypassing the memory bottleneck of storing intermediate activations.</li>
+<li><strong>Irregularly Sampled Data</strong>: Unlike Recurrent Neural Networks (RNNs) that require fixed intervals, Neural ODEs can naturally incorporate data arriving at arbitrary times because the underlying dynamics are defined on a continuous timeline.</li>
+<li><strong>Universal Approximation</strong>: The universal approximation property of neural networks suggests that any continuous ordinary differential equation can, in principle, be learned from data.</li>
+<li><strong>Physics Priors</strong>: Neural ODEs provide a shell that can be constrained with physical priors (e.g., Hamiltonian mechanics) to ensure models respect conservation laws rather than drifting due to numerical errors.</li>
 </ul>
 </section>
-<section id="iv.-variations-on-the-neural-ode-framework" class="level3">
-<h3 class="anchored" data-anchor-id="iv.-variations-on-the-neural-ode-framework">IV. Variations on the Neural ODE Framework</h3>
-<p>Beyond the basic formulation, several specialized variations have emerged to address specific modeling needs:</p>
+<section id="iv.-variations-on-the-neural-ode-method" class="level3">
+<h3 class="anchored" data-anchor-id="iv.-variations-on-the-neural-ode-method">IV. Variations on the Neural ODE Method</h3>
+<p>The flexibility of the Neural ODE framework has led to several sophisticated variations:</p>
 <ul>
-<li><p><strong>Hamiltonian Neural Networks (HNNs)</strong>: Motivated by the need to respect exact conservation laws, HNNs learn a scalar Hamiltonian function <span class="math inline">\(\mathcal{H}(\mathbf{q}, \mathbf{p})\)</span> representing total energy. The dynamics are derived using a “symplectic gradient”: <span class="math display">\[
-\frac{d\mathbf{q}}{dt} = \frac{\partial \mathcal{H}}{\partial \mathbf{p}}, \quad \frac{d\mathbf{p}}{dt} = -\frac{\partial \mathcal{H}}{\partial \mathbf{q}}
-\]</span></p>
+<li><p><strong>Hamiltonian Neural Networks (HNNs)</strong>: Motivated by the need to respect exact conservation laws, HNNs do not learn the vector field <span class="math inline">\(f\)</span> directly. Instead, they learn a scalar <strong>Hamiltonian</strong> <span class="math inline">\(\mathcal{H}(\mathbf{q}, \mathbf{p})\)</span>, representing total energy.</p>
 <ul>
-<li><p><span class="math inline">\(\mathbf{q}\)</span>: Position coordinates.</p></li>
-<li><p><span class="math inline">\(\mathbf{p}\)</span>: Momentum coordinates. This ensures that the model learns to exactly conserve quantities like energy, preventing numerical drift in long-term simulations.</p></li>
+<li><strong>Formula</strong>: <span class="math inline">\(\dot{\mathbf{q}} = \frac{\partial \mathcal{H}}{\partial \mathbf{p}}, \quad \dot{\mathbf{p}} = -\frac{\partial \mathcal{H}}{\partial \mathbf{q}}\)</span>.</li>
+<li><strong>Advantage</strong>: This ensures exact conservation of energy-like quantities and perfect time reversibility.</li>
 </ul></li>
-<li><p><strong>Projected Koopman Operators</strong>: Recent research highlights that Extended Dynamic Mode Decomposition with Dictionary Learning (EDMD-DL) is equivalent to a Neural ODE when a state-space projection step is included at each timestep. This projection converts linear dynamics in an observable space back into the nonlinear state space.</p></li>
-<li><p><strong>High-Order Flow Expansions (ETTs)</strong>: To move away from “black-box” systems, researchers introduce <strong>Event Transition Tensors (ETTs)</strong> to provide a rigorous mathematical description of Neural ODE dynamics on event manifolds.</p>
+<li><p><strong>Projected Koopman Operators</strong>: Research indicates that Extended Dynamic Mode Decomposition with Dictionary Learning (EDMD-DL) is equivalent to a Neural ODE when combined with a state-space projection step.</p></li>
+<li><p><strong>Mechanism</strong>: The state <span class="math inline">\(\mathbf{x}\)</span> is lifted to a high-dimensional feature space <span class="math inline">\(\Psi(\mathbf{x})\)</span>, evolved linearly, and then projected back to the state space <span class="math inline">\(\mathbf{x} = P\Psi\)</span>. This introduces a nonlinearity that results in a vector field <span class="math inline">\(f(\mathbf{x}) = P \mathbf{L}^T \Psi(\mathbf{x})\)</span>, where <span class="math inline">\(\mathbf{L}\)</span> is the Koopman generator.</p></li>
+<li><p><strong>High-Order Flow Expansions (Event Transition Tensors)</strong>: To address the “black-box” nature of Neural ODEs in safety-critical applications (e.g., spacecraft landing), researchers use <strong>Event Transition Tensors (ETTs)</strong>.</p>
 <ul>
-<li><p><strong>Methodology</strong>: This involves computing high-order Taylor expansions of the flow <span class="math inline">\(\Phi(t; \mathbf{x}_0, \theta)\)</span> to characterize sensitivities and propagate uncertainties without relying on expensive Monte Carlo simulations.</p></li>
-<li><p><strong>Formula</strong>: <span class="math display">\[
-\Phi_j(t; \mathbf{x}_0, \theta) \approx \mathcal{P}^k_{\Phi_j}(\delta\mathbf{x}_0, \delta\theta)
-\]</span></p>
-<ul>
-<li><p><span class="math inline">\(\mathcal{P}^k\)</span>: A multivariate Taylor polynomial of order <span class="math inline">\(k\)</span>.</p></li>
-<li><p><span class="math inline">\(\delta\mathbf{x}_0\)</span>: Perturbations in initial conditions. This approach is used for system certification and explainability in safety-critical applications like autonomous landing and drone racing.</p></li>
+<li><strong>Methodology</strong>: ETTs are high-order multivariate Taylor expansions of the Neural ODE flow computed on differentiable event manifolds.</li>
+<li><strong>Application</strong>: They allow for analytical uncertainty propagation and certification of neurocontrolled systems without relying on expensive Monte Carlo simulations.</li>
 </ul></li>
+<li><p><strong>Continuous Normalizing Flows (CNF)</strong>: These are generative models where the change in log probability follows a differential equation involving the trace of the Jacobian.</p>
+<ul>
+<li><strong>Formula</strong>: <span class="math inline">\(\frac{\partial \log p(\mathbf{z}(t))}{\partial t} = -\text{tr}\left( \frac{df}{d\mathbf{z}(t)} \right)\)</span>.</li>
+<li><strong>Benefit</strong>: This simplifies the expensive log-determinant computation found in standard discrete flows to a linear trace operation.</li>
 </ul></li>
 </ul>
 </section>
