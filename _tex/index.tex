@@ -67,46 +67,6 @@
 \fi
 \makeatother
 
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{241,243,245}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
-\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
 \usepackage{longtable,booktabs,array}
 \newcounter{none} % for unnumbered tables
@@ -262,7 +222,7 @@
 \title{State-of-the-Art Orbit Uncertainty Propagation Methods used in
 Space Situational Awareness (SDA)}
 \author{Srihari S}
-\date{}
+\date{2026-08-24}
 \begin{document}
 \maketitle
 
@@ -705,18 +665,11 @@ PDF.
 \subsubsection{Algorithmic Flow of Monte Carlo
 Simulation}\label{algorithmic-flow-of-monte-carlo-simulation}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial PDF \& Covariance] {-}{-}\textgreater{} B[Generate Ω Random Samples]}
-\NormalTok{    B {-}{-}\textgreater{} C[Propagate Each Sample Independently via RK8/High{-}Fidelity Dynamics]}
-\NormalTok{    C {-}{-}\textgreater{} D[Collect Final States]}
-\NormalTok{    D {-}{-}\textgreater{} E[Compute Mean \& Covariance]}
-\NormalTok{    D {-}{-}\textgreater{} F[Construct Terminal PDF/Histogram]}
-\NormalTok{    E {-}{-}\textgreater{} G[Validation Baseline for Other Methods]}
-\NormalTok{    F {-}{-}\textgreater{} G}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=6.1in,height=7.65in]{index_files/figure-latex/mermaid-figure-1.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Role as the ``Ground Truth''
 Baseline}\label{role-as-the-ground-truth-baseline}
@@ -928,24 +881,17 @@ initial condition \(\Phi(t_0, t_0) = \mathbf{I}\) (the identity matrix).
   propagation horizon.
 \end{itemize}
 
-\subsubsection{Algorithmic Implementation of
+\subsection{Algorithmic Implementation of
 LinCov}\label{algorithmic-implementation-of-lincov}
 
 The following flowchart delineates the procedural logic for propagating
 orbital uncertainty using the LinCov framework:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial Mean x0 and Covariance P0] {-}{-}\textgreater{} B[Define Reference Trajectory x*]}
-\NormalTok{    B {-}{-}\textgreater{} C[Integrate Nonlinear Dynamics for reference trajectory x*]}
-\NormalTok{    C {-}{-}\textgreater{} D[Compute Time{-}Varying Jacobian J*]}
-\NormalTok{    D {-}{-}\textgreater{} E[Solve Variational Equations for STM: dΦ/dt = J*Φ]}
-\NormalTok{    E {-}{-}\textgreater{} F[Map Final Mean: x\_tf = Φ x0]}
-\NormalTok{    F {-}{-}\textgreater{} G[Map Final Covariance: P\_tf = Φ P0 ΦT]}
-\NormalTok{    G {-}{-}\textgreater{} H[Output Analytic Gaussian PDF]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=2.88in,height=10.56in]{index_files/figure-latex/mermaid-figure-17.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Performance Analysis: The Efficiency-Accuracy
 Trade-off}\label{performance-analysis-the-efficiency-accuracy-trade-off}
@@ -1254,21 +1200,11 @@ The following flowchart outlines the computational algorithm for a
 multivariate system (e.g., orbital mechanics in \(R^6\)) using the
 implicit second-order moment method:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial State: Mean μ₀, Covariance Σ₀] {-}{-}\textgreater{} B[Horwood Splitting Algorithm]}
-\NormalTok{    B {-}{-}\textgreater{} C\{For each component i=1 to N\}}
-\NormalTok{    C {-}{-}\textgreater{} D[Numerical Integration: RK8/RKF78]}
-\NormalTok{    D {-}{-}\textgreater{} E[Automatic Differentiation: TAPENADE]}
-\NormalTok{    E {-}{-}\textgreater{} F[Extract Jacobian J and Hessian H]}
-\NormalTok{    F {-}{-}\textgreater{} G[Implicit Moment Method Update]}
-\NormalTok{    G {-}{-}\textgreater{} H[Propagated Component: μ\_fi, Σ\_fi]}
-\NormalTok{    H {-}{-}\textgreater{} I[Recombine Components with Weights w\_i]}
-\NormalTok{    I {-}{-}\textgreater{} J[Final Reconstructed PDF]}
-\NormalTok{    J {-}{-}\textgreater{} K[Compute Overall Mean μ\_f and Covariance Σ\_f]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=3.06in,height=16.15in]{index_files/figure-latex/mermaid-figure-16.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Critical Strengths and
 Limitations}\label{critical-strengths-and-limitations}
@@ -1419,21 +1355,11 @@ The following flowchart delineates the procedural execution of the UT
 within a predictive filtering framework, such as the Unscented Kalman
 Filter:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial Mean μ and Covariance P] {-}{-}\textgreater{} B[Compute Matrix Square Root of P]}
-\NormalTok{    B {-}{-}\textgreater{} C[Generate 2n+1 Sigma Points χ\_i]}
-\NormalTok{    C {-}{-}\textgreater{} D[Propagate points through Nonlinear Dynamics: χ\_new = f χ\_i]}
-\NormalTok{    D {-}{-}\textgreater{} E[Reconstruct Predicted Mean: μ\_pred = Σ W\_i χ\_new]}
-\NormalTok{    E {-}{-}\textgreater{} F[Reconstruct Predicted Covariance: P\_pred = Σ W\_i diff\^{}2]}
-\NormalTok{    F {-}{-}\textgreater{} G\{Sensor Measurement Available?\}}
-\NormalTok{    G {-}{-} Yes {-}{-}\textgreater{} H[Transform Points through Observation Model: Z\_i = h χ\_new]}
-\NormalTok{    H {-}{-}\textgreater{} I[Compute Innovation Covariance and Cross{-}Correlation]}
-\NormalTok{    I {-}{-}\textgreater{} J[Update μ and P via Kalman Gain]}
-\NormalTok{    G {-}{-} No {-}{-}\textgreater{} K[Output Propagated Analytic Gaussian PDF]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=6.1in,height=16.56in]{index_files/figure-latex/mermaid-figure-15.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Variations and Hybrid
 Architectures}\label{variations-and-hybrid-architectures}
@@ -1712,18 +1638,11 @@ coefficients. Two primary approaches are utilized:
 
 \textbf{Flowchart: NIPC Algorithmic Workflow}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Identify Uncertain Inputs \& Distributions] {-}{-}\textgreater{} B[Perform Isoprobabilistic Transform to Standard Space]}
-\NormalTok{    B {-}{-}\textgreater{} C[Select Orthogonal Basis {-} Wiener{-}Askey Scheme]}
-\NormalTok{    C {-}{-}\textgreater{} D[Generate Sample Nodes {-} Quadrature/LHS/Sparse Grids]}
-\NormalTok{    D {-}{-}\textgreater{} E[Propagate Samples through Black{-}Box Orbital Propagator]}
-\NormalTok{    E {-}{-}\textgreater{} F[Estimate Coefficients {-} Projection or Regression]}
-\NormalTok{    F {-}{-}\textgreater{} G[Construct PCE Surrogate Model]}
-\NormalTok{    G {-}{-}\textgreater{} H[Compute Analytical Moments \& Conjunction Statistics]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=2.88in,height=11.31in]{index_files/figure-latex/mermaid-figure-14.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Intrusive PCE Methodology}\label{intrusive-pce-methodology}
 
@@ -1754,16 +1673,11 @@ polynomial algebra operators.
 
 \textbf{Flowchart: IPCE Algorithmic Workflow}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Define Stochastic Governing Equations] {-}{-}\textgreater{} B[Initialize Uncertain Variables as 1st Degree Polynomials]}
-\NormalTok{    B {-}{-}\textgreater{} C[Apply Galerkin Projection to Equations of Motion]}
-\NormalTok{    C {-}{-}\textgreater{} D[Reformulate Force Models via Polynomial Algebra]}
-\NormalTok{    D {-}{-}\textgreater{} E[Solve Large Coupled System of Deterministic ODEs]}
-\NormalTok{    E {-}{-}\textgreater{} F[Reconstruct Terminal PDF from Coefficients]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=2.88in,height=8.15in]{index_files/figure-latex/mermaid-figure-13.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Variations of Expansion and Surrogate
 Methods}\label{variations-of-expansion-and-surrogate-methods}
@@ -2009,37 +1923,20 @@ Flowcharts}\label{algorithmic-implementation-flowcharts}
 \subsubsection{Standard DA Uncertainty
 Propagation}\label{standard-da-uncertainty-propagation}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial PDF: Mean μ0, Covariance P0] {-}{-}\textgreater{} B[Initialize DA State: x\_0 = μ0 + δx0]}
-\NormalTok{    B {-}{-}\textgreater{} C[Select Integration Scheme: e.g., RK45]}
-\NormalTok{    C {-}{-}\textgreater{} D[Propagate via DA Arithmetic: Substitute real ops with polynomial ops]}
-\NormalTok{    D {-}{-}\textgreater{} E[Obtain Terminal Taylor Map: T\_tf]}
-\NormalTok{    E {-}{-}\textgreater{} F\{Analysis Type?\}}
-\NormalTok{    F {-}{-} Analytic Moments {-}{-}\textgreater{} G[Evaluate E[T\_tf] and Covariance via Moment Mapping]}
-\NormalTok{    F {-}{-} Monte Carlo {-}{-}\textgreater{} H[Sample δx0 and Evaluate T\_tf point{-}wise]}
-\NormalTok{    G {-}{-}\textgreater{} I[Output Post{-}Propagation Statistics]}
-\NormalTok{    H {-}{-}\textgreater{} I}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=6.1in,height=11.86in]{index_files/figure-latex/mermaid-figure-12.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsubsection{DA with Automatic Domain Splitting
 (ADS)}\label{da-with-automatic-domain-splitting-ads}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Uncertainty Volume: Ω] {-}{-}\textgreater{} B[Propagate Taylor Map]}
-\NormalTok{    B {-}{-}\textgreater{} C[Estimate Truncation Error: Order k+1 terms]}
-\NormalTok{    C {-}{-}\textgreater{} D\{Error \textgreater{} Threshold?\}}
-\NormalTok{    D {-}{-} Yes {-}{-}\textgreater{} E[Split Domain: Divide Ω into Ω\_left, Ω\_right]}
-\NormalTok{    E {-}{-}\textgreater{} F[Propagate Patch of Local Maps]}
-\NormalTok{    D {-}{-} No {-}{-}\textgreater{} G[Continue Integration]}
-\NormalTok{    F {-}{-}\textgreater{} H[Reconstruct Patched Global Manifold]}
-\NormalTok{    G {-}{-}\textgreater{} H}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=5.56in,height=9.83in]{index_files/figure-latex/mermaid-figure-11.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Variations and Algorithmic
 Enhancements}\label{variations-and-algorithmic-enhancements}
@@ -2596,22 +2493,11 @@ Pipeline}\label{algorithm-the-stt-uncertainty-pipeline}
 The following flowchart delineates the procedural execution of an
 STT-based uncertainty propagation campaign.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial PDF: μ0, P0] {-}{-}\textgreater{} B[Generate Initial Moments: E δx0\^{}p via Isserlis]}
-\NormalTok{    B {-}{-}\textgreater{} C[Set Expansion Order: P]}
-\NormalTok{    C {-}{-}\textgreater{} D[Numerically Integrate: Nominal State + STM + Higher{-}Order STTs]}
-\NormalTok{    D {-}{-}\textgreater{} E[Obtain Terminal Tensors at tf]}
-\NormalTok{    E {-}{-}\textgreater{} F[Reconstruct Terminal Mean: μ\_tf = Σ Tensors * Initial Moments]}
-\NormalTok{    F {-}{-}\textgreater{} G[Reconstruct Terminal Covariance: P\_tf = Σ f Tensors, P0]}
-\NormalTok{    G {-}{-}\textgreater{} H[Check for Non{-}Gaussianity from Nonlinearity Index]}
-\NormalTok{    H {-}{-} Yes {-}{-}\textgreater{} I[Reconstruct Higher Moments: Skewness \& Kurtosis]}
-\NormalTok{    H {-}{-} No {-}{-}\textgreater{} J[Increase Expansion Order: P] {-}{-}\textgreater{} D}
-\NormalTok{    I {-}{-}\textgreater{} K[Pc Calculation for Conjunction Assessment]}
-    
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=6.1in,height=13.98in]{index_files/figure-latex/mermaid-figure-10.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Variations and Algorithmic
 Enhancements}\label{variations-and-algorithmic-enhancements-1}
@@ -2937,24 +2823,13 @@ accuracy and computational cost.
 \subsection{Algorithm Flowchart for DSTT/TDSTT
 Implementation}\label{algorithm-flowchart-for-dstttdstt-implementation}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Start: Initial State x0 and Covariance P0] {-}{-}\textgreater{} B[Warm Start: Integrate full STT for small step t\textquotesingle{}]}
-\NormalTok{    B {-}{-}\textgreater{} C[Compute CGT at t\textquotesingle{}: C = STM\^{}T * STM]}
-\NormalTok{    C {-}{-}\textgreater{} D[Eigendecomposition: Find sensitive basis R]}
-\NormalTok{    D {-}{-}\textgreater{} E[Integrate State, STM, and DSTT/TDSTT ODEs]}
-\NormalTok{    E {-}{-}\textgreater{} F\{Dense Time Grid Output Required?\}}
-\NormalTok{    F {-}{-} Yes (TDSTT) {-}{-}\textgreater{} G[Integrate Eigenvector Derivatives B simultaneously]}
-\NormalTok{    F {-}{-} No (DSTT) {-}{-}\textgreater{} H[Keep Basis R Fixed]}
-\NormalTok{    G {-}{-}\textgreater{} I[Output: Time{-}history of Reduced Taylor Maps]}
-\NormalTok{    H {-}{-}\textgreater{} I}
-\NormalTok{    I {-}{-}\textgreater{} J[Map Uncertainty: Algebraic calculation of Mean/Covariance]}
-\NormalTok{    J {-}{-}\textgreater{} K[End: Nonlinearly Propagated Statistics]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=5.4in,height=15.81in]{index_files/figure-latex/mermaid-figure-9.png}
 
-\emph{(Ref: Boone and McMahon (2023) )}
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
+
+\emph{(Ref: Boone and McMahon (2023) , Zhou et al. (2024) )}
 
 \subsection{Summary Table: Contextual
 Positioning}\label{summary-table-contextual-positioning}
@@ -3113,18 +2988,11 @@ Propagation}\label{algorithm-for-rstt-based-uncertainty-propagation}
 The following flowchart illustrates the implementation of RSTT for
 nonlinear covariance propagation.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Start: Initial Mean m0 and Covariance P0] {-}{-}\textgreater{} B[Initialize Nominal State and STM]}
-\NormalTok{    B {-}{-}\textgreater{} C[Integrate Dynamics and Variational Equations: dx/dt, dSTM/dt]}
-\NormalTok{    C {-}{-}\textgreater{} D[Integrate Time{-}Sensitivity Equations: dGamma/dt]}
-\NormalTok{    D {-}{-}\textgreater{} E[Obtain Time{-}Phasing Gradient Gamma at tf]}
-\NormalTok{    E {-}{-}\textgreater{} F[Construct RSTT Coefficients via Secular Approximation: Eq. 31]}
-\NormalTok{    F {-}{-}\textgreater{} G[Map Statistics: Algebraic Summation for Mean and Covariance]}
-\NormalTok{    G {-}{-}\textgreater{} H[Result: Propagated Stats at tf]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=2.88in,height=11.06in]{index_files/figure-latex/mermaid-figure-8.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -3298,20 +3166,11 @@ differential algebra or variational equations.
 \subsubsection{3. Algorithm Flowchart for ETT
 Propagation}\label{algorithm-flowchart-for-ett-propagation}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Start: Initial State x0, Parameters theta, and Event e=0] {-}{-}\textgreater{} B[Augment System: Add Event Derivative Equation]}
-\NormalTok{    B {-}{-}\textgreater{} C[Normalize Time: tau = t/T]}
-\NormalTok{    C {-}{-}\textgreater{} D[Integrate k{-}th Order Variational Equations to tau=1]}
-\NormalTok{    D {-}{-}\textgreater{} E[Obtain Polynomials for State xf and Event Variation eps\_f]}
-\NormalTok{    E {-}{-}\textgreater{} F[Apply Map Inversion: Swap eps\_f and Delta T]}
-\NormalTok{    F {-}{-}\textgreater{} G[Constraint: Set eps\_f = 0 to solve for Delta T]}
-\NormalTok{    G {-}{-}\textgreater{} H[Substitute Delta T into State Polynomial]}
-\NormalTok{    H {-}{-}\textgreater{} I[Result: Event Transition Tensors on Manifold]}
-\NormalTok{    I {-}{-}\textgreater{} J[Map Statistics: Compute Propagated Moments at Event]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=2.88in,height=13.73in]{index_files/figure-latex/mermaid-figure-7.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsubsection{4. Variations and Comparative
 Context}\label{variations-and-comparative-context}
@@ -3500,20 +3359,11 @@ orbital uncertainty using the GMM framework. Here we use the
 nonlinearity metric to pre-determine the splitting direction and the
 number of components to generate.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial Gaussian State \& Covariance] {-}{-}\textgreater{} B\{Select Coordinate System\}}
-\NormalTok{    B {-}{-} Cartesian {-}{-}\textgreater{} C[Calculate Nonlinearity Metric Stirling Interpolation]}
-\NormalTok{    B {-}{-} Equinoctial/MEqOE {-}{-}\textgreater{} D[Select Dominant Direction Mean Longitude]}
-\NormalTok{    C {-}{-}\textgreater{} E[Apply Splitting Library Rule 1/Homoscedastic]}
-\NormalTok{    D {-}{-}\textgreater{} E}
-\NormalTok{    E {-}{-}\textgreater{} F[Generate L Initial Gaussian Components]}
-\NormalTok{    F {-}{-}\textgreater{} G[Propagate Each Component independently]}
-\NormalTok{    G {-}{-} Using UT/STT/DA/PCE/MF {-}{-}\textgreater{} H[Sum Propagated Components via Weights]}
-\NormalTok{    H {-}{-}\textgreater{} I[Final Non{-}Gaussian Posterior PDF]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=6.1in,height=12.47in]{index_files/figure-latex/mermaid-figure-6.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Variations and Hybrid
 Architectures}\label{variations-and-hybrid-architectures-1}
@@ -4036,21 +3886,11 @@ dynamics while minimizing the number of expensive HF evaluations.
 \paragraph{\texorpdfstring{\textbf{Algorithmic
 Flowchart}}{Algorithmic Flowchart}}\label{algorithmic-flowchart}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Start: Initial PDF p(x0)] {-}{-}\textgreater{} B[Generate random inputs ensemble Xi with size m]}
-\NormalTok{    B {-}{-}\textgreater{} C[Propagate ensemble to tf using LF model]}
-\NormalTok{    C {-}{-}\textgreater{} D[Construct matrix of LF samples XL]}
-\NormalTok{    D {-}{-}\textgreater{} E[Compute Pivoted Cholesky Decomposition of XL Gramian]}
-\NormalTok{    E {-}{-}\textgreater{} F[Select r important samples Xi* from pivot matrix A]}
-\NormalTok{    F {-}{-}\textgreater{} G[Propagate only Xi* samples to tf using HF model]}
-\NormalTok{    G {-}{-}\textgreater{} H[Compute surrogate coefficients c\_l using LF basis L]}
-\NormalTok{    H {-}{-}\textgreater{} I[Reconstruct/Correct entire HF ensemble using c\_l and HF realizations]}
-\NormalTok{    I {-}{-}\textgreater{} J[Result: Refined Propagated PDF p(xf)]}
-\NormalTok{    J {-}{-}\textgreater{} K[Stop]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=2.88in,height=14.56in]{index_files/figure-latex/mermaid-figure-5.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsubsection{Method 2: Differential Algebra (DA) and Adaptive GMM
 Multi-Fidelity}\label{method-2-differential-algebra-da-and-adaptive-gmm-multi-fidelity}
@@ -4092,21 +3932,11 @@ The following flowchart illustrates the bi-fidelity uncertianty
 propagation using Differential Algebra and Adaptive GMM as described in
 the sources:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Start: Initial PDF p(x0)] {-}{-}\textgreater{} B[Initialize DA variables or Particles]}
-\NormalTok{    B {-}{-}\textgreater{} C[LF Propagation: Map uncertainty through cheap model]}
-\NormalTok{    C {-}{-}\textgreater{} D\{Nonlinearity Check?\}}
-\NormalTok{    D {-}{-} Yes {-}{-}\textgreater{} E[LOADS/AEGIS: Split domains/kernels]}
-\NormalTok{    E {-}{-}\textgreater{} C}
-\NormalTok{    D {-}{-} No {-}{-}\textgreater{} F[Identify Important Samples/Kernel Means]}
-\NormalTok{    F {-}{-}\textgreater{} G[HF Propagation: Point{-}wise propagation of select points]}
-\NormalTok{    G {-}{-}\textgreater{} H[Polynomial/Surrogate Correction: Re{-}center or Re{-}weight]}
-\NormalTok{    H {-}{-}\textgreater{} I[Result: Refined Propagated PDF p(xf)]}
-\NormalTok{    I {-}{-}\textgreater{} J[Stop]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=6.1in,height=13.37in]{index_files/figure-latex/mermaid-figure-4.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \subsection{Hybrid and Efficiency-Optimized
 Frameworks}\label{hybrid-and-efficiency-optimized-frameworks}
@@ -4294,21 +4124,11 @@ evolution.
 \subsection{Algorithm: The Taylor Diffusion
 Propagator}\label{algorithm-the-taylor-diffusion-propagator}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Initial State X0, Covariance P0, Process Noise Σ0] {-}{-}\textgreater{} B[Initialize: Trajectory x0, Map J, Hessian H, Precision Q]}
-\NormalTok{    B {-}{-}\textgreater{} C[Compute Precision Matrix Derivative ¤Q]}
-\NormalTok{    C {-}{-}\textgreater{} D[Extract Map Evolution Derivatives via Automatic Differentiation]}
-\NormalTok{    D {-}{-}\textgreater{} E[Identify Taylor Coefficients: V0, ¤J, ¤H]}
-\NormalTok{    E {-}{-}\textgreater{} F[Apply Zero{-}Tracking Condition: ¤x0 = {-}J⁻¹V0]}
-\NormalTok{    F {-}{-}\textgreater{} G[Integrate Augmented ODE System via RK4]}
-\NormalTok{    G {-}{-}\textgreater{} H\{Final Time Reached?\}}
-\NormalTok{    H {-}{-} No {-}{-}\textgreater{} C}
-\NormalTok{    H {-}{-} Yes {-}{-}\textgreater{} I[Output Analytic PDF: \{x0, J, H, Q\}]}
-\NormalTok{    I {-}{-}\textgreater{} J[Instantaneous Evaluation of Tail Probabilities]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=3.73in,height=15.49in]{index_files/figure-latex/mermaid-figure-3.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -4411,24 +4231,11 @@ Cholesky}\label{algorithm-node-selection-via-pivoted-cholesky}
 The following flowchart details the procedural logic for identifying
 \(r\) important samples from \(N\) low-fidelity evaluations:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[Matrix of LF samples: X\_L] {-}{-}\textgreater{} B[Initialize Weights w: Square of norms of columns in X\_L]}
-\NormalTok{    B {-}{-}\textgreater{} C[Set current rank n = 1]}
-\NormalTok{    C {-}{-}\textgreater{} D[Find index i with max weight w\_i]}
-\NormalTok{    D {-}{-}\textgreater{} E[Is w\_i \textless{} Tolerance?]}
-\NormalTok{    E {-}{-} Yes {-}{-}\textgreater{} F[Stop: System rank reached]}
-\NormalTok{    E {-}{-} No {-}{-}\textgreater{} G[Swap column n with column i in X\_L and weight vector w]}
-\NormalTok{    G {-}{-}\textgreater{} H[Compute diagonal element: Ch\_n,n = sqrt w\_n]}
-\NormalTok{    H {-}{-}\textgreater{} I[Compute Ch\_t,n for remaining samples t \textgreater{} n]}
-\NormalTok{    I {-}{-}\textgreater{} J[Update remaining weights: w\_t = w\_t {-} Ch\_t,n\^{}2]}
-\NormalTok{    J {-}{-}\textgreater{} K[n = n + 1]}
-\NormalTok{    K {-}{-}\textgreater{} L\{n \textless{}= r?\}}
-\NormalTok{    L {-}{-} Yes {-}{-}\textgreater{} D}
-\NormalTok{    L {-}{-} No {-}{-}\textgreater{} M[Output indices of r Important Samples]}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=6.87in,height=16.14in]{index_files/figure-latex/mermaid-figure-2.png}
+
+\textsubscript{Source:
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+Notebook}}
 
 \section{B: Derivation of the differential equation for first and
 second-order State Transition Tensor (STT)
@@ -4736,6 +4543,13 @@ Tensors for Capturing Dominant Nonlinear Effects in Orbital Dynamics.''}
 \bibitem[\citeproctext]{ref-bosorbit}
 Bos, Justin. 2025. \emph{Orbit Uncertainty Propagation in Space
 Situational Awareness Applied to Conjunction Assessment}.
+
+\bibitem[\citeproctext]{ref-Chen2018NeuralODE}
+Chen, Ricky T. Q., Yulia Rubanova, Jesse Bettencourt, and David
+Duvenaud. 2018. {``Neural Ordinary Differential Equations.''}
+\emph{Advances in Neural Information Processing Systems} (Red Hook, NY,
+USA), NIPS'18, 6572--83.
+\url{https://proceedings.neurips.cc/paper_files/paper/2018/file/69386f6bb1dfed68692a24c8686939b9-Paper.pdf}.
 
 \bibitem[\citeproctext]{ref-DETOMASO20257226}
 Detomaso, Roberto, Andrea Muciaccia, and Camilla Colombo. 2025.
