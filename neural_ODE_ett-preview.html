@@ -131,7 +131,10 @@
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script>   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script> 
+</script>  <meta name="mermaid-theme" content="default">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script> 
       </head>
 
   <body class="quarto-notebook quarto-light">
@@ -209,7 +212,12 @@
 <li><strong>Parameter Gradient Computation</strong>: The gradient with respect to the parameters is computed as an integral of the product of the adjoint state and the sensitivity of the vector field: <span class="math display">\[\frac{dL}{d\theta} = \int_{t_1}^{t_0} \mathbf{a}(t)^T \frac{\partial f(\mathbf{h}(t), t, \theta)}{\partial \theta} \, dt\]</span></li>
 </ol>
 <p><strong>Flowchart: Neural ODE Training via Adjoint Sensitivity</strong></p>
-<pre class="mermaid"><code>graph TD
+<div class="cell-container"><div class="cell-decorator"><pre>In [1]:</pre></div><div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
     A[Initial State h_0] --&gt; B[ODE Solver: Forward Pass]
     B --&gt; C[Predicted State h_T]
     C --&gt; D[Compute Loss L]
@@ -218,7 +226,12 @@
     F --&gt; G[Simultaneously solve h_t, a_t, and dL/d_theta]
     G --&gt; H[Update theta via Optimizer]
     H --&gt; A
-</code></pre>
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div></div>
 </section>
 <section id="iii.-motivation-behind-data-driven-dynamics-building" class="level3">
 <h3 class="anchored" data-anchor-id="iii.-motivation-behind-data-driven-dynamics-building">III. Motivation Behind Data-Driven Dynamics Building</h3>
