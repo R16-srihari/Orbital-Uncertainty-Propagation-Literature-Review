@@ -25,11 +25,14 @@ format:
   html:
     comments:
       hypothesis: true
+    mermaid:
+      theme: default
+      look: handDrawn
   # (other formats)
   pdf: default
 
 execute:
   freeze: false
-
-
-
+  echo: false
+  warning: false
+  error: false

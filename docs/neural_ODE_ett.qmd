@@ -31,7 +31,7 @@ The critical challenge in training Neural ODEs is computing gradients of a loss 
 
 **Flowchart: Neural ODE Training via Adjoint Sensitivity**
 
-```mermaid
+```{mermaid}
 graph TD
     A[Initial State h_0] --> B[ODE Solver: Forward Pass]
     B --> C[Predicted State h_T]

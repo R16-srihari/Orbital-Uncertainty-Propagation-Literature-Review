@@ -1,51 +1,140 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.9.37">
 
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="dcterms.date" content="2026-08-24">
 
-<meta name="dcterms.date" content="2026-08-24">
+    <title>State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)</title>
+    <style>
+      /* Default styles provided by pandoc.
+      ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+      */
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+      /* CSS for citations */
+      div.csl-bib-body { }
+      div.csl-entry {
+        clear: both;
+      }
+      .hanging-indent div.csl-entry {
+        margin-left:2em;
+        text-indent:-2em;
+      }
+      div.csl-left-margin {
+        min-width:2em;
+        float:left;
+      }
+      div.csl-right-inline {
+        margin-left:2em;
+        padding-left:1em;
+      }
+      div.csl-indent {
+        margin-left: 2em;
+      }    </style>
 
-<title>State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)</title>
-<style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+    <style>
+      body.hypothesis-enabled #quarto-embed-header {
+        padding-right: 36px;
+      }
 
+      #quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
 
+      #quarto-embed-header h6 {
+        font-size: 1.1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 400;
+      }
+
+      #quarto-embed-header a.quarto-back-link,
+      #quarto-embed-header a.quarto-download-embed {
+        font-size: 0.8em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      .quarto-back-container {
+        padding-left: 0.5em;
+        display: flex;
+      }
+
+      .headroom {
+          will-change: transform;
+          transition: transform 200ms linear;
+      }
+
+      .headroom--pinned {
+          transform: translateY(0%);
+      }
+
+      .headroom--unpinned {
+          transform: translateY(-100%);
+      }      
+    </style>
+
+    <script>
+    window.document.addEventListener("DOMContentLoaded", function () {
+
+      var header = window.document.querySelector("#quarto-embed-header");
+      const titleBannerEl = window.document.querySelector("body > #title-block-header");
+      if (titleBannerEl) {
+        titleBannerEl.style.paddingTop = header.clientHeight + "px";
+      }
+      const contentEl = window.document.getElementById('quarto-content');
+      for (const child of contentEl.children) {
+        child.style.paddingTop = header.clientHeight + "px";
+        child.style.marginTop = "1em";
+      }
+
+      // Use the article root if the `back` call doesn't work. This isn't perfect
+      // but should typically work
+      window.quartoBackToArticle = () => {
+        var currentUrl = window.location.href;
+        window.history.back();
+        setTimeout(() => {
+            // if location was not changed in 100 ms, then there is no history back
+            if(currentUrl === window.location.href){              
+                // redirect to site root
+                window.location.href = "index.html";
+            }
+        }, 100);
+      }
+
+      const headroom = new window.Headroom(header, {
+        tolerance: 5,
+        onPin: function () {
+        },
+        onUnpin: function () {
+        },
+      });
+      headroom.init();
+    });
+    </script>
+
+    
+<script src="site_libs/manuscript-notebook/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -57,54 +146,22 @@ div.csl-indent {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-67270d1595a62d14f123c043d4fb2f18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script async="" src="https://hypothes.is/embed.js"></script>
+     <script async="" src="https://hypothes.is/embed.js"></script>
 <script>
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script>
-<meta name="mermaid-theme" content="default">
+</script>  <meta name="mermaid-theme" content="default">
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<meta name="citation_title" content="State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)">
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script> 
+      <meta name="citation_title" content="State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)">
 <meta name="citation_author" content="Srihari S">
 <meta name="citation_publication_date" content="2026-08-24">
 <meta name="citation_cover_date" content="2026-08-24">
 <meta name="citation_year" content="2026">
 <meta name="citation_online_date" content="2026-08-24">
-<meta name="citation_fulltext_html_url" content="https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.html">
+<meta name="citation_fulltext_html_url" content="https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Orbit uncertainty propagation in space situational awareness applied to conjunction assessment;,citation_author=Justin Bos;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;">
 <meta name="citation_reference" content="citation_title=Orbital uncertainty propagation for collision probability computation;,citation_author=Suyog Soman;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;">
@@ -153,9 +210,16 @@ window.Quarto = {
 <meta name="citation_reference" content="citation_title=Neural ordinary differential equations;,citation_abstract=We introduce a new family of deep neural network models. Instead of specifying a discrete sequence of hidden layers, we parameterize the derivative of the hidden state using a neural network. The output of the network is computed using a black-box differential equation solver. These continuous-depth models have constant memory cost, adapt their evaluation strategy to each input, and can explicitly trade numerical precision for speed. We demonstrate these properties in continuous-depth residual networks and continuous-time latent variable models. We also construct continuous normalizing flows, a generative model that can train by maximum likelihood, without partitioning or ordering the data dimensions. For training, we show how to scalably backpropagate through any ODE solver, without access to its internal operations. This allows end-to-end training of ODEs within larger models.;,citation_author=Ricky T. Q. Chen;,citation_author=Yulia Rubanova;,citation_author=Jesse Bettencourt;,citation_author=David Duvenaud;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_fulltext_html_url=https://proceedings.neurips.cc/paper_files/paper/2018/file/69386f6bb1dfed68692a24c8686939b9-Paper.pdf;,citation_conference_title=Advances in neural information processing systems;,citation_conference=Curran Associates Inc.;,citation_series_title=NIPS’18;">
 </head>
 
-<body class="quarto-light">
+  <body class="quarto-notebook quarto-light">
+    <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
+      
+      <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
+      <h6><i class="bi bi-journal-code"></i> Article Notebook</h6>
 
-<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+            <a href="./index.qmd" class="btn btn-primary quarto-download-embed" download="index.qmd">Download Source</a>
+          </div>
+
+     <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)</h1>
@@ -192,7 +256,7 @@ window.Quarto = {
               </div>
       </div>
       <div class="quarto-title-meta-column-end quarto-other-formats-target">
-      <div class="quarto-alternate-formats"><div class="quarto-title-meta-heading">Other Formats</div><div class="quarto-title-meta-contents"><p><a href="index.pdf"><i class="bi bi-file-pdf"></i>PDF</a></p></div></div></div>
+      </div>
     </div>
 
 
@@ -402,21 +466,43 @@ window.Quarto = {
   <li><a href="#algorithm-the-taylor-diffusion-propagator" id="toc-algorithm-the-taylor-diffusion-propagator" class="nav-link" data-scroll-target="#algorithm-the-taylor-diffusion-propagator">Algorithm: The Taylor Diffusion Propagator</a></li>
   </ul></li>
   <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
-  
-  
+  <li><a href="#sec-appendix-pivoted-cholesky" id="toc-sec-appendix-pivoted-cholesky" class="nav-link" data-scroll-target="#sec-appendix-pivoted-cholesky">A: Pivoted Cholesky Decomposition for Multi-Fidelity Node Selection</a>
+  <ul class="collapse">
+  <li><a href="#the-objective-information-maximization" id="toc-the-objective-information-maximization" class="nav-link" data-scroll-target="#the-objective-information-maximization">The Objective: Information Maximization</a></li>
+  <li><a href="#mathematical-architecture-1" id="toc-mathematical-architecture-1" class="nav-link" data-scroll-target="#mathematical-architecture-1">Mathematical Architecture</a>
+  <ul class="collapse">
+  <li><a href="#the-decomposition-formula" id="toc-the-decomposition-formula" class="nav-link" data-scroll-target="#the-decomposition-formula"><strong>The Decomposition Formula</strong></a></li>
+  <li><a href="#weight-update-and-orthogonalization" id="toc-weight-update-and-orthogonalization" class="nav-link" data-scroll-target="#weight-update-and-orthogonalization"><strong>Weight Update and Orthogonalization</strong></a></li>
+  </ul></li>
+  <li><a href="#algorithm-node-selection-via-pivoted-cholesky" id="toc-algorithm-node-selection-via-pivoted-cholesky" class="nav-link" data-scroll-target="#algorithm-node-selection-via-pivoted-cholesky">Algorithm: Node Selection via Pivoted Cholesky</a></li>
+  </ul></li>
+  <li><a href="#sec-appendix-stt" id="toc-sec-appendix-stt" class="nav-link" data-scroll-target="#sec-appendix-stt">B: Derivation of the differential equation for first and second-order State Transition Tensor (STT) propagation</a>
+  <ul class="collapse">
+  <li><a href="#first-order-stt" id="toc-first-order-stt" class="nav-link" data-scroll-target="#first-order-stt">First-order STT</a>
+  <ul class="collapse">
+  <li><a href="#first-order-taylor-expansion-of-the-state-deviation-eq-stt-taylor-map" id="toc-first-order-taylor-expansion-of-the-state-deviation-eq-stt-taylor-map" class="nav-link" data-scroll-target="#first-order-taylor-expansion-of-the-state-deviation-eq-stt-taylor-map">1. First order Taylor expansion of the state deviation (Equation&nbsp;10)</a></li>
+  <li><a href="#time-derivative-of-state-deviation-taylor-map" id="toc-time-derivative-of-state-deviation-taylor-map" class="nav-link" data-scroll-target="#time-derivative-of-state-deviation-taylor-map">2. Time derivative of state deviation Taylor map</a></li>
+  <li><a href="#dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map" id="toc-dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map" class="nav-link" data-scroll-target="#dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map">3. Dynamics deviation Taylor map first order (Equation&nbsp;11)</a></li>
+  <li><a href="#substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map" id="toc-substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map" class="nav-link" data-scroll-target="#substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map">4. Substitution of State deviation Taylor map into dynamics Taylor map</a></li>
+  <li><a href="#balancing-coefficients" id="toc-balancing-coefficients" class="nav-link" data-scroll-target="#balancing-coefficients">5. Balancing coefficients</a></li>
+  </ul></li>
+  <li><a href="#second-order-stt" id="toc-second-order-stt" class="nav-link" data-scroll-target="#second-order-stt">Second-order STT</a>
+  <ul class="collapse">
+  <li><a href="#second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map" id="toc-second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map" class="nav-link" data-scroll-target="#second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map">1. Second order Taylor expansion of the state deviation(Equation&nbsp;10)</a></li>
+  <li><a href="#time-derivative-of-state-deviation-taylor-map-1" id="toc-time-derivative-of-state-deviation-taylor-map-1" class="nav-link" data-scroll-target="#time-derivative-of-state-deviation-taylor-map-1">2. Time derivative of state deviation Taylor map</a></li>
+  <li><a href="#dynamics-deviation-taylor-map-second-order-eq-stt-eom-taylor-map" id="toc-dynamics-deviation-taylor-map-second-order-eq-stt-eom-taylor-map" class="nav-link" data-scroll-target="#dynamics-deviation-taylor-map-second-order-eq-stt-eom-taylor-map">3. Dynamics deviation Taylor map second order (Equation&nbsp;11)</a></li>
+  <li><a href="#substitution-of-state-deviation-taylor-expansions-to-dynamics-taylor-map" id="toc-substitution-of-state-deviation-taylor-expansions-to-dynamics-taylor-map" class="nav-link" data-scroll-target="#substitution-of-state-deviation-taylor-expansions-to-dynamics-taylor-map">4. Substitution of state deviation Taylor expansions to dynamics Taylor map</a></li>
+  <li><a href="#balancing-coefficients-1" id="toc-balancing-coefficients-1" class="nav-link" data-scroll-target="#balancing-coefficients-1">5. Balancing coefficients</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
-<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="up_methods_comparison-preview.html"><i class="bi bi-journal-code"></i>Limitations of Orbital Uncertainty Propagation Methods</a></li><li><a href="neural_ODE_ett-preview.html"><i class="bi bi-journal-code"></i>Neural Ordinary Differential Equations (NeuralODEs)</a></li><li><a href="index-preview.html"><i class="bi bi-journal-code"></i>Article Notebook</a></li></ul></div></nav>
+</nav>
 </div>
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
-<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">      
 
-
-
-  
-
-
-<section id="introduction" class="level1 page-columns page-full">
+       <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>In the contemporary landscape of Space Domain Awareness (SDA) and Space Situational Awareness (SSA), the precise characterization of orbital state uncertainty is not merely a mathematical exercise but a requirement for the preservation of the orbital environment. As the population of resident space objects (RSOs) grows exponentially, the risk of catastrophic collisions—such as the 2009 Iridium-Cosmos event—escalates, potentially precipitating the “Kessler Syndrome”, according to which, as the density of objects in orbit increases, the likelihood of collisions grows, leading to a cascading chain reaction where each collision generates new debris. This self-perpetuating process could eventually render certain orbits unusable for satellites and spacecraft, posing a severe threat to both current and future space operations.</p>
 <p>Uncertainty Propagation (UP) serves as the mathematical engine for several mission-critical tasks:</p>
@@ -426,11 +512,11 @@ window.Quarto = {
 <li><p><strong>Sensor Tasking:</strong> Optimizing the use of limited ground-based radars and optical sensors by predicting where an object’s probability mass will be at future epochs.</p></li>
 <li><p><strong>Maneuver Planning:</strong> Assessing the necessity and efficacy of collision avoidance maneuvers (CAMs) under non-Gaussian uncertainty regimes.</p></li>
 </ul>
-<section id="problem-formulation-of-uncertainty-propagation" class="level2 page-columns page-full">
+<section id="problem-formulation-of-uncertainty-propagation" class="level2">
 <h2 class="anchored" data-anchor-id="problem-formulation-of-uncertainty-propagation">Problem Formulation of Uncertainty Propagation</h2>
 <p>The stochastic uncertainty propagation problem is defined on a probability space <span class="math inline">\((\mathcal{S}, \Sigma, \mathcal{P})\)</span> where <span class="math inline">\(\mathcal{S}\)</span> is the sample space, <span class="math inline">\(\Sigma\)</span> is the σ-algebra, and <span class="math inline">\(\mathcal{P}\)</span> is the probability measure.</p>
 
-<div class="no-row-height column-margin column-container"><div class="">
+<div class="no-row-height"><div class="">
 <ul>
 <li><p><strong>Sample Space (<span class="math inline">\(\mathcal{S}\)</span>)</strong>: The set of all possible outcomes of a random experiment.<br>
 <em>Example</em>: For a coin toss, <span class="math inline">\(\mathcal{S} = \{\text{Heads}, \text{Tails}\}\)</span>.</p></li>
@@ -558,14 +644,14 @@ window.Quarto = {
 </section>
 </section>
 </section>
-<section id="the-sampling-baseline-monte-carlo-mc" class="level1 page-columns page-full">
+<section id="the-sampling-baseline-monte-carlo-mc" class="level1">
 <h1>The Sampling Baseline: Monte Carlo (MC)</h1>
 <p>The Monte&nbsp;Carlo method serves as the “ground truth” and absolute benchmark for all other techniques. The process involves generating a large set of random samples (<span class="math inline">\(N_{\text{samples}}\)</span>) from an initial multivariate Gaussian distribution using the square‑right matrix (<span class="math inline">\(S\)</span>) of the <u>covariance matrix</u>.</p>
 <p><span id="eq-covariance-matrix"><span class="math display">\[
 P = SS^{T}
 \tag{3}\]</span></span></p>
 
-<div class="no-row-height column-margin column-container"><div class="" title="Covariance Matrix">
+<div class="no-row-height"><div class="" title="Covariance Matrix">
 <p>The covariance matrix <span class="math inline">\(P\)</span> captures the uncertainty in the state estimate which we get from orbit determination. The square‑right matrix <span class="math inline">\(S\)</span> is obtained through Cholesky decomposition or Singular Value Decomposition (SVD) of <span class="math inline">\(P\)</span>. This allows us to generate samples that are consistent with the initial uncertainty.</p>
 </div></div><p>The samples are created as follows: <span id="eq-mc-sampling"><span class="math display">\[
 \mathbf{x}_0(\boldsymbol{\xi}) = \boldsymbol{\mu}_0 + S\boldsymbol{\xi}, \quad \boldsymbol{\xi} \sim N(0, I_6)
@@ -581,7 +667,7 @@ P = SS^{T}
 </ul>
 <section id="algorithmic-flow-of-monte-carlo-simulation" class="level3">
 <h3 class="anchored" data-anchor-id="algorithmic-flow-of-monte-carlo-simulation">Algorithmic Flow of Monte Carlo Simulation</h3>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [1]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -599,7 +685,7 @@ P = SS^{T}
 <p></p></figure><p></p>
 </div>
 </div>
-<a class="quarto-notebook-link" id="nblink-1" href="index-preview.html">Source: Article Notebook</a></div>
+</div></div>
 </section>
 </section>
 <section id="role-as-the-ground-truth-baseline" class="level2">
@@ -716,7 +802,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <section id="algorithmic-implementation-of-lincov" class="level2">
 <h2 class="anchored" data-anchor-id="algorithmic-implementation-of-lincov">Algorithmic Implementation of LinCov</h2>
 <p>The following flowchart delineates the procedural logic for propagating orbital uncertainty using the LinCov framework:</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -734,7 +820,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 <section id="performance-analysis-the-efficiency-accuracy-trade-off" class="level2">
 <h2 class="anchored" data-anchor-id="performance-analysis-the-efficiency-accuracy-trade-off">Performance Analysis: The Efficiency-Accuracy Trade-off</h2>
@@ -858,7 +944,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <section id="algorithm-for-multivariate-implicit-gmm-moment-propagation" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-for-multivariate-implicit-gmm-moment-propagation">Algorithm for Multivariate Implicit GMM-Moment Propagation</h2>
 <p>The following flowchart outlines the computational algorithm for a multivariate system (e.g., orbital mechanics in <span class="math inline">\(R^6\)</span>) using the implicit second-order moment method:</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [3]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -879,7 +965,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 <section id="critical-strengths-and-limitations" class="level2">
 <h2 class="anchored" data-anchor-id="critical-strengths-and-limitations">Critical Strengths and Limitations</h2>
@@ -957,7 +1043,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <section id="algorithm-the-unscented-filter-ukf-logic" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-the-unscented-filter-ukf-logic">Algorithm: The Unscented Filter (UKF) Logic</h2>
 <p>The following flowchart delineates the procedural execution of the UT within a predictive filtering framework, such as the Unscented Kalman Filter:</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [4]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -978,7 +1064,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 <section id="variations-and-hybrid-architectures" class="level2">
 <h2 class="anchored" data-anchor-id="variations-and-hybrid-architectures">Variations and Hybrid Architectures</h2>
@@ -1023,7 +1109,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 </ul>
 </section>
 </section>
-<section id="polynomial-chaos-expansions-pce" class="level1 page-columns page-full">
+<section id="polynomial-chaos-expansions-pce" class="level1">
 <h1>Polynomial Chaos Expansions (PCE)</h1>
 <p>In the rigorous domain of orbital uncertainty propagation (UP), <strong>Polynomial Chaos Expansion (PCE)</strong> represents a powerful spectral decomposition technique that characterizes the evolution of state uncertainties through highly nonlinear dynamical systems. Unlike traditional linearization methods that assume Gaussianity, PCE provides a non-parametric framework capable of capturing the increasingly non-Gaussian “banana-shaped” probability density functions (PDFs) characteristic of long-term orbital motion.</p>
 <section id="theoretical-classification-and-role" class="level2">
@@ -1035,11 +1121,11 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <li><p><strong>Spectral Accuracy:</strong> For systems where the output depends smoothly on the input parameters, PCE can achieve <strong>exponential convergence</strong> rates, far exceeding the <span class="math inline">\(\mathcal{O}(1/\sqrt{N})\)</span> convergence of standard Monte Carlo (MC).</p></li>
 </ul>
 </section>
-<section id="mathematical-foundations-of-pce" class="level2 page-columns page-full">
+<section id="mathematical-foundations-of-pce" class="level2">
 <h2 class="anchored" data-anchor-id="mathematical-foundations-of-pce">Mathematical Foundations of PCE</h2>
 <p>The PCE models a square-measurable stochastic output vector <span class="math inline">\(\mathbf{X}\)</span> as a linear combination of multivariate polynomials that are orthogonal with respect to the joint PDF of the input uncertainties <span class="math inline">\(\xi\)</span>.</p>
 
-<div class="no-row-height column-margin column-container"><div class="">
+<div class="no-row-height"><div class="">
 <p>Here, a random variable or a stochastic solution is called <strong>square-measurable</strong> if its second moment is finite: <span class="math display">\[\mathbb{E}[\mathbf{X}^2] &lt; \infty\]</span></p>
 <p>This condition ensures that the PCE framework can represent the random solution as a series of orthogonal polynomials and that statistical moments (like mean and variance) can be computed analytically from the expansion coefficients.</p>
 </div></div><section id="the-pce-surrogate-formula" class="level3">
@@ -1101,7 +1187,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <li><p><strong>Least-Squares (LS) Regression:</strong> Also known as point collocation, this method minimizes the residual between the expansion and model evaluations at a set of sampled points (e.g., Latin Hypercube Sampling).</p></li>
 </ol>
 <p><strong>Flowchart: NIPC Algorithmic Workflow</strong></p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [5]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1119,7 +1205,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 </section>
 <section id="intrusive-pce-methodology" class="level2">
@@ -1136,7 +1222,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <h3 class="anchored" data-anchor-id="procedural-logic-for-intrusive-pce">Procedural Logic for Intrusive PCE</h3>
 <p>Unlike NIPC, IPCE requires a complete “code rewrite” to implement polynomial algebra operators.</p>
 <p><strong>Flowchart: IPCE Algorithmic Workflow</strong></p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [6]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1152,7 +1238,7 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 </section>
 <section id="variations-of-expansion-and-surrogate-methods" class="level2">
@@ -1261,7 +1347,7 @@ N_{coeff} = \frac{(n + k)!}{n!k!}
 <h2 class="anchored" data-anchor-id="algorithmic-implementation-flowcharts">Algorithmic Implementation Flowcharts</h2>
 <section id="standard-da-uncertainty-propagation" class="level3">
 <h3 class="anchored" data-anchor-id="standard-da-uncertainty-propagation">Standard DA Uncertainty Propagation</h3>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [7]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1281,11 +1367,11 @@ N_{coeff} = \frac{(n + k)!}{n!k!}
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 <section id="da-with-automatic-domain-splitting-ads" class="level3">
 <h3 class="anchored" data-anchor-id="da-with-automatic-domain-splitting-ads">DA with Automatic Domain Splitting (ADS)</h3>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [8]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1304,7 +1390,7 @@ N_{coeff} = \frac{(n + k)!}{n!k!}
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 </section>
 <section id="variations-and-algorithmic-enhancements" class="level2">
@@ -1359,7 +1445,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 </ul>
 </section>
 </section>
-<section id="sec-stt" class="level1 page-columns page-full">
+<section id="sec-stt" class="level1">
 <h1>State Transition Tensors (STT)</h1>
 <p>In the rigorous taxonomy of orbital uncertainty quantification (UQ), <strong>State Transition Tensors (STT)</strong> represent a high-fidelity <strong>semi-analytic expansion method</strong>. Situated between first-order linear approximations like LinCov and non-intrusive surrogate models like PCE, STTs facilitate the nonlinear propagation of uncertainties by applying higher-order Taylor series expansions to the deviation of a system’s state from a nominal trajectory.</p>
 <section id="core-mechanics-and-relationship-to-linear-approximation" class="level2">
@@ -1371,7 +1457,7 @@ E\{x_1^{s_1} \dots x_n^{s_n}\} = \begin{cases} 0 &amp; \text{if } \sum s_i \text
 <li><p><strong>Algebraic Propagation:</strong> Once the tensors are obtained by numerically integrating along a nominal trajectory, they provide a means to compute the nonlinear propagation of the first two statistical moments (mean and covariance) through relatively simple <strong>algebraic operations</strong>.</p></li>
 </ul>
 </section>
-<section id="mathematical-architecture-of-stts" class="level2 page-columns page-full">
+<section id="mathematical-architecture-of-stts" class="level2">
 <h2 class="anchored" data-anchor-id="mathematical-architecture-of-stts">Mathematical Architecture of STTs</h2>
 <p>The fundamental premise of the STT method is that the state deviation (that arises from the initial uncertainty of state) <span class="math inline">\(\delta \mathbf{x}(t)\)</span> and its derivative <span class="math inline">\(\dot{\delta \mathbf{x}(t)}\)</span> at a future time can be expressed as functions of the initial deviation <span class="math inline">\(\delta \mathbf{x}_0\)</span> using a <span class="math inline">\(P\)</span>-order Taylor series expansion about a nominal trajectory <span class="math inline">\(\mathbf{x}^*(t)\)</span>.</p>
 <section id="nonlinear-state-deviation" class="level3">
@@ -1437,7 +1523,7 @@ x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x
 <p>The zeroth-order term <span class="math inline">\(\phi_i(t; \mathbf{x}_0, t_0)\)</span> (the nominal trajectory) cancels out, leaving only the sum of the higher-order partial derivatives.</p></li>
 </ul>
 </section>
-<section id="the-high-order-taylor-map" class="level3 page-columns page-full">
+<section id="the-high-order-taylor-map" class="level3">
 <h3 class="anchored" data-anchor-id="the-high-order-taylor-map">The High-Order Taylor Map</h3>
 <p>The final expression relates initial deviations to future deviations through a sum of tensors: <span id="eq-stt-Taylor-map"><span class="math display">\[
 \delta x_i(t) \approx \sum_{p=1}^P \frac{1}{p!} \Phi_{i;k_1 \dots k_p} \delta x_{0,k_1} \dots \delta x_{0,k_p}
@@ -1454,7 +1540,7 @@ x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x
 \dot{\delta x}_i(t) = \sum_{p=1}^P \frac{1}{p!} \mathbf{f}^{\star}_{i; l_1 \dots l_p} \delta x_{l_1} \dots \delta x_{l_p}
 \tag{11}\]</span></span></p>
 
-<div class="no-row-height column-margin column-container"><div class="">
+<div class="no-row-height"><div class="">
 <p><span class="math display">\[
 \mathbf{f}^{\star}_{i; l_1 \dots l_p} = \left. \frac{\partial^p f_i}{\partial x_{l_1} \dots \partial x_{l_p}} \right|_{\mathbf{x}^*(t)}
 \]</span></p>
@@ -1485,7 +1571,7 @@ x_i(t) = \phi_i(t; \mathbf{x}_0, t_0) + \left. \frac{\partial \phi_i}{\partial x
 </ul>
 </section>
 </section>
-<section id="methodology-moment-propagation-via-algebraic-mapping" class="level2 page-columns page-full">
+<section id="methodology-moment-propagation-via-algebraic-mapping" class="level2">
 <h2 class="anchored" data-anchor-id="methodology-moment-propagation-via-algebraic-mapping">Methodology: Moment Propagation via Algebraic Mapping</h2>
 <p>Unlike sampling methods that propagate individual points, STT-based uncertainty propagation maps the initial statistical moments directly to the terminal state through simple algebraic operations.</p>
 <ol type="1">
@@ -1585,7 +1671,7 @@ P_{ij}(t)=E[\delta x_i \delta x_j]-\delta \mu_i\delta \mu_j=\sum_{p=1}^{m}\sum_{
 <p>where <span class="math inline">\(\delta \mu_i\)</span> is the <span class="math inline">\(i\)</span>-th component of the terminal mean vector and <span class="math inline">\(\mathbf{P}_{ij}\)</span> is the <span class="math inline">\((i,j)\)</span>-th component of the terminal covariance matrix.</p></li>
 </ol>
 
-<div class="no-row-height column-margin column-container"><div class="">
+<div class="no-row-height"><div class="">
 <ul>
 <li><p>Expectation of a random variable <span class="math inline">\(x(t)\)</span> is defined as: <span class="math display">\[
 \mu=E[x(t)]
@@ -1598,7 +1684,7 @@ P_{xy}=E[(x(t)-\mu_x)(y(t)-\mu_y)]= E[xy]-\mu_x\mu_y
 <section id="algorithm-the-stt-uncertainty-pipeline" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-the-stt-uncertainty-pipeline">Algorithm: The STT Uncertainty Pipeline</h2>
 <p>The following flowchart delineates the procedural execution of an STT-based uncertainty propagation campaign.</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [9]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1619,7 +1705,7 @@ P_{xy}=E[(x(t)-\mu_x)(y(t)-\mu_y)]= E[xy]-\mu_x\mu_y
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 <section id="variations-and-algorithmic-enhancements-1" class="level2">
 <h2 class="anchored" data-anchor-id="variations-and-algorithmic-enhancements-1">Variations and Algorithmic Enhancements</h2>
@@ -1758,7 +1844,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 </section>
 <section id="algorithm-flowchart-for-dstttdstt-implementation" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-flowchart-for-dstttdstt-implementation">Algorithm Flowchart for DSTT/TDSTT Implementation</h2>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [10]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1780,7 +1866,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 <p><em>(Ref: <span class="citation" data-cites="boone-mcmahon:10.2514/1.G006910">Boone and McMahon (<a href="#ref-boone-mcmahon:10.2514/1.G006910" role="doc-biblioref">2023</a>)</span> , <span class="citation" data-cites="zhou2024timevaryingdirectionalstatetransition">Zhou et al. (<a href="#ref-zhou2024timevaryingdirectionalstatetransition" role="doc-biblioref">2024</a>)</span> )</em></p>
 </section>
 <section id="summary-table-contextual-positioning" class="level2">
@@ -1884,7 +1970,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 <section id="algorithm-for-rstt-based-uncertainty-propagation" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-for-rstt-based-uncertainty-propagation">Algorithm for RSTT-Based Uncertainty Propagation</h2>
 <p>The following flowchart illustrates the implementation of RSTT for nonlinear covariance propagation.</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [11]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1902,7 +1988,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 <hr>
 </section>
 <section id="advantages-and-contextual-variations" class="level2">
@@ -1967,7 +2053,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 </section>
 <section id="algorithm-flowchart-for-ett-propagation" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-flowchart-for-ett-propagation">3. Algorithm Flowchart for ETT Propagation</h3>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [12]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -1987,7 +2073,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 <section id="variations-and-comparative-context" class="level3">
 <h3 class="anchored" data-anchor-id="variations-and-comparative-context">4. Variations and Comparative Context</h3>
@@ -2008,7 +2094,7 @@ C(t_f,t_0) = \Phi(t_f,t_0)^T \Phi(t_f,t_0)
 </ul>
 </section>
 </section>
-<section id="gaussian-mixture-models-gmm-framework" class="level1 page-columns page-full">
+<section id="gaussian-mixture-models-gmm-framework" class="level1">
 <h1>Gaussian Mixture Models (GMM) Framework</h1>
 <p>In the larger landscape of <strong>Uncertainty Propagation (UP)</strong>, <strong>Gaussian Mixture Models (GMM)</strong> serve as a versatile “mixture model” framework that bridges the gap between computationally efficient linear methods and the complex, non-Gaussian realities of orbital mechanics. The foundational principle of the GMM framework is the “universal approximator” property, which asserts that any arbitrary probability density function (PDF) can be represented with sufficient accuracy as a weighted sum of multiple Gaussian kernels. This property allows GMMs to capture the intricate shapes of non-Gaussian distributions, such as the “banana” or “kidney” forms that emerge in long-term propagation through the highly nonlinear dynamics of orbital mechanics.</p>
 <section id="mathematical-architecture-of-the-gmm-framework" class="level2">
@@ -2058,7 +2144,7 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <section id="algorithmic-methodology-of-gaussian-mixture-modelling-of-uncertainty" class="level2">
 <h2 class="anchored" data-anchor-id="algorithmic-methodology-of-gaussian-mixture-modelling-of-uncertainty">Algorithmic Methodology of Gaussian Mixture Modelling of uncertainty</h2>
 <p>The following flowchart illustrates the procedural logic for propagating orbital uncertainty using the GMM framework. Here we use the nonlinearity metric to pre-determine the splitting direction and the number of components to generate.</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [13]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -2078,9 +2164,9 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
-<section id="variations-and-hybrid-architectures-1" class="level2 page-columns page-full">
+<section id="variations-and-hybrid-architectures-1" class="level2">
 <h2 class="anchored" data-anchor-id="variations-and-hybrid-architectures-1">Variations and Hybrid Architectures</h2>
 <p>The GMM framework is frequently combined with other UP methods to optimize the speed-accuracy Pareto front.</p>
 <section id="gmm-ut-unscented-transform" class="level3">
@@ -2099,16 +2185,16 @@ p(\mathbf{x}) = \sum_{i=1}^{L} \alpha_i \mathbfcal{N}(\mathbf{x}; \hat{\mathbf{x
 <li><p><strong>Performance:</strong> Achieves accuracy similar to GMM-UT but with an <strong>80% reduction in computation time</strong>.</p></li>
 </ul>
 </section>
-<section id="gmm-stt-state-transition-tensor" class="level3 page-columns page-full">
+<section id="gmm-stt-state-transition-tensor" class="level3">
 <h3 class="anchored" data-anchor-id="gmm-stt-state-transition-tensor">GMM-STT (State Transition Tensor)</h3>
-<section id="the-radius-of-convergence-problem-and-gmm-mitigation" class="level4 page-columns page-full">
+<section id="the-radius-of-convergence-problem-and-gmm-mitigation" class="level4">
 <h4 class="anchored" data-anchor-id="the-radius-of-convergence-problem-and-gmm-mitigation"><strong>The Radius of Convergence Problem and GMM mitigation</strong></h4>
 <p>STTs approximate the solution flow of a dynamical system using a high-order Taylor series expansion about a nominal trajectory. This expansion is localized and only valid within a finite neighborhood known as the <strong>radius of convergence</strong> [<span class="citation" data-cites="park-scheeres:10.2514/1.20177">Park and Scheeres (<a href="#ref-park-scheeres:10.2514/1.20177" role="doc-biblioref">2006</a>)</span>] [<span class="citation" data-cites="acciarini:10.2514/1.G008717">Acciarini et al. (<a href="#ref-acciarini:10.2514/1.G008717" role="doc-biblioref">2025</a>)</span>].</p>
 <ul>
 <li><strong>Estimating Validity:</strong> To compare how well the Taylor expansions can reconstruct the actual nonlinear dynamics, we can, as an initial analysis of the convergence radius, use results from basic calculus that study the convergence of power series[<span class="citation" data-cites="acciarini:10.2514/1.G008717">Acciarini et al. (<a href="#ref-acciarini:10.2514/1.G008717" role="doc-biblioref">2025</a>)</span>]. Tools like the <strong>Cauchy–Hadamard theorem</strong> are used as a proxy to estimate a convergence radius and check if the initial uncertainties are within the valid region.</li>
 </ul>
 
-<div class="no-row-height column-margin column-container"><div class="">
+<div class="no-row-height"><div class="">
 <p>The <strong>Cauchy–Hadamard</strong> convergence radius of a Taylor expansion series <span class="math inline">\(\delta x_f^i \approx \mathcal{P}_i^k(\delta z) = \sum_{|\alpha|=1}^{k} \frac{1}{\alpha!} \left( \partial^\alpha x_f^i \right)\bigg|_{(\bar{x}_0, \bar{q})} \, \delta z^\alpha\)</span> is given by: <span class="math display">\[
 R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}|^{1/k}}
 \]</span></p>
@@ -2285,7 +2371,7 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <p><a href="#eq-mf-surrogate" class="quarto-xref">Equation&nbsp;14</a> is what is referred to as the “low-rank” <strong>stochastic collocation surrogate</strong>. The coefficients <span class="math inline">\(c_\ell(\xi)\)</span> are computed by solving a linear system derived from the LF model, ensuring that the surrogate accurately captures the HF dynamics while minimizing the number of expensive HF evaluations.</p>
 <section id="algorithmic-flowchart" class="level4">
 <h4 class="anchored" data-anchor-id="algorithmic-flowchart"><strong>Algorithmic Flowchart</strong></h4>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [14]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -2306,7 +2392,7 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 </section>
 <section id="method-2-differential-algebra-da-and-adaptive-gmm-multi-fidelity" class="level3">
@@ -2324,7 +2410,7 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <section id="algorithmic-flowchart-1" class="level4">
 <h4 class="anchored" data-anchor-id="algorithmic-flowchart-1"><strong>Algorithmic Flowchart</strong></h4>
 <p>The following flowchart illustrates the bi-fidelity uncertianty propagation using Differential Algebra and Adaptive GMM as described in the sources:</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [15]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -2345,7 +2431,7 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 </section>
 </section>
@@ -2415,7 +2501,7 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 </section>
 <section id="algorithm-the-taylor-diffusion-propagator" class="level2">
 <h2 class="anchored" data-anchor-id="algorithm-the-taylor-diffusion-propagator">Algorithm: The Taylor Diffusion Propagator</h2>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [16]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -2436,37 +2522,30 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
+</div></div>
 <hr>
 </section>
 </section>
 <section id="appendix" class="level1">
 <h1>Appendix</h1>
 </section>
-
-
-
-<div id="quarto-appendix" class="default"><section id="sec-appendix-pivoted-cholesky" class="level1 appendix"><h2 class="anchored quarto-appendix-heading">A: Pivoted Cholesky Decomposition for Multi-Fidelity Node Selection</h2><div class="quarto-appendix-contents">
-
+<section id="sec-appendix-pivoted-cholesky" class="level1 appendix">
+<h1 class="appendix">A: Pivoted Cholesky Decomposition for Multi-Fidelity Node Selection</h1>
 <p>In the architecture of <strong>Multi-Fidelity (MF) Uncertainty Propagation</strong>, the <strong>pivoted Cholesky decomposition</strong> serves as the mathematical engine for the “greedy” selection of <strong>important samples</strong> (nodes). This approach identifies a small subset of points from a large low-fidelity (LF) ensemble that are most representative of the state space, ensuring that high-fidelity (HF) evaluations are spent where they provide the most information.</p>
-
-
-
-</div></section><section id="the-objective-information-maximization" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">The Objective: Information Maximization</h2><div class="quarto-appendix-contents">
-
+<section id="the-objective-information-maximization" class="level2 appendix">
+<h2 class="appendix anchored" data-anchor-id="the-objective-information-maximization">The Objective: Information Maximization</h2>
 <p>The goal of node selection is to find a set of random inputs <span class="math inline">\(\underline{\Xi} = \{\underline{\xi}_1, \dots, \underline{\xi}_r\}\)</span> such that the span of their low-fidelity realizations, <span class="math inline">\(\mathcal{X}_L(\underline{\Xi})\)</span>, provides the best possible approximation of the full ensemble <span class="math inline">\(X_L(\Xi)\)</span>.</p>
 <ul>
 <li><p><strong>Greedy Selection Logic:</strong> The algorithm iteratively picks the next node <span class="math inline">\(\xi_k\)</span> by maximizing the distance between that sample and the space spanned by the previously selected nodes.</p></li>
 <li><p><strong>Intractability:</strong> Solving this optimization problem directly via <span class="math inline">\(\text{arg max dist}(\mathbf{x}(\xi), \mathcal{X}(\underline{\Xi}_{k-1}))\)</span> is computationally expensive (intractable) for high-dimensional state spaces.</p></li>
 <li><p><strong>The Cholesky Proxy:</strong> The pivoted Cholesky decomposition provides an efficient linear algebra substitute to this geometric search by operating on the <strong>Gramian matrix</strong> of the low-fidelity samples.</p></li>
 </ul>
-</div></section><section id="mathematical-architecture-1" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Mathematical Architecture</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="mathematical-architecture-1" class="level2 appendix">
+<h2 class="appendix anchored" data-anchor-id="mathematical-architecture-1">Mathematical Architecture</h2>
 <p>The method leverages the relationship between the inner products of the propagated samples to identify the “rank” or “important” directions of the uncertainty volume.</p>
-
-
-</div></section><section id="the-decomposition-formula" class="level3 appendix"><h2 class="anchored quarto-appendix-heading"><strong>The Decomposition Formula</strong></h2><div class="quarto-appendix-contents">
-
+<section id="the-decomposition-formula" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="the-decomposition-formula"><strong>The Decomposition Formula</strong></h3>
 <p>The decomposition is defined as: <span class="math display">\[
 [X_L]^T G_L [X_L] = A^T C_h C_h^T A
 \]</span></p>
@@ -2477,8 +2556,9 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <li><p><span class="math inline">\(A\)</span>: A <strong>pivot matrix</strong> (permutation matrix) that reorders the samples based on their importance.</p></li>
 <li><p><span class="math inline">\(C_h\)</span>: A lower triangular Cholesky factor (<span class="math inline">\(m \times r\)</span>).</p></li>
 </ul>
-</div></section><section id="weight-update-and-orthogonalization" class="level3 appendix"><h2 class="anchored quarto-appendix-heading"><strong>Weight Update and Orthogonalization</strong></h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="weight-update-and-orthogonalization" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="weight-update-and-orthogonalization"><strong>Weight Update and Orthogonalization</strong></h3>
 <p>During the decomposition, the algorithm maintains a vector of “weights” <span class="math inline">\(w_\ell\)</span> representing the norm of each sample. At each step:</p>
 <ol type="1">
 <li><p>The sample with the largest remaining weight (the most unique point) is selected and “pivoted” to the front.</p></li>
@@ -2487,10 +2567,12 @@ w_t = w_t - C_{h(t,n)}^2
 \]</span></p>
 <p>This step effectively “deflates” the importance of samples that are redundant with the current basis.</p></li>
 </ol>
-</div></section><section id="algorithm-node-selection-via-pivoted-cholesky" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Algorithm: Node Selection via Pivoted Cholesky</h2><div class="quarto-appendix-contents">
-
+</section>
+</section>
+<section id="algorithm-node-selection-via-pivoted-cholesky" class="level2 appendix">
+<h2 class="appendix anchored" data-anchor-id="algorithm-node-selection-via-pivoted-cholesky">Algorithm: Node Selection via Pivoted Cholesky</h2>
 <p>The following flowchart details the procedural logic for identifying <span class="math inline">\(r\)</span> important samples from <span class="math inline">\(N\)</span> low-fidelity evaluations:</p>
-<div class="cell" data-layout-align="default">
+<div class="cell-container"><div class="cell-decorator"><pre>In [17]:</pre></div><div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -2514,34 +2596,31 @@ w_t = w_t - C_{h(t,n)}^2
 <p></p></figure><p></p>
 </div>
 </div>
-</div>
-</div></section><section id="sec-appendix-stt" class="level1 appendix"><h2 class="anchored quarto-appendix-heading">B: Derivation of the differential equation for first and second-order State Transition Tensor (STT) propagation</h2><div class="quarto-appendix-contents">
-
-
-
-</div></section><section id="first-order-stt" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">First-order STT</h2><div class="quarto-appendix-contents">
-
+</div></div>
+</section>
+</section>
+<section id="sec-appendix-stt" class="level1 appendix">
+<h1 class="appendix">B: Derivation of the differential equation for first and second-order State Transition Tensor (STT) propagation</h1>
+<section id="first-order-stt" class="level2 appendix">
+<h2 class="appendix anchored" data-anchor-id="first-order-stt">First-order STT</h2>
 <p>To derive the differential equation for the first-order STT <span class="math inline">\(\Phi_{i;a}\)</span>, we need the equations <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>, <a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> and <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in first order and follow the steps outlined in <a href="#sec-stt-ode" class="quarto-xref">Section&nbsp;8.2.4</a> to match the coefficients of <span class="math inline">\(\delta x_{0a}\)</span> on both sides of the resulting equation.</p>
-
-
-
-
-
-</div></section><section id="first-order-taylor-expansion-of-the-state-deviation-eq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">1. First order Taylor expansion of the state deviation (<a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h2><div class="quarto-appendix-contents">
-
+<section id="first-order-taylor-expansion-of-the-state-deviation-eq-stt-taylor-map" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="first-order-taylor-expansion-of-the-state-deviation-eq-stt-taylor-map">1. First order Taylor expansion of the state deviation (<a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h3>
 <p><span id="eq-stt-Taylor-map-first-order"><span class="math display">\[
 \delta x_i(t) = \sum_a\Phi_{i;a},\delta x_{0a}
 \tag{15}\]</span></span></p>
 <p>This is <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> in first order.</p>
-</div></section><section id="time-derivative-of-state-deviation-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">2. Time derivative of state deviation Taylor map</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="time-derivative-of-state-deviation-taylor-map" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="time-derivative-of-state-deviation-taylor-map">2. Time derivative of state deviation Taylor map</h3>
 <p>Since only the STTs depend on time,</p>
 <p><span id="eq-stt-Taylor-map-time-derivative-first-order"><span class="math display">\[
 \delta\dot x_i = \sum_a \dot\Phi_{i;a}\delta x_{0a}
 \tag{16}\]</span></span></p>
 <p>which is <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in first order.</p>
-</div></section><section id="dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">3. Dynamics deviation Taylor map first order (<a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="dynamics-deviation-taylor-map-first-order-eq-stt-eom-taylor-map">3. Dynamics deviation Taylor map first order (<a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h3>
 <p><a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> in first order gives</p>
 <p><span id="eq-stt-eom-Taylor-map-first-order"><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\delta x_\gamma
@@ -2551,8 +2630,9 @@ w_t = w_t - C_{h(t,n)}^2
 f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
 \]</span></p>
 <p>evaluated along the reference trajectory.</p>
-</div></section><section id="substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">4. Substitution of State deviation Taylor map into dynamics Taylor map</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="substitution-of-state-deviation-taylor-map-into-dynamics-taylor-map">4. Substitution of State deviation Taylor map into dynamics Taylor map</h3>
 <p>Replace every <span class="math inline">\(\delta x_\gamma\)</span> by</p>
 <p><span class="math display">\[
 \delta x_\gamma=\sum_a \dot\Phi_{\gamma;a}\delta x_{0a}
@@ -2561,37 +2641,37 @@ f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
 <p><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} \sum_a f^\star_{i;\gamma}\Phi_{\gamma;a}\delta x_{0a}
 \]</span></p>
-</div></section><section id="balancing-coefficients" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">5. Balancing coefficients</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="balancing-coefficients" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="balancing-coefficients">5. Balancing coefficients</h3>
 <p>Now we equate both <a href="#eq-stt-Taylor-map-time-derivative-first-order" class="quarto-xref">Equation&nbsp;16</a> and the modified <a href="#eq-stt-eom-Taylor-map-first-order" class="quarto-xref">Equation&nbsp;17</a>. Since <span class="math inline">\(\delta x_{0a}\)</span> are independent variables, their coefficients must be equal. Removing the common factor, we obtain the first-order STT differential equation:</p>
 <p><span id="eq-first-order-stt-differential-equation"><span class="math display">\[
 \boxed{
 \dot\Phi_{i;a} = \sum_{\gamma} f^\star_{i;\gamma}\Phi_{\gamma;a}
 }
 \tag{18}\]</span></span></p>
-</div></section><section id="second-order-stt" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Second-order STT</h2><div class="quarto-appendix-contents">
-
+</section>
+</section>
+<section id="second-order-stt" class="level2 appendix">
+<h2 class="appendix anchored" data-anchor-id="second-order-stt">Second-order STT</h2>
 <p>To derive the differential equation for the second-order STT <span class="math inline">\(\Phi_{i;ab}\)</span>, we need the equations <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>, <a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> and <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in second order and follow the steps outlined in <a href="#sec-stt-ode" class="quarto-xref">Section&nbsp;8.2.4</a> to match the coefficients of <span class="math inline">\(\delta x_{0a}\delta x_{0b}\)</span> on both sides of the resulting equation.</p>
-
-
-
-
-
-</div></section><section id="second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">1. Second order Taylor expansion of the state deviation(<a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h2><div class="quarto-appendix-contents">
-
+<section id="second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="second-order-taylor-expansion-of-the-state-deviationeq-stt-taylor-map">1. Second order Taylor expansion of the state deviation(<a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a>)</h3>
 <p><span id="eq-stt-Taylor-map-second-order"><span class="math display">\[
 \delta x_i(t) = \sum_a\Phi_{i;a},\delta x_{0a} + \frac12\sum_{a,b}\Phi_{i;ab},\delta x_{0a}\delta x_{0b}
 \tag{19}\]</span></span></p>
 <p>This is <a href="#eq-stt-Taylor-map" class="quarto-xref">Equation&nbsp;10</a> truncated after second order.</p>
-</div></section><section id="time-derivative-of-state-deviation-taylor-map-1" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">2. Time derivative of state deviation Taylor map</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="time-derivative-of-state-deviation-taylor-map-1" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="time-derivative-of-state-deviation-taylor-map-1">2. Time derivative of state deviation Taylor map</h3>
 <p>Since only the STTs depend on time,</p>
 <p><span id="eq-stt-Taylor-map-time-derivative-second-order"><span class="math display">\[
 \delta\dot x_i = \sum_a \dot\Phi_{i;a}\delta x_{0a} + \frac12\sum_{a,b}\dot\Phi_{i;ab}\delta x_{0a}\delta x_{0b}
 \tag{20}\]</span></span></p>
 <p>which is <a href="#eq-stt-Taylor-map-time-derivative" class="quarto-xref">Equation&nbsp;12</a> in second order.</p>
-</div></section><section id="dynamics-deviation-taylor-map-second-order-eq-stt-eom-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">3. Dynamics deviation Taylor map second order (<a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="dynamics-deviation-taylor-map-second-order-eq-stt-eom-taylor-map" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="dynamics-deviation-taylor-map-second-order-eq-stt-eom-taylor-map">3. Dynamics deviation Taylor map second order (<a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a>)</h3>
 <p><a href="#eq-stt-eom-Taylor-map" class="quarto-xref">Equation&nbsp;11</a> truncated to second order gives</p>
 <p><span id="eq-stt-eom-Taylor-map-second-order"><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\delta x_\gamma + \frac12\sum_{\gamma,\eta} f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta
@@ -2605,17 +2685,15 @@ f^\star_{i;\gamma}=\frac{\partial f_i}{\partial x_\gamma},
 f^\star_{i;\gamma\eta}=\frac{\partial^2 f_i}{\partial x_\gamma \partial x_\eta},
 \]</span></p>
 <p>evaluated along the reference trajectory.</p>
-</div></section><section id="substitution-of-state-deviation-taylor-expansions-to-dynamics-taylor-map" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">4. Substitution of state deviation Taylor expansions to dynamics Taylor map</h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="substitution-of-state-deviation-taylor-expansions-to-dynamics-taylor-map" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="substitution-of-state-deviation-taylor-expansions-to-dynamics-taylor-map">4. Substitution of state deviation Taylor expansions to dynamics Taylor map</h3>
 <p>Substituting <a href="#eq-stt-Taylor-map-second-order" class="quarto-xref">Equation&nbsp;19</a> into the first <span class="math inline">\(\delta x_{\gamma}\)</span> of <a href="#eq-stt-eom-Taylor-map-second-order" class="quarto-xref">Equation&nbsp;21</a> gives</p>
 <p><span class="math display">\[
 \delta\dot x_i = \sum_{\gamma} f^\star_{i;\gamma}\left(\sum_a\Phi_{\gamma;a},\delta x_{0a} + \frac12\sum_{a,b}\Phi_{\gamma;ab},\delta x_{0a}\delta x_{0b}\right) + \frac12\sum_{\gamma,\eta} f^\star_{i;\gamma\eta}\delta x_\gamma\delta x_\eta
 \]</span></p>
-
-
-
-</div></section><section id="first-contribution" class="level4 appendix"><h2 class="anchored quarto-appendix-heading"><strong>First contribution</strong></h2><div class="quarto-appendix-contents">
-
+<section id="first-contribution" class="level4 appendix">
+<h4 class="appendix anchored" data-anchor-id="first-contribution"><strong>First contribution</strong></h4>
 <p>Expanding the first term gives</p>
 <p><span class="math display">\[
 \sum_{\gamma,a}f^\star_{i;\gamma}
@@ -2625,8 +2703,9 @@ f^\star_{i;\gamma}
 \delta x_{0a}\delta x_{0b}.
 \]</span></p>
 <p>The first piece is first-order and is part of <a href="#eq-first-order-stt-differential-equation" class="quarto-xref">Equation&nbsp;18</a>, while the second piece contributes to the second-order equation.</p>
-</div></section><section id="second-contribution" class="level4 appendix"><h2 class="anchored quarto-appendix-heading"><strong>Second contribution</strong></h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="second-contribution" class="level4 appendix">
+<h4 class="appendix anchored" data-anchor-id="second-contribution"><strong>Second contribution</strong></h4>
 <p>Now examine the second term:</p>
 <p><span class="math display">\[
 \sum_{\gamma,\eta}\frac12
@@ -2663,8 +2742,9 @@ f^\star_{i;\gamma\eta}
 \delta x_{0a}\delta x_{0b}.
 \]</span></p>
 <p>This is the entire second-order contribution from the nonlinear dynamics.</p>
-</div></section><section id="collect-all-second-order-terms" class="level4 appendix"><h2 class="anchored quarto-appendix-heading"><strong>Collect all second-order terms</strong></h2><div class="quarto-appendix-contents">
-
+</section>
+<section id="collect-all-second-order-terms" class="level4 appendix">
+<h4 class="appendix anchored" data-anchor-id="collect-all-second-order-terms"><strong>Collect all second-order terms</strong></h4>
 <p>The complete right-hand side therefore contains</p>
 <p><span class="math display">\[
 \sum_{a,b}\frac12
@@ -2684,8 +2764,10 @@ f^\star_{i;\gamma\eta}
 \dot\Phi_{i;ab}
 \delta x_{0a}\delta x_{0b}.
 \]</span></p>
-</div></section><section id="balancing-coefficients-1" class="level3 appendix"><h2 class="anchored quarto-appendix-heading">5. Balancing coefficients</h2><div class="quarto-appendix-contents">
-
+</section>
+</section>
+<section id="balancing-coefficients-1" class="level3 appendix">
+<h3 class="appendix anchored" data-anchor-id="balancing-coefficients-1">5. Balancing coefficients</h3>
 <p>We balance the coefficients of the second order terms <span class="math inline">\(\delta x_{0a}\delta x_{0b}\)</span> on both sides of the equation, which gives <span class="math display">\[
 \frac12\dot\Phi_{i;ab}=\sum_{\gamma,\eta}\left[\frac12f^\star_{i;\gamma}\Phi_{\gamma;ab}+\frac12f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}\right]
 \]</span></p>
@@ -2695,8 +2777,7 @@ f^\star_{i;\gamma\eta}
 \dot\Phi_{i;ab}=\sum_{\gamma, \eta}\left[f^\star_{i;\gamma}\Phi_{\gamma;ab}+f^\star_{i;\gamma\eta}\Phi_{\gamma;a}\Phi_{\eta;b}\right]}
 \tag{22}\]</span></span></p>
 <p>First order STT’s <span class="math inline">\(\Phi_{i;a}\)</span> and <span class="math inline">\(\Phi_{i;b}\)</span> are obtained by solving the first-order STT differential equation, which is a prerequisite for solving the second-order equation.</p>
-
-</div></section><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-acciarini:10.2514/1.G008717" class="csl-entry" role="listitem">
 Acciarini, Giacomo, Nicola Baresi, David J. B. Lloyd, and Dario Izzo. 2025. <span>“Nonlinear Propagation of Non-Gaussian Uncertainties.”</span> <em>Journal of Guidance, Control, and Dynamics</em> 48 (4): 903–13. <a href="https://doi.org/10.2514/1.G008717">https://doi.org/10.2514/1.G008717</a>.
 </div>
@@ -2760,9 +2841,12 @@ Van der Merwe, R., and E. A. Wan. 2001. <span>“The Square-Root Unscented Kalma
 <div id="ref-zhou2024timevaryingdirectionalstatetransition" class="csl-entry" role="listitem">
 Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2024. <em>Time-Varying Directional State Transition Tensor for Orbit Uncertainty Propagation</em>. <a href="https://arxiv.org/abs/2412.07060">https://arxiv.org/abs/2412.07060</a>.
 </div>
-</div></section></div></main>
-<!-- /main column -->
-<script id="quarto-html-after-body" type="application/javascript">
+</div>
+</section>
+</section>
+</section>
+     </main>
+<!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -3161,10 +3245,6 @@ Zhou, Xingyu, Roberto Armellin, Dong Qiao, and Xiangyu Li. 2024. <em>Time-Varyin
       }
     }
   });
-  </script>
-</div> <!-- /content -->
-
-
-
-
+  </script>  </div> <!-- /content --> 
+  
 </body></html>
