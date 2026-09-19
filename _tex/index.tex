@@ -498,13 +498,14 @@ not require internal modifications to existing code.
   (CUT):} Deterministic sampling methods that approximate the state pdf
   rather than the transformation itself by using ``sigma points''.
 \item
-  \textbf{Non-intrusive Polynomial Chaos (PC):} Constructs a functional
-  representation of the uncertainty by fitting spectral coefficients to
-  transformed samples.
+  \textbf{Non-intrusive Polynomial Chaos (NIPC):} Constructs a
+  functional representation of the uncertainty by fitting spectral
+  coefficients to transformed samples.
 \item
-  \textbf{SC Multifidelity (Jones \& Weisman):} A hybrid method included
-  in the mind-map that uses stochastic collocation to correct
-  low-fidelity samples with a small subset of high-fidelity runs.
+  \textbf{Stochastic collocation Multi-fidelity (SC-MF)(Jones and
+  Weisman 2019):} A hybrid method included in the mind-map that uses
+  stochastic collocation to correct low-fidelity samples with a small
+  subset of high-fidelity runs.
 \end{itemize}
 
 \paragraph{\texorpdfstring{\textbf{B. Dynamics-based
@@ -525,7 +526,7 @@ knowledge of the system's governing equations.
   \textbf{Differential Algebra (DA):} Automates arbitrary-order Taylor
   expansions by replacing standard arithmetic with polynomial algebra.
 \item
-  \textbf{DA-LOADS Multifidelity (Fossà):} The mind-map explicitly
+  \textbf{DA-LOADS Multi-fidelity (Fossà):} The mind-map explicitly
   labels the author's core contribution here---a multifidelity technique
   that leverages \textbf{Low-Order Automatic Domain Splitting (LOADS)}
   to adaptively manage nonlinearities.
@@ -602,7 +603,7 @@ The following sections provide a detailed overview of the most widely
 used methods in the literature, highlighting their theoretical
 foundations, practical implementations, and performance characteristics.
 
-\includegraphics[width=9.01in,height=6.44in]{index_files/figure-latex/mermaid-figure-1.png}
+\includegraphics[width=8.78in,height=7.16in]{index_files/figure-latex/mermaid-figure-1.png}
 
 \textsubscript{Source:
 \href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
