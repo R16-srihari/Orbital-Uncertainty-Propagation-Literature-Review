@@ -131,9 +131,9 @@ These techniques treat the underlying orbital dynamics as a **"black-box,"** whi
 
 *   **Unscented Transform (UT) and Conjugate Unscented Transform (CUT):** Deterministic sampling methods that approximate the state pdf rather than the transformation itself by using "sigma points".
 
-*   **Non-intrusive Polynomial Chaos (PC):** Constructs a functional representation of the uncertainty by fitting spectral coefficients to transformed samples.
+*   **Non-intrusive Polynomial Chaos (NIPC):** Constructs a functional representation of the uncertainty by fitting spectral coefficients to transformed samples.
 
-*   **SC Multifidelity (Jones & Weisman):** A hybrid method included in the mind-map that uses stochastic collocation to correct low-fidelity samples with a small subset of high-fidelity runs.
+*   **Stochastic collocation Multi-fidelity (SC-MF)[@JONES2019406]:** A hybrid method included in the mind-map that uses stochastic collocation to correct low-fidelity samples with a small subset of high-fidelity runs.
 
 #### **B. Dynamics-based Methods**
 Unlike sample-based methods, these require complete mathematical knowledge of the system's governing equations.
@@ -144,7 +144,7 @@ Unlike sample-based methods, these require complete mathematical knowledge of th
 
 *   **Differential Algebra (DA):** Automates arbitrary-order Taylor expansions by replacing standard arithmetic with polynomial algebra. 
 
-*   **DA-LOADS Multifidelity (Fossà):** The mind-map explicitly labels the author's core contribution here—a multifidelity technique that leverages **Low-Order Automatic Domain Splitting (LOADS)** to adaptively manage nonlinearities.
+*   **DA-LOADS Multi-fidelity (Fossà):** The mind-map explicitly labels the author's core contribution here—a multifidelity technique that leverages **Low-Order Automatic Domain Splitting (LOADS)** to adaptively manage nonlinearities.
 
 #### **C. Pdf-based Methods**
 These methods aim to provide a functional or analytical representation of the evolved probability density function.
@@ -189,12 +189,13 @@ mindmap
         Monte Carlo (MC)
         Unscented Transform (UT)
         Conjugate Unscented Transform (CUT)
-        Polynomial Chaos (PC)
+        Non-Intrusive Polynomial Chaos (NIPC)
+        Stochastic collocation Multi-fidelity (SC-MF)
       Dynamics-based Methods
         Intrusive PC
         State Transition Tensors (STT)
         Differential Algebra (DA)
-        DA-LOADS Multifidelity
+            DA-LOADS Multi-fidelity
       PDF-based Methods
         Fokker-Planck Equation (FPE)
         Liouville's Equation

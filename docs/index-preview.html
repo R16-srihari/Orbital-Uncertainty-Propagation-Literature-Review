@@ -600,8 +600,8 @@
 <ul>
 <li><p><strong>Monte Carlo (MC):</strong> The non-parametric benchmark. While accurate and able to handle any nonlinearity, it is often too computationally expensive for real-time applications.</p></li>
 <li><p><strong>Unscented Transform (UT) and Conjugate Unscented Transform (CUT):</strong> Deterministic sampling methods that approximate the state pdf rather than the transformation itself by using “sigma points”.</p></li>
-<li><p><strong>Non-intrusive Polynomial Chaos (PC):</strong> Constructs a functional representation of the uncertainty by fitting spectral coefficients to transformed samples.</p></li>
-<li><p><strong>SC Multifidelity (Jones &amp; Weisman):</strong> A hybrid method included in the mind-map that uses stochastic collocation to correct low-fidelity samples with a small subset of high-fidelity runs.</p></li>
+<li><p><strong>Non-intrusive Polynomial Chaos (NIPC):</strong> Constructs a functional representation of the uncertainty by fitting spectral coefficients to transformed samples.</p></li>
+<li><p><strong>Stochastic collocation Multi-fidelity (SC-MF)<span class="citation" data-cites="JONES2019406">(<a href="#ref-JONES2019406" role="doc-biblioref">Jones and Weisman 2019</a>)</span>:</strong> A hybrid method included in the mind-map that uses stochastic collocation to correct low-fidelity samples with a small subset of high-fidelity runs.</p></li>
 </ul>
 </section>
 <section id="b.-dynamics-based-methods" class="level4">
@@ -611,7 +611,7 @@
 <li><p><strong>Intrusive PC:</strong> Transforms a stochastic differential equation into a higher-dimensional deterministic one using Galerkin projection.</p></li>
 <li><p><strong>State Transition Tensors (STT):</strong> Captures nonlinear warpings by numerically integrating variational equations for higher-order partial derivatives.</p></li>
 <li><p><strong>Differential Algebra (DA):</strong> Automates arbitrary-order Taylor expansions by replacing standard arithmetic with polynomial algebra.</p></li>
-<li><p><strong>DA-LOADS Multifidelity (Fossà):</strong> The mind-map explicitly labels the author’s core contribution here—a multifidelity technique that leverages <strong>Low-Order Automatic Domain Splitting (LOADS)</strong> to adaptively manage nonlinearities.</p></li>
+<li><p><strong>DA-LOADS Multi-fidelity (Fossà):</strong> The mind-map explicitly labels the author’s core contribution here—a multifidelity technique that leverages <strong>Low-Order Automatic Domain Splitting (LOADS)</strong> to adaptively manage nonlinearities.</p></li>
 </ul>
 </section>
 <section id="c.-pdf-based-methods" class="level4">
@@ -655,12 +655,13 @@
         Monte Carlo (MC)
         Unscented Transform (UT)
         Conjugate Unscented Transform (CUT)
-        Polynomial Chaos (PC)
+        Non-Intrusive Polynomial Chaos (NIPC)
+        Stochastic collocation Multi-fidelity (SC-MF)
       Dynamics-based Methods
         Intrusive PC
         State Transition Tensors (STT)
         Differential Algebra (DA)
-        DA-LOADS Multifidelity
+            DA-LOADS Multi-fidelity
       PDF-based Methods
         Fokker-Planck Equation (FPE)
         Liouville's Equation
