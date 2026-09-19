@@ -178,7 +178,32 @@ in the transformed state pdf while significantly improving the computational per
 
 The following sections provide a detailed overview of the most widely used methods in the literature, highlighting their theoretical foundations, practical implementations, and performance characteristics.
 
+```{mermaid size=200%}
+mindmap
+  root((Uncertainty Propagation))
+    Linear Methods
+      Linear Covariance (LinCov)
+      CADET
+    Nonlinear Methods
+      Sample-based Methods
+        Monte Carlo (MC)
+        Unscented Transform (UT)
+        Conjugate Unscented Transform (CUT)
+        Polynomial Chaos (PC)
+      Dynamics-based Methods
+        Intrusive PC
+        State Transition Tensors (STT)
+        Differential Algebra (DA)
+        DA-LOADS Multifidelity
+      PDF-based Methods
+        Fokker-Planck Equation (FPE)
+        Liouville's Equation
+        Gaussian Mixture Models (GMM)
+    Coordinate Transformations
+```
+
 ---
+
 
 # The Sampling Baseline: Monte Carlo (MC)
 
@@ -212,6 +237,7 @@ MC simulation functions by drawing a large ensemble of random samples from an in
 ### Algorithmic Flow of Monte Carlo Simulation
 
 ```{mermaid}
+
 flowchart TD
     A["Define Initial Mean x0 and Covariance P0"] --> B["Generate Ω Random Samples"]
     B --> C["Propagate Each Sample Independently via RK8/High-Fidelity Dynamics"]

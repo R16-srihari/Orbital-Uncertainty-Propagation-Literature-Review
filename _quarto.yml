@@ -27,7 +27,6 @@ format:
       hypothesis: true
     mermaid:
       theme: default
-      look: handDrawn
   # (other formats)
   pdf: default
 
