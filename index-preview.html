@@ -645,26 +645,27 @@
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">graph LR
-    A["Concept Map of Uncertainty Propagation"] --&gt; B["Linear Methods"]
-    A --&gt; C["Nonlinear Methods"]
-    A --&gt; D["Coordinate Transformations"]
-    B --&gt; E["Linear Covariance (LinCov)"]
-    B --&gt; F["CADET"]
-    C --&gt; G["Sample-based Methods"]
-    C --&gt; H["Dynamics-based Methods"]
-    C --&gt; I["PDF-based Methods"]
-    G --&gt; J["Monte Carlo (MC)"]
-    G --&gt; K["Unscented Transform (UT)"]
-    G --&gt; L["Conjugate Unscented Transform (CUT)"]
-    G --&gt; M["Polynomial Chaos (PC)"]
-    H --&gt; N["Intrusive PC"]
-    H --&gt; O["State Transition Tensors (STT)"]
-    H --&gt; P["Differential Algebra (DA)"]
-    H --&gt; Q["DA-LOADS Multifidelity"]
-    I --&gt; R["Fokker-Planck Equation (FPE)"]
-    I --&gt; S["Liouville's Equation"]
-    I --&gt; T["Gaussian Mixture Models (GMM)"]
+<pre class="mermaid mermaid-js">mindmap
+  root((Uncertainty Propagation))
+    Linear Methods
+      Linear Covariance (LinCov)
+      CADET
+    Nonlinear Methods
+      Sample-based Methods
+        Monte Carlo (MC)
+        Unscented Transform (UT)
+        Conjugate Unscented Transform (CUT)
+        Polynomial Chaos (PC)
+      Dynamics-based Methods
+        Intrusive PC
+        State Transition Tensors (STT)
+        Differential Algebra (DA)
+        DA-LOADS Multifidelity
+      PDF-based Methods
+        Fokker-Planck Equation (FPE)
+        Liouville's Equation
+        Gaussian Mixture Models (GMM)
+    Coordinate Transformations
 </pre>
 </div>
 <p></p></figure><p></p>

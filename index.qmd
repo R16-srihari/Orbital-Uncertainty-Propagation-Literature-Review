@@ -179,27 +179,27 @@ in the transformed state pdf while significantly improving the computational per
 The following sections provide a detailed overview of the most widely used methods in the literature, highlighting their theoretical foundations, practical implementations, and performance characteristics.
 
 ```{mermaid size=200%}
-
-graph LR
-    A["Concept Map of Uncertainty Propagation"] --> B["Linear Methods"]
-    A --> C["Nonlinear Methods"]
-    A --> D["Coordinate Transformations"]
-    B --> E["Linear Covariance (LinCov)"]
-    B --> F["CADET"]
-    C --> G["Sample-based Methods"]
-    C --> H["Dynamics-based Methods"]
-    C --> I["PDF-based Methods"]
-    G --> J["Monte Carlo (MC)"]
-    G --> K["Unscented Transform (UT)"]
-    G --> L["Conjugate Unscented Transform (CUT)"]
-    G --> M["Polynomial Chaos (PC)"]
-    H --> N["Intrusive PC"]
-    H --> O["State Transition Tensors (STT)"]
-    H --> P["Differential Algebra (DA)"]
-    H --> Q["DA-LOADS Multifidelity"]
-    I --> R["Fokker-Planck Equation (FPE)"]
-    I --> S["Liouville's Equation"]
-    I --> T["Gaussian Mixture Models (GMM)"]
+mindmap
+  root((Uncertainty Propagation))
+    Linear Methods
+      Linear Covariance (LinCov)
+      CADET
+    Nonlinear Methods
+      Sample-based Methods
+        Monte Carlo (MC)
+        Unscented Transform (UT)
+        Conjugate Unscented Transform (CUT)
+        Polynomial Chaos (PC)
+      Dynamics-based Methods
+        Intrusive PC
+        State Transition Tensors (STT)
+        Differential Algebra (DA)
+        DA-LOADS Multifidelity
+      PDF-based Methods
+        Fokker-Planck Equation (FPE)
+        Liouville's Equation
+        Gaussian Mixture Models (GMM)
+    Coordinate Transformations
 ```
 
 ---
