@@ -5,7 +5,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-    <meta name="dcterms.date" content="2026-09-19">
+    <meta name="dcterms.date" content="2026-09-26">
 
     <title>State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)</title>
     <style>
@@ -157,10 +157,10 @@
 <link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script> 
       <meta name="citation_title" content="State-of-the-Art Orbit Uncertainty Propagation Methods used in Space Situational Awareness (SDA)">
 <meta name="citation_author" content="Srihari S">
-<meta name="citation_publication_date" content="2026-09-19">
-<meta name="citation_cover_date" content="2026-09-19">
+<meta name="citation_publication_date" content="2026-09-26">
+<meta name="citation_cover_date" content="2026-09-26">
 <meta name="citation_year" content="2026">
-<meta name="citation_online_date" content="2026-09-19">
+<meta name="citation_online_date" content="2026-09-26">
 <meta name="citation_fulltext_html_url" content="https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Orbit uncertainty propagation in space situational awareness applied to conjunction assessment;,citation_author=Justin Bos;,citation_publication_date=2025;,citation_cover_date=2025;,citation_year=2025;">
@@ -248,7 +248,7 @@
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">September 19, 2026</p>
+              <p class="date">September 26, 2026</p>
             </div>
           </div>
           
@@ -284,7 +284,8 @@
   </ul></li>
   <li><a href="#the-sampling-baseline-monte-carlo-mc" id="toc-the-sampling-baseline-monte-carlo-mc" class="nav-link" data-scroll-target="#the-sampling-baseline-monte-carlo-mc">The Sampling Baseline: Monte Carlo (MC)</a>
   <ul class="collapse">
-  <li><a href="#mechanics-of-the-sampling-based-approach" id="toc-mechanics-of-the-sampling-based-approach" class="nav-link" data-scroll-target="#mechanics-of-the-sampling-based-approach">Mechanics of the Sampling-Based Approach</a>
+  <li><a href="#mathematical-estimators" id="toc-mathematical-estimators" class="nav-link" data-scroll-target="#mathematical-estimators">Mathematical Estimators</a></li>
+  <li><a href="#properties-of-the-sampling-based-approach" id="toc-properties-of-the-sampling-based-approach" class="nav-link" data-scroll-target="#properties-of-the-sampling-based-approach">Properties of the Sampling-Based Approach</a>
   <ul class="collapse">
   <li><a href="#algorithmic-flow-of-monte-carlo-simulation" id="toc-algorithmic-flow-of-monte-carlo-simulation" class="nav-link" data-scroll-target="#algorithmic-flow-of-monte-carlo-simulation">Algorithmic Flow of Monte Carlo Simulation</a></li>
   </ul></li>
@@ -568,7 +569,7 @@
 </section>
 <section id="the-fokker-planck-equation" class="level2">
 <h2 class="anchored" data-anchor-id="the-fokker-planck-equation">The Fokker-Planck Equation</h2>
-<p>The <strong>Fokker-Planck Equation</strong> (FPE) is the fundamental partial differential equation (PDE) governing the time evolution of the PDF of a dynamical system subject to both deterministic forces and stochastic process noise.</p>
+<p>The <strong>Fokker-Planck Equation (FPE)</strong> is the fundamental partial differential equation (PDE) governing the time evolution of the PDF of a dynamical system subject to both deterministic forces and stochastic process noise.</p>
 <ul>
 <li><p><strong>Role in UP:</strong> It describes how a probability cloud “flows” and “spreads” through state space. The equation consists of a <strong>drift term</strong> (representing deterministic motion like Keplerian flow) and a <strong>diffusion term</strong> (representing the broadening of the PDF due to stochastic forcing).</p></li>
 <li><p><strong>Mathematical Expression:</strong> For a state vector <span class="math inline">\(\mathbf{x}\)</span>, the FPE is given by: <span id="eq-fokker-planck"><span class="math display">\[
@@ -593,7 +594,7 @@
 </section>
 <section id="nonlinear-methods" class="level3">
 <h3 class="anchored" data-anchor-id="nonlinear-methods">2. Nonlinear Methods</h3>
-<p>Nonlinear methods can be into three subcategories based on their fundamental approach to the UP problem.</p>
+<p>Nonlinear methods can be further divided into three subcategories based on their fundamental approach to the UP problem.</p>
 <section id="a.-sample-based-methods" class="level4">
 <h4 class="anchored" data-anchor-id="a.-sample-based-methods"><strong>A. Sample-based Methods</strong></h4>
 <p>These techniques treat the underlying orbital dynamics as a <strong>“black-box,”</strong> which simplifies implementation because they do not require internal modifications to existing code.</p>
@@ -690,8 +691,26 @@ P = SS^{T}
 \mathbf{x}_0(\boldsymbol{\xi}) = \boldsymbol{\mu}_0 + S\boldsymbol{\xi}, \quad \boldsymbol{\xi} \sim N(0, I_6)
 \tag{4}\]</span></span></p>
 <p>Where <span class="math inline">\(\boldsymbol{\xi}\)</span> is a vector of standard normal random variable inputs, generated using a pseudo random number simulator. The random inputs may include initial state uncertainties, force-modeling errors, and environmental perturbations.</p>
-<section id="mechanics-of-the-sampling-based-approach" class="level2">
-<h2 class="anchored" data-anchor-id="mechanics-of-the-sampling-based-approach">Mechanics of the Sampling-Based Approach</h2>
+<section id="mathematical-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="mathematical-estimators">Mathematical Estimators</h2>
+<p>Given an initial 6-dimensional orbital state vector <span class="math inline">\(\mathbf{x}_0 \in \mathbb{R}^6\)</span> at initial epoch <span class="math inline">\(t_0\)</span> governed by the nonlinear ordinary differential equation <span class="math inline">\(\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x})\)</span>, Monte Carlo draws an ensemble of <span class="math inline">\(\Omega\)</span> random realizations from the initial joint PDF <span class="math inline">\(\pi(\mathbf{x}_0)\)</span>:</p>
+<p><span class="math display">\[
+\mathbf{x}_0^{(k)} \sim \pi(\mathbf{x}_0), \quad k = 1, 2, \dots, \Omega
+\]</span></p>
+<p>Each individual sample state is independently propagated forward to terminal epoch <span class="math inline">\(t\)</span> via the nonlinear flow mapping <span class="math inline">\(\boldsymbol{\phi}(t; \mathbf{x}_0^{(k)}, t_0)\)</span>:</p>
+<p><span class="math display">\[
+\mathbf{x}_k(t) = \boldsymbol{\phi}\left(t; \mathbf{x}_0^{(k)}, t_0\right)
+\]</span></p>
+<p>The propagated first statistical moment (mean state vector <span class="math inline">\(\boldsymbol{\mu}(t)\)</span>) and second central statistical moment (state covariance matrix <span class="math inline">\(\mathbf{P}(t)\)</span>) are evaluated via the sample estimators:</p>
+<p><span class="math display">\[
+\boldsymbol{\mu}(t) = \frac{1}{\Omega} \sum_{k=1}^{\Omega} \mathbf{x}_k(t)
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{P}(t) = \frac{1}{\Omega - 1} \sum_{k=1}^{\Omega} \left( \mathbf{x}_k(t) - \boldsymbol{\mu}(t) \right) \left( \mathbf{x}_k(t) - \boldsymbol{\mu}(t) \right)^T
+\]</span></p>
+</section>
+<section id="properties-of-the-sampling-based-approach" class="level2">
+<h2 class="anchored" data-anchor-id="properties-of-the-sampling-based-approach">Properties of the Sampling-Based Approach</h2>
 <p>MC simulation functions by drawing a large ensemble of random samples from an initial distribution, which can be Gaussian or any other known PDF.</p>
 <ul>
 <li><p><strong>Independent Propagation:</strong> Each sample represents a potential realization of the system state and is propagated independently through numerical integration of the dynamics.</p></li>
@@ -787,7 +806,16 @@ E[Y]=\mu,\qquad \operatorname{Var}(Y)=\sigma^2.
 <ul>
 <li><p><strong>Parallel MC (GPGPU):</strong> Since samples are independent, they are ideally suited for massively parallel architectures,. Implementation on Graphics Processing Units (GPGPUs) can reduce computational time linearly with the number of cores, though it introduces bottlenecks in memory transfer (PCI Express bus) and requires re-coding dynamics without standard libraries like SPICE.</p></li>
 <li><p><strong>Importance Sampling (IS) and Cross-Entropy (CE):</strong> In conjunction analysis, where collision probability (<span class="math inline">\(P_C\)</span>) is a “rare event” (often <span class="math inline">\(10^{-4}\)</span> to <span class="math inline">\(10^{-6}\)</span>), brute-force methods are computationally exhaustive,. IS biases the sampling toward the “failure set” (the collision region), and the Cross-Entropy method iteratively solves for the optimal proposal distribution.</p></li>
-<li><p><strong>Surrogate-Assisted MC:</strong> Rather than numerical integration for every sample, surrogate models—such as high-order Taylor polynomials via Differential Algebra (DA) or Polynomial Chaos Expansions (PCE)—are used to rapidly evaluate samples.</p></li>
+<li><p><strong>Surrogate-Assisted MC:</strong> Rather than numerical integration for every sample, surrogate models—such as high-order Taylor polynomials via Differential Algebra (DA) or Polynomial Chaos Expansions (PCE)—are used to rapidly evaluate samples. Specific techniques include:</p>
+<ul>
+<li><strong>Differential Algebra Monte Carlo (DAMC-<span class="math inline">\(k\)</span>):</strong> Replaces pointwise numerical ODE integration with rapid algebraic evaluation of a high-order Taylor series expansion using State Transition Tensors (STT)</li>
+<li><strong>Polynomial Chaos Expansion Monte Carlo (PCE-MC):</strong> Uses orthogonal polynomial expansions to maintain linear computational complexity relative to input dimension</li>
+<li><strong>Dual-Number Taylor Polynomial Maps:</strong> Encodes trajectory sensitivities to initial state perturbations and time of closest approach, achieving computational speedups of <span class="math inline">\(100\times\)</span> to <span class="math inline">\(300\times\)</span> when embedded in Cross-Entropy Importance Sampling</li>
+</ul></li>
+<li><p><strong>Multi-Fidelity (MF) Monte Carlo:</strong> Combines low-fidelity (LF) propagators (e.g., 2-body Keplerian dynamics) for a large sample set <span class="math inline">\(N_s\)</span> with a small set (<span class="math inline">\(r_{mf} \approx 6\text{--}8\)</span>) of high-fidelity (HF) integrations selected via pivoted Cholesky or stochastic collocation. Linear expansion coefficients correct the LF sample space. MF achieves HF-level non-Gaussian accuracy while accelerating computation time by up to 4 orders of magnitude.</p></li>
+<li><p><strong>Modified Chebyshev Picard Iteration (MCPI-MC) with MEqOE:</strong> Combines Modified Equinoctial Orbital Elements (MEqOE) with Modified Chebyshev Picard Iteration (MCPI) to approximate long-arc trajectory segments globally rather than step-by-step. Integrating MEEs expands the convergence domain, and incorporating local Taylor series gravity expansions enables fast parallel Monte Carlo evaluations across complex gravity fields.</p></li>
+<li><p><strong>Design and Analysis of Computer Experiments (DACE) &amp; Space-Filling Sampling:</strong> Replaces purely random pseudo-sampling with space-filling designs such as Latin Hypercube Sampling (LHS). LHS partitions variable probability distributions into equiprobable strata, enabling the construction of computationally inexpensive statistical meta-models (Kriging, Random Forests, Radial Basis Functions) for sensitivity analysis and outlier detection.</p></li>
+<li><p><strong>Latin Hypercube Sampling (LHS):</strong> Extends standard Monte Carlo by using stratified space-filling designs that guarantee uniform coverage of each input dimension, reducing variance and improving efficiency for surrogate model training. When combined with machine learning surrogates (e.g., Random Forests) or variance-reduction techniques like Importance Sampling, LHS can achieve accurate uncertainty propagation with far fewer high-fidelity model evaluations, making it suitable for sensitivity analysis and outlier detection in high-dimensional astrodynamics problems.</p></li>
 <li><p><strong>MC from Epoch vs.&nbsp;MC from TCA:</strong> Baseline “from Epoch” propagation uses high-fidelity models from the initial measurement time, while “from TCA” propagates uncertainty to the Time of Closest Approach (TCA) first and then performs a localized MC simulation, significantly saving time when it comes to rare-event probability (like collision probability <span class="math inline">\(P_C\)</span>) estimation.</p></li>
 </ul>
 </section>
@@ -2507,7 +2535,7 @@ R_c = \frac{1}{\lim_{k \to \infty} sup_{|\alpha|=k} |a_{\alpha}\sqrt{\alpha!/k!}
 <p>The <strong>Fokker-Planck Equation (FPE)</strong> is a partial differential equation that governs the time evolution of the probability density function (PDF) of a dynamical system subject to both deterministic forces and stochastic process noise. In the context of orbital mechanics and conjunction assessment, the FPE is the fundamental tool for transitioning from a point-estimate of a spacecraft’s position to a complete statistical characterization of its possible states.</p>
 <p>The FPE describes how a probability cloud “flows” through state space while simultaneously “spreading” due to unmodeled perturbations.</p>
 <ul>
-<li><p><strong>Advection-Diffusion Duality:</strong> The equation is composed of two primary operators: the <strong>drift (advection)</strong> term, which moves the PDF along deterministic trajectories (like Keplerian motion), and the <strong>diffusion</strong> term, which accounts for stochastic forcing such as atmospheric drag fluctuations or thrust errors.</p></li>
+<li><p><strong>Advection-Diffusion Duality:</strong> The equation is composed of two primary operators: the <strong>drift (advection)</strong> term, which moves the PDF along deterministic trajectories (like Keplerian motion), and the <strong>diffusion</strong> term, which accounts for the broadening of the PDF due to stochastic forcing.</p></li>
 <li><p><strong>The Governing Equation:</strong> For a system <span class="math inline">\(dX = f(X)dt + \sigma dW_t\)</span>, the PDF <span class="math inline">\(p(x, t)\)</span> evolves as: <span class="math display">\[
 \frac{\partial p}{\partial t} = -\nabla \cdot (f p) + \frac{1}{2} \text{Tr}(\Sigma_0 \nabla^2 p)
 \]</span></p></li>

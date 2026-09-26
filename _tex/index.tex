@@ -222,7 +222,7 @@
 \title{State-of-the-Art Orbit Uncertainty Propagation Methods used in
 Space Situational Awareness (SDA)}
 \author{Srihari S}
-\date{2026-09-19}
+\date{2026-09-26}
 \begin{document}
 \maketitle
 
@@ -414,7 +414,7 @@ mathematical and physical assumptions:
 \subsection{The Fokker-Planck
 Equation}\label{the-fokker-planck-equation}
 
-The \textbf{Fokker-Planck Equation} (FPE) is the fundamental partial
+The \textbf{Fokker-Planck Equation (FPE)} is the fundamental partial
 differential equation (PDE) governing the time evolution of the PDF of a
 dynamical system subject to both deterministic forces and stochastic
 process noise.
@@ -478,8 +478,8 @@ characterized by a multivariate Gaussian distribution.
 
 \subsubsection{2. Nonlinear Methods}\label{nonlinear-methods}
 
-Nonlinear methods can be into three subcategories based on their
-fundamental approach to the UP problem.
+Nonlinear methods can be further divided into three subcategories based
+on their fundamental approach to the UP problem.
 
 \paragraph{\texorpdfstring{\textbf{A. Sample-based
 Methods}}{A. Sample-based Methods}}\label{a.-sample-based-methods}
@@ -606,7 +606,7 @@ foundations, practical implementations, and performance characteristics.
 \includegraphics[width=8.78in,height=7.16in]{index_files/figure-latex/mermaid-figure-1.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -644,8 +644,42 @@ variable inputs, generated using a pseudo random number simulator. The
 random inputs may include initial state uncertainties, force-modeling
 errors, and environmental perturbations.
 
-\subsection{Mechanics of the Sampling-Based
-Approach}\label{mechanics-of-the-sampling-based-approach}
+\subsection{Mathematical Estimators}\label{mathematical-estimators}
+
+Given an initial 6-dimensional orbital state vector
+\(\mathbf{x}_0 \in \mathbb{R}^6\) at initial epoch \(t_0\) governed by
+the nonlinear ordinary differential equation
+\(\dot{\mathbf{x}} = \mathbf{f}(t, \mathbf{x})\), Monte Carlo draws an
+ensemble of \(\Omega\) random realizations from the initial joint PDF
+\(\pi(\mathbf{x}_0)\):
+
+\[
+\mathbf{x}_0^{(k)} \sim \pi(\mathbf{x}_0), \quad k = 1, 2, \dots, \Omega
+\]
+
+Each individual sample state is independently propagated forward to
+terminal epoch \(t\) via the nonlinear flow mapping
+\(\boldsymbol{\phi}(t; \mathbf{x}_0^{(k)}, t_0)\):
+
+\[
+\mathbf{x}_k(t) = \boldsymbol{\phi}\left(t; \mathbf{x}_0^{(k)}, t_0\right)
+\]
+
+The propagated first statistical moment (mean state vector
+\(\boldsymbol{\mu}(t)\)) and second central statistical moment (state
+covariance matrix \(\mathbf{P}(t)\)) are evaluated via the sample
+estimators:
+
+\[
+\boldsymbol{\mu}(t) = \frac{1}{\Omega} \sum_{k=1}^{\Omega} \mathbf{x}_k(t)
+\]
+
+\[
+\mathbf{P}(t) = \frac{1}{\Omega - 1} \sum_{k=1}^{\Omega} \left( \mathbf{x}_k(t) - \boldsymbol{\mu}(t) \right) \left( \mathbf{x}_k(t) - \boldsymbol{\mu}(t) \right)^T
+\]
+
+\subsection{Properties of the Sampling-Based
+Approach}\label{properties-of-the-sampling-based-approach}
 
 MC simulation functions by drawing a large ensemble of random samples
 from an initial distribution, which can be Gaussian or any other known
@@ -675,7 +709,7 @@ Simulation}\label{algorithmic-flow-of-monte-carlo-simulation}
 \includegraphics[width=6.1in,height=7.65in]{index_files/figure-latex/mermaid-figure-18.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Role as the ``Ground Truth''
@@ -804,7 +838,60 @@ hardware and statistical theory:
   \textbf{Surrogate-Assisted MC:} Rather than numerical integration for
   every sample, surrogate models---such as high-order Taylor polynomials
   via Differential Algebra (DA) or Polynomial Chaos Expansions
-  (PCE)---are used to rapidly evaluate samples.
+  (PCE)---are used to rapidly evaluate samples. Specific techniques
+  include:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Differential Algebra Monte Carlo (DAMC-\(k\)):} Replaces
+    pointwise numerical ODE integration with rapid algebraic evaluation
+    of a high-order Taylor series expansion using State Transition
+    Tensors (STT)
+  \item
+    \textbf{Polynomial Chaos Expansion Monte Carlo (PCE-MC):} Uses
+    orthogonal polynomial expansions to maintain linear computational
+    complexity relative to input dimension
+  \item
+    \textbf{Dual-Number Taylor Polynomial Maps:} Encodes trajectory
+    sensitivities to initial state perturbations and time of closest
+    approach, achieving computational speedups of \(100\times\) to
+    \(300\times\) when embedded in Cross-Entropy Importance Sampling
+  \end{itemize}
+\item
+  \textbf{Multi-Fidelity (MF) Monte Carlo:} Combines low-fidelity (LF)
+  propagators (e.g., 2-body Keplerian dynamics) for a large sample set
+  \(N_s\) with a small set (\(r_{mf} \approx 6\text{--}8\)) of
+  high-fidelity (HF) integrations selected via pivoted Cholesky or
+  stochastic collocation. Linear expansion coefficients correct the LF
+  sample space. MF achieves HF-level non-Gaussian accuracy while
+  accelerating computation time by up to 4 orders of magnitude.
+\item
+  \textbf{Modified Chebyshev Picard Iteration (MCPI-MC) with MEqOE:}
+  Combines Modified Equinoctial Orbital Elements (MEqOE) with Modified
+  Chebyshev Picard Iteration (MCPI) to approximate long-arc trajectory
+  segments globally rather than step-by-step. Integrating MEEs expands
+  the convergence domain, and incorporating local Taylor series gravity
+  expansions enables fast parallel Monte Carlo evaluations across
+  complex gravity fields.
+\item
+  \textbf{Design and Analysis of Computer Experiments (DACE) \&
+  Space-Filling Sampling:} Replaces purely random pseudo-sampling with
+  space-filling designs such as Latin Hypercube Sampling (LHS). LHS
+  partitions variable probability distributions into equiprobable
+  strata, enabling the construction of computationally inexpensive
+  statistical meta-models (Kriging, Random Forests, Radial Basis
+  Functions) for sensitivity analysis and outlier detection.
+\item
+  \textbf{Latin Hypercube Sampling (LHS):} Extends standard Monte Carlo
+  by using stratified space-filling designs that guarantee uniform
+  coverage of each input dimension, reducing variance and improving
+  efficiency for surrogate model training. When combined with machine
+  learning surrogates (e.g., Random Forests) or variance-reduction
+  techniques like Importance Sampling, LHS can achieve accurate
+  uncertainty propagation with far fewer high-fidelity model
+  evaluations, making it suitable for sensitivity analysis and outlier
+  detection in high-dimensional astrodynamics problems.
 \item
   \textbf{MC from Epoch vs.~MC from TCA:} Baseline ``from Epoch''
   propagation uses high-fidelity models from the initial measurement
@@ -897,7 +984,7 @@ orbital uncertainty using the LinCov framework:
 \includegraphics[width=2.88in,height=10.56in]{index_files/figure-latex/mermaid-figure-17.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Performance Analysis: The Efficiency-Accuracy
@@ -1210,7 +1297,7 @@ implicit second-order moment method:
 \includegraphics[width=3.06in,height=16.15in]{index_files/figure-latex/mermaid-figure-16.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Critical Strengths and
@@ -1365,7 +1452,7 @@ Filter:
 \includegraphics[width=6.1in,height=16.56in]{index_files/figure-latex/mermaid-figure-15.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Variations and Hybrid
@@ -1648,7 +1735,7 @@ coefficients. Two primary approaches are utilized:
 \includegraphics[width=2.88in,height=11.31in]{index_files/figure-latex/mermaid-figure-14.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Intrusive PCE Methodology}\label{intrusive-pce-methodology}
@@ -1683,7 +1770,7 @@ polynomial algebra operators.
 \includegraphics[width=2.88in,height=8.15in]{index_files/figure-latex/mermaid-figure-13.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Variations of Expansion and Surrogate
@@ -1933,7 +2020,7 @@ Propagation}\label{standard-da-uncertainty-propagation}
 \includegraphics[width=6.1in,height=11.86in]{index_files/figure-latex/mermaid-figure-12.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsubsection{DA with Automatic Domain Splitting
@@ -1942,7 +2029,7 @@ Notebook}}
 \includegraphics[width=5.56in,height=9.83in]{index_files/figure-latex/mermaid-figure-11.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Variations and Algorithmic
@@ -2503,7 +2590,7 @@ STT-based uncertainty propagation campaign.
 \includegraphics[width=6.1in,height=13.98in]{index_files/figure-latex/mermaid-figure-10.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Variations and Algorithmic
@@ -2833,7 +2920,7 @@ Implementation}\label{algorithm-flowchart-for-dstttdstt-implementation}
 \includegraphics[width=5.4in,height=15.81in]{index_files/figure-latex/mermaid-figure-9.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \emph{(Ref: Boone and McMahon (2023) , Zhou et al. (2024) )}
@@ -2998,7 +3085,7 @@ nonlinear covariance propagation.
 \includegraphics[width=2.88in,height=11.06in]{index_files/figure-latex/mermaid-figure-8.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -3176,7 +3263,7 @@ Propagation}\label{algorithm-flowchart-for-ett-propagation}
 \includegraphics[width=2.88in,height=13.73in]{index_files/figure-latex/mermaid-figure-7.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsubsection{4. Variations and Comparative
@@ -3369,7 +3456,7 @@ number of components to generate.
 \includegraphics[width=6.1in,height=12.47in]{index_files/figure-latex/mermaid-figure-6.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Variations and Hybrid
@@ -3896,7 +3983,7 @@ Flowchart}}{Algorithmic Flowchart}}\label{algorithmic-flowchart}
 \includegraphics[width=2.88in,height=14.56in]{index_files/figure-latex/mermaid-figure-5.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsubsection{Method 2: Differential Algebra (DA) and Adaptive GMM
@@ -3942,7 +4029,7 @@ the sources:
 \includegraphics[width=6.1in,height=13.37in]{index_files/figure-latex/mermaid-figure-4.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \subsection{Hybrid and Efficiency-Optimized
@@ -4063,8 +4150,8 @@ while simultaneously ``spreading'' due to unmodeled perturbations.
   \textbf{Advection-Diffusion Duality:} The equation is composed of two
   primary operators: the \textbf{drift (advection)} term, which moves
   the PDF along deterministic trajectories (like Keplerian motion), and
-  the \textbf{diffusion} term, which accounts for stochastic forcing
-  such as atmospheric drag fluctuations or thrust errors.
+  the \textbf{diffusion} term, which accounts for the broadening of the
+  PDF due to stochastic forcing.
 \item
   \textbf{The Governing Equation:} For a system
   \(dX = f(X)dt + \sigma dW_t\), the PDF \(p(x, t)\) evolves as: \[
@@ -4134,7 +4221,7 @@ Propagator}\label{algorithm-the-taylor-diffusion-propagator}
 \includegraphics[width=3.73in,height=15.49in]{index_files/figure-latex/mermaid-figure-3.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -4241,7 +4328,7 @@ The following flowchart details the procedural logic for identifying
 \includegraphics[width=6.87in,height=16.14in]{index_files/figure-latex/mermaid-figure-2.png}
 
 \textsubscript{Source:
-\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index-preview.html}{Article
+\href{https://r16-srihari.github.io/Orbital-Uncertainty-Propagation-Literature-Review/index.qmd.html}{Article
 Notebook}}
 
 \section{B: Derivation of the differential equation for first and
